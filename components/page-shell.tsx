@@ -50,10 +50,10 @@ export function PageShell({
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)]">
           {/* Main Content */}
           <div className="space-y-8">
-            {/* What You'll Learn */}
+            {/* What You&apos;ll Learn */}
             <div className="rounded-2xl border bg-card p-6 shadow-sm">
               <h2 className="mb-3 text-lg font-semibold text-foreground">
-                What you'll learn
+                What you&apos;ll learn
               </h2>
               <ul className="space-y-2">
                 <li className="flex items-start gap-2 text-sm text-muted-foreground">
