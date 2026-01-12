@@ -33,8 +33,8 @@ Interactive documentation for debugging and validating Meta Pixel events and Con
 1. Install dependencies:
    ```bash
    npm install
+   npm i -D autoprefixer postcss tailwindcss
    ```
-
 2. Run the development server:
    ```bash
    npm run dev
