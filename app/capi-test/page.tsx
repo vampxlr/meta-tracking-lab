@@ -64,7 +64,8 @@ interface ResponseDetails {
 
 export default function CapiTestPage() {
   const [isConfigured, setIsConfigured] = React.useState(false)
-  const [mode, setMode] = React.useState<'broken' | 'fixed'>('broken')
+  const [mode, setMode] = React.useState<'broken' | 'fixed' | 'test'>('broken')
+  const [testEventCode, setTestEventCode] = React.useState('')
   const [isLoading, setIsLoading] = React.useState(false)
   const [lastResponse, setLastResponse] = React.useState<ApiResponse | null>(null)
   const [lastTestTime, setLastTestTime] = React.useState<string | null>(null)
@@ -112,12 +113,12 @@ export default function CapiTestPage() {
   // Validate form in real-time
   React.useEffect(() => {
     validateForm()
-  }, [eventName, userData, customData, eventId, mode])
+  }, [eventName, userData, customData, eventId, mode, testEventCode])
 
   // Update JSON preview in real-time
   React.useEffect(() => {
     updatePreview()
-  }, [eventName, userData, customData, eventId, mode])
+  }, [eventName, userData, customData, eventId, mode, testEventCode])
 
   const checkConfiguration = async () => {
     try {
@@ -192,6 +193,16 @@ export default function CapiTestPage() {
       })
     }
 
+    // Validate test event code when in test mode
+    if (mode === 'test' && !testEventCode) {
+      errors.push({
+        field: 'test_event_code',
+        message: 'Test event code is required in Test mode',
+        severity: 'error',
+        suggestion: 'Enter a test event code from Meta Events Manager Test Events tab',
+      })
+    }
+
     setValidationErrors(errors)
   }
 
@@ -203,6 +214,11 @@ export default function CapiTestPage() {
 
     if (eventId) {
       body.event_id = eventId
+    }
+
+    // Add test_event_code when in test mode
+    if (mode === 'test' && testEventCode) {
+      body.test_event_code = testEventCode
     }
 
     // Add user data if any field is filled
@@ -328,7 +344,7 @@ export default function CapiTestPage() {
 
   // Random data generation functions
   const generateRandomEventId = () => {
-    if (mode === 'fixed') {
+    if (mode === 'fixed' || mode === 'test') {
       // Generate valid UUID
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
         const r = Math.random() * 16 | 0
@@ -351,7 +367,7 @@ export default function CapiTestPage() {
   }
 
   const generateRandomUserData = () => {
-    if (mode === 'fixed') {
+    if (mode === 'fixed' || mode === 'test') {
       // Generate valid user data
       const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily']
       const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Davis']
@@ -392,7 +408,7 @@ export default function CapiTestPage() {
   }
 
   const generateRandomCustomData = () => {
-    if (mode === 'fixed') {
+    if (mode === 'fixed' || mode === 'test') {
       // Generate valid custom data
       const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
       const contentTypes = ['product', 'product_group', 'destination']
@@ -432,15 +448,23 @@ export default function CapiTestPage() {
     const newEventId = generateRandomEventId()
     setEventId(newEventId)
     toast.success('Event ID generated', {
-      description: mode === 'fixed' ? 'Valid UUID generated' : 'Invalid event ID generated for testing',
+      description: mode === 'broken' ? 'Invalid event ID generated for testing' : 'Valid UUID generated',
     })
   }
 
   const handleGenerateUserData = () => {
     const newUserData = generateRandomUserData()
-    setUserData(newUserData)
+    setUserData({
+      email: newUserData.email || '',
+      phone: newUserData.phone || '',
+      first_name: newUserData.first_name || '',
+      last_name: newUserData.last_name || '',
+      external_id: newUserData.external_id || '',
+      city: newUserData.city || '',
+      country: newUserData.country || '',
+    })
     toast.success('User data filled', {
-      description: mode === 'fixed' ? 'Valid user data generated' : 'User data with issues generated for testing',
+      description: mode === 'broken' ? 'User data with issues generated for testing' : 'Valid user data generated',
     })
   }
 
@@ -456,7 +480,7 @@ export default function CapiTestPage() {
       order_id: newCustomData.order_id || '',
     })
     toast.success('Custom data filled', {
-      description: mode === 'fixed' ? 'Valid custom data generated' : 'Custom data with issues generated for testing',
+      description: mode === 'broken' ? 'Custom data with issues generated for testing' : 'Valid custom data generated',
     })
   }
 
@@ -482,6 +506,11 @@ export default function CapiTestPage() {
     
     if (requestBody.event_id) {
       transformedPayload.event_id = requestBody.event_id
+    }
+
+    // Add test_event_code if in test mode
+    if (requestBody.test_event_code) {
+      transformedPayload.test_event_code = requestBody.test_event_code
     }
     
     // Transform user data field names and hash values if in fixed mode
@@ -540,8 +569,8 @@ export default function CapiTestPage() {
         return await hashString(normalized)
       }
       
-      if (mode === 'fixed') {
-        // Fixed mode: hash PII and use abbreviated field names
+      if (mode === 'fixed' || mode === 'test') {
+        // Fixed and test mode: hash PII and use abbreviated field names
         if (userData.email) transformedUserData.em = await hashEmail(userData.email)
         if (userData.phone) transformedUserData.ph = await hashPhone(userData.phone)
         if (userData.first_name) transformedUserData.fn = await hashFirstName(userData.first_name)
@@ -635,10 +664,10 @@ export default function CapiTestPage() {
               Event Mode
             </h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Choose between broken (demonstrating issues) and fixed (best practices) modes
+              Choose between broken (demonstrating issues), fixed (best practices), and test (Meta Events Manager) modes
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <Button
               variant={mode === 'broken' ? 'destructive' : 'outline'}
               onClick={() => setMode('broken')}
@@ -655,25 +684,47 @@ export default function CapiTestPage() {
             >
               Fixed Mode
             </Button>
+            <Button
+              variant={mode === 'test' ? 'secondary' : 'outline'}
+              onClick={() => setMode('test')}
+              className="w-full"
+              disabled={isLoading}
+            >
+              Test Mode
+            </Button>
           </div>
           <div className={`mt-4 rounded-md p-3 border ${
             mode === 'broken'
               ? 'bg-red-500/10 border-red-500/20'
+              : mode === 'test'
+              ? 'bg-blue-500/10 border-blue-500/20'
               : 'bg-green-500/10 border-green-500/20'
           }`}>
             <div className="flex items-start gap-2">
               {mode === 'broken' ? (
                 <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+              ) : mode === 'test' ? (
+                <Info className="h-4 w-4 text-blue-600 mt-0.5" />
               ) : (
                 <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />
               )}
               <div className="text-sm">
-                <p className={`font-medium ${mode === 'broken' ? 'text-red-900' : 'text-green-900'}`}>
-                  {mode === 'broken' ? 'Broken Mode Warning' : 'Fixed Mode Active'}
+                <p className={`font-medium ${
+                  mode === 'broken' ? 'text-red-900'
+                  : mode === 'test' ? 'text-blue-900'
+                  : 'text-green-900'
+                }`}>
+                  {mode === 'broken' ? 'Broken Mode Warning' : mode === 'test' ? 'Test Mode Active' : 'Fixed Mode Active'}
                 </p>
-                <p className={`mt-1 ${mode === 'broken' ? 'text-red-800' : 'text-green-800'}`}>
+                <p className={`mt-1 ${
+                  mode === 'broken' ? 'text-red-800'
+                  : mode === 'test' ? 'text-blue-800'
+                  : 'text-green-800'
+                }`}>
                   {mode === 'broken'
                     ? 'This mode sends un-hashed PII and missing required fields to demonstrate what NOT to do. Random data will include common issues like wrong types, missing fields, and invalid formats for testing error handling. Use dummy data only!'
+                    : mode === 'test'
+                    ? 'This mode sends events to Meta Events Manager Test Events tab. Requires a test event code. Random data will be valid and properly formatted.'
                     : 'Random data will be valid and properly formatted for testing successful event tracking.'
                   }
                 </p>
@@ -741,6 +792,30 @@ export default function CapiTestPage() {
             </div>
           </div>
         </Card>
+
+        {/* Test Event Code Card - Only visible in Test mode */}
+        {mode === 'test' && (
+          <Card className="p-6">
+            <div className="mb-4">
+              <h3 className="font-semibold">Test Event Code</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Enter the test event code from Meta Events Manager Test Events tab
+              </p>
+            </div>
+            <div>
+              <Input
+                type="text"
+                placeholder="e.g., TEST12345"
+                value={testEventCode}
+                onChange={(e) => setTestEventCode(e.target.value)}
+                disabled={isLoading}
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                Required in Test mode. Get this code from Meta Events Manager → Test Events tab
+              </p>
+            </div>
+          </Card>
+        )}
 
         {/* User Data Card */}
         <Card className="p-6">

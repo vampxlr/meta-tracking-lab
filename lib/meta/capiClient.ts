@@ -84,7 +84,7 @@ async function buildCapiPayload(
   accessToken: string,
   testEventCode?: string
 ): Promise<any> {
-  const { event_name, mode, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
+  const { event_name, mode, test_event_code, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
 
   // Base event object
   const event: any = {
@@ -102,8 +102,8 @@ async function buildCapiPayload(
 
   // Build user_data based on mode
   if (user_data) {
-    if (mode === 'fixed') {
-      // Fixed mode: hash PII
+    if (mode === 'fixed' || mode === 'test') {
+      // Fixed and test mode: hash PII
       event.user_data = {
         ...await hashUserData(user_data),
         client_ip_address: client_ip_address || '127.0.0.1',
@@ -136,9 +136,9 @@ async function buildCapiPayload(
     }
   }
 
-  // Add test_event_code if provided
-  if (testEventCode) {
-    event.test_event_code = testEventCode
+  // Add test_event_code if provided (from request or options)
+  if (test_event_code || testEventCode) {
+    event.test_event_code = test_event_code || testEventCode
   }
 
   return {
