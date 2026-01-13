@@ -36,6 +36,7 @@ export function FacebookPixel() {
           style={{ display: 'none' }}
           src={`https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`}
           alt=""
+          // eslint-disable-next-line @next/next/no-img-element
         />
       </noscript>
     </>

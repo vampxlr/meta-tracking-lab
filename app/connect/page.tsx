@@ -204,7 +204,7 @@ export default function ConnectionTestPage() {
           <div className="mt-4 rounded-lg border border-blue-500/20 bg-background/50 p-3 text-xs text-muted-foreground">
             <p className="font-medium text-foreground">Note:</p>
             <p className="mt-1">
-              Test events typically appear within 1-2 seconds. If you don't see
+              Test events typically appear within 1-2 seconds. If you don&apos;t see
               the event, check your browser console for errors and verify your
               Pixel ID is correct.
             </p>
