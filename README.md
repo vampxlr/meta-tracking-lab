@@ -128,6 +128,73 @@ FB_ACCESS_TOKEN=your_access_token_here
 FB_PIXEL_ID=your_pixel_id_here
 ```
 
+## CAPI Setup
+
+This lab includes a functional Conversions API (CAPI) implementation for server-side event tracking. The CAPI Test page allows you to send events directly to Meta's Graph API, bypassing browser restrictions and improving tracking reliability.
+
+### Prerequisites
+
+Before setting up CAPI, ensure you have:
+
+- **Meta Pixel** - A Meta Pixel created in Meta Business Manager
+- **Access Token** - A System User Access Token with appropriate permissions
+
+### Setup Steps
+
+1. **Create a Meta Pixel**
+   
+   Navigate to Meta Business Manager > Events Manager > Pixels and create a new pixel for your app.
+
+2. **Generate a System User Access Token**
+   
+   Create a System User in Meta Business Manager and generate an access token with the following permissions:
+   - `ads_management`
+   - `ads_read`
+
+3. **Configure Environment Variables**
+   
+   Add the following variables to your `.env.local` file:
+   
+   ```bash
+   # Meta CAPI Configuration
+   META_CAPI_ACCESS_TOKEN=your_access_token_here
+   NEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here
+   META_GRAPH_API_VERSION=v19.0
+   META_TEST_EVENT_CODE=your_test_code_here
+   ```
+   
+   - `META_CAPI_ACCESS_TOKEN` (required) - Your System User Access Token
+   - `NEXT_PUBLIC_FB_PIXEL_ID` (required) - Your Meta Pixel ID
+   - `META_GRAPH_API_VERSION` (optional) - Graph API version (defaults to v19.0)
+   - `META_TEST_EVENT_CODE` (optional) - Test event code for development testing
+
+4. **Run the Development Server**
+   
+   ```bash
+   npm run dev
+   ```
+
+5. **Test CAPI**
+   
+   Navigate to [`/capi-test`](http://localhost:3000/capi-test) to access the CAPI Test page and send test events.
+
+### Testing CAPI
+
+The CAPI Test page provides an interactive interface for testing server-side event tracking:
+
+- **Send Test Events** - Choose between different event types (ViewContent, AddToCart, Purchase)
+- **Mode Selection** - Test both "Broken" and "Fixed" implementations to understand common issues
+- **Event Logging** - View real-time event logs with JSON payloads
+- **Verification** - Use Meta Events Manager's Test Events tab to verify received events
+
+### Important Notes
+
+- **Security** - Never commit `.env.local` to version control. Add it to your `.gitignore` file.
+- **Access Tokens** - Keep your access tokens secure and rotate them periodically.
+- **Test Events** - Always use test event codes during development to avoid polluting production data.
+- **Broken Mode** - The "Broken" mode is for demonstration purposes only and shows common implementation mistakes.
+- **Production** - When moving to production, remove test event codes and ensure proper error handling and retry logic.
+
 ## Project Structure
 
 ```

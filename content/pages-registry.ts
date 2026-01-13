@@ -303,6 +303,27 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     demoPreset: { kind: "testing" }
   },
 
+  "/problems/capi-setup": {
+    title: "CAPI Setup",
+    description: "Learn how to configure and test Meta Conversions API in this lab",
+    badge: "Stable",
+    sectionBlocks: [
+      {
+        heading: "What is CAPI?",
+        body: "Conversions API (CAPI) is Meta's server-side tracking solution that allows you to send web events directly from your server to Meta's servers. Unlike client-side pixel tracking, CAPI is more reliable as it's not affected by browser restrictions, ad blockers, or cookie limitations. It provides better data accuracy, improved match quality, and enhanced privacy compliance. CAPI works alongside the Meta Pixel to ensure comprehensive event tracking and attribution."
+      },
+      {
+        heading: "Testing CAPI",
+        body: "Use the dedicated CAPI test page at /capi-test to experiment with Conversions API functionality. This interactive tool allows you to send test events to Meta's servers and observe the responses in real-time. You can configure event parameters, test different event types, and verify that your CAPI implementation is working correctly before deploying to production."
+      },
+      {
+        heading: "Key Features",
+        body: "The CAPI test page offers several powerful features for testing and learning: toggle between broken and fixed modes to simulate common issues and their solutions, automatic user data hashing for privacy compliance (email, phone, etc.), support for standard event types like Purchase and AddToCart, real-time response display showing success/failure status, and detailed event payload inspection. These features help you understand how CAPI works and troubleshoot any issues in your implementation."
+      }
+    ],
+    showDemo: false
+  },
+
   "/server/first-party-endpoint": {
     title: "First-Party Endpoint",
     description: "Implement and configure first-party endpoints for more reliable and privacy-compliant tracking.",

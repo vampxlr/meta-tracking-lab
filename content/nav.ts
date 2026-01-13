@@ -116,6 +116,12 @@ export const navItems: NavItem[] = [
     icon: Search,
     group: "Core Problems",
   },
+  {
+    title: "CAPI Setup",
+    href: "/problems/capi-setup",
+    icon: Server,
+    group: "Core Problems",
+  },
 
   // Server-Side & Reliability
   {

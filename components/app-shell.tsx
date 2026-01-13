@@ -10,13 +10,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
-import { 
-  Menu, 
-  Search, 
-  FileText, 
+import {
+  Menu,
+  Search,
+  FileText,
   Github,
   ExternalLink,
-  Plug
+  Plug,
+  Server
 } from "lucide-react"
 import { navItems, navGroups, NavItem } from "@/content/nav"
 
@@ -187,6 +188,12 @@ export function AppShell({ children }: AppShellProps) {
               <Link href="/connect">
                 <Plug className="h-4 w-4" />
                 <span>Connection Test</span>
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" className="gap-2" asChild>
+              <Link href="/capi-test">
+                <Server className="h-4 w-4" />
+                <span>CAPI Test</span>
               </Link>
             </Button>
             <Button variant="ghost" size="sm" className="gap-2">
