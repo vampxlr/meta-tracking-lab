@@ -105,7 +105,7 @@ export default function CapiTestPage() {
   const [debugExpanded, setDebugExpanded] = React.useState(true)
   const [previewJson, setPreviewJson] = React.useState('')
 
-  const checkConfiguration = async () => {
+  const checkConfiguration = React.useCallback(async () => {
     try {
       const response = await fetch('/api/meta/capi')
       const data = await response.json()
@@ -113,7 +113,7 @@ export default function CapiTestPage() {
     } catch (error) {
       setIsConfigured(false)
     }
-  }
+  }, [])
 
   const validateForm = useCallback(() => {
     const errors: ValidationError[] = []
@@ -600,7 +600,7 @@ export default function CapiTestPage() {
   React.useEffect(() => {
     checkConfiguration()
     updatePreview() // Initialize preview on mount
-  }, [updatePreview])
+  }, [checkConfiguration, updatePreview])
 
   // Validate form in real-time
   React.useEffect(() => {
@@ -767,7 +767,7 @@ export default function CapiTestPage() {
                 ))}
               </select>
               <p className="text-xs text-muted-foreground mt-1">
-                Select from Meta's standard event types
+                Select from Meta&apos;s standard event types
               </p>
             </div>
 
