@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useCallback } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -104,22 +105,6 @@ export default function CapiTestPage() {
   const [debugExpanded, setDebugExpanded] = React.useState(true)
   const [previewJson, setPreviewJson] = React.useState('')
 
-  // Check CAPI configuration on mount
-  React.useEffect(() => {
-    checkConfiguration()
-    updatePreview() // Initialize preview on mount
-  }, [])
-
-  // Validate form in real-time
-  React.useEffect(() => {
-    validateForm()
-  }, [eventName, userData, customData, eventId, mode, testEventCode])
-
-  // Update JSON preview in real-time
-  React.useEffect(() => {
-    updatePreview()
-  }, [eventName, userData, customData, eventId, mode, testEventCode])
-
   const checkConfiguration = async () => {
     try {
       const response = await fetch('/api/meta/capi')
@@ -130,7 +115,7 @@ export default function CapiTestPage() {
     }
   }
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const errors: ValidationError[] = []
 
     // Validate event name
@@ -204,7 +189,7 @@ export default function CapiTestPage() {
     }
 
     setValidationErrors(errors)
-  }
+  }, [eventName, userData, customData, eventId, mode, testEventCode])
 
   const buildRequestBody = () => {
     const body: any = {
@@ -493,7 +478,7 @@ export default function CapiTestPage() {
     }
   }
 
-  const updatePreview = async () => {
+  const updatePreview = useCallback(async () => {
     const requestBody = buildRequestBody()
     
     // Transform to match what the backend actually sends to Meta's API
@@ -506,11 +491,6 @@ export default function CapiTestPage() {
     
     if (requestBody.event_id) {
       transformedPayload.event_id = requestBody.event_id
-    }
-
-    // Add test_event_code if in test mode
-    if (requestBody.test_event_code) {
-      transformedPayload.test_event_code = requestBody.test_event_code
     }
     
     // Transform user data field names and hash values if in fixed mode
@@ -601,8 +581,36 @@ export default function CapiTestPage() {
       transformedPayload.custom_data = requestBody.custom_data
     }
     
-    setPreviewJson(JSON.stringify(transformedPayload, null, 2))
-  }
+    // Build the final payload structure that matches Meta's API expectations
+    // test_event_code should be at the top level, not inside the event object
+    const finalPayload: any = {
+      data: [transformedPayload],
+      access_token: 'REDACTED',
+    }
+    
+    // Add test_event_code at the top level if in test mode
+    if (requestBody.test_event_code) {
+      finalPayload.test_event_code = requestBody.test_event_code
+    }
+    
+    setPreviewJson(JSON.stringify(finalPayload, null, 2))
+  }, [eventName, userData, customData, eventId, mode, testEventCode])
+
+  // Check CAPI configuration on mount
+  React.useEffect(() => {
+    checkConfiguration()
+    updatePreview() // Initialize preview on mount
+  }, [updatePreview])
+
+  // Validate form in real-time
+  React.useEffect(() => {
+    validateForm()
+  }, [validateForm])
+
+  // Update JSON preview in real-time
+  React.useEffect(() => {
+    updatePreview()
+  }, [updatePreview])
 
   return (
     <div className="container max-w-6xl py-8">

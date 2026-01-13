@@ -136,14 +136,10 @@ async function buildCapiPayload(
     }
   }
 
-  // Add test_event_code if provided (from request or options)
-  if (test_event_code || testEventCode) {
-    event.test_event_code = test_event_code || testEventCode
-  }
-
   return {
     data: [event],
     access_token: accessToken,
+    test_event_code: test_event_code || testEventCode,
   }
 }
 
