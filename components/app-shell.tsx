@@ -15,7 +15,8 @@ import {
   Search, 
   FileText, 
   Github,
-  ExternalLink 
+  ExternalLink,
+  Plug
 } from "lucide-react"
 import { navItems, navGroups, NavItem } from "@/content/nav"
 
@@ -182,6 +183,12 @@ export function AppShell({ children }: AppShellProps) {
               v0.1.0
             </Badge>
             <Separator orientation="vertical" className="h-6" />
+            <Button variant="ghost" size="sm" className="gap-2" asChild>
+              <Link href="/connect">
+                <Plug className="h-4 w-4" />
+                <span>Connection Test</span>
+              </Link>
+            </Button>
             <Button variant="ghost" size="sm" className="gap-2">
               <FileText className="h-4 w-4" />
               <span>Docs</span>
