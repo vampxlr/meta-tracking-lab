@@ -40,7 +40,7 @@ export async function sendCapiEvent(
     const eventId = request.event_id || crypto.randomUUID()
 
     // Build the payload based on mode
-    const payload = await buildCapiPayload(request, eventId, testEventCode)
+    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode)
 
     // Send to Meta's Graph API
     const url = `https://graph.facebook.com/${apiVersion}/${pixelId}/events`
@@ -81,6 +81,7 @@ export async function sendCapiEvent(
 async function buildCapiPayload(
   request: CapiEventRequest,
   eventId: string,
+  accessToken: string,
   testEventCode?: string
 ): Promise<any> {
   const { event_name, mode, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
@@ -110,11 +111,22 @@ async function buildCapiPayload(
       }
     } else {
       // Broken mode: send un-hashed PII (demonstrating what NOT to do)
-      event.user_data = {
-        ...user_data,
+      // Still use abbreviated field names but don't hash the values
+      const brokenUserData: any = {
         client_ip_address: client_ip_address || '127.0.0.1',
         client_user_agent: client_user_agent || 'Mozilla/5.0',
       }
+      
+      // Map to abbreviated field names without hashing
+      if (user_data.email) brokenUserData.em = user_data.email
+      if (user_data.phone) brokenUserData.ph = user_data.phone
+      if (user_data.first_name) brokenUserData.fn = user_data.first_name
+      if (user_data.last_name) brokenUserData.ln = user_data.last_name
+      if (user_data.external_id) brokenUserData.external_id = user_data.external_id
+      if (user_data.city) brokenUserData.ct = user_data.city
+      if (user_data.country) brokenUserData.country = user_data.country
+      
+      event.user_data = brokenUserData
     }
   } else {
     // No user data provided
@@ -131,7 +143,7 @@ async function buildCapiPayload(
 
   return {
     data: [event],
-    access_token: 'REDACTED', // Will be replaced with actual token in fetch
+    access_token: accessToken,
   }
 }
 

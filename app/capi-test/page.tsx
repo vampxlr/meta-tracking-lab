@@ -25,7 +25,8 @@ import {
   ChevronDown,
   ChevronUp,
   Check,
-  X
+  X,
+  Shuffle
 } from 'lucide-react'
 import { SUPPORTED_EVENTS } from '@/lib/meta/capiTypes'
 
@@ -100,15 +101,22 @@ export default function CapiTestPage() {
   const [requestExpanded, setRequestExpanded] = React.useState(true)
   const [responseExpanded, setResponseExpanded] = React.useState(true)
   const [debugExpanded, setDebugExpanded] = React.useState(true)
+  const [previewJson, setPreviewJson] = React.useState('')
 
   // Check CAPI configuration on mount
   React.useEffect(() => {
     checkConfiguration()
+    updatePreview() // Initialize preview on mount
   }, [])
 
   // Validate form in real-time
   React.useEffect(() => {
     validateForm()
+  }, [eventName, userData, customData, eventId, mode])
+
+  // Update JSON preview in real-time
+  React.useEffect(() => {
+    updatePreview()
   }, [eventName, userData, customData, eventId, mode])
 
   const checkConfiguration = async () => {
@@ -318,6 +326,140 @@ export default function CapiTestPage() {
     toast.info('Response cleared')
   }
 
+  // Random data generation functions
+  const generateRandomEventId = () => {
+    if (mode === 'fixed') {
+      // Generate valid UUID
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        const r = Math.random() * 16 | 0
+        const v = c === 'x' ? r : (r & 0x3 | 0x8)
+        return v.toString(16)
+      })
+    } else {
+      // Broken mode: generate invalid event IDs
+      const brokenTypes = [
+        '', // Empty
+        'not-a-uuid', // Invalid format
+        '123', // Too short
+        '550e8400-e29b-41d4-a716-446655440000-extra', // Too long
+        'invalid-uuid-format', // Wrong format
+        'null', // String null
+        'undefined', // String undefined
+      ]
+      return brokenTypes[Math.floor(Math.random() * brokenTypes.length)]
+    }
+  }
+
+  const generateRandomUserData = () => {
+    if (mode === 'fixed') {
+      // Generate valid user data
+      const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily']
+      const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Davis']
+      const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix']
+      const countries = ['US', 'UK', 'CA', 'AU', 'DE']
+      
+      const randomEmail = `${firstNames[Math.floor(Math.random() * firstNames.length)].toLowerCase()}.${lastNames[Math.floor(Math.random() * lastNames.length)].toLowerCase()}@example.com`
+      const randomPhone = `+1${Math.floor(Math.random() * 9000000000 + 1000000000)}`
+      
+      return {
+        email: randomEmail,
+        phone: randomPhone,
+        first_name: firstNames[Math.floor(Math.random() * firstNames.length)],
+        last_name: lastNames[Math.floor(Math.random() * lastNames.length)],
+        external_id: `customer_${Math.floor(Math.random() * 100000)}`,
+        city: cities[Math.floor(Math.random() * cities.length)],
+        country: countries[Math.floor(Math.random() * countries.length)],
+      }
+    } else {
+      // Broken mode: generate user data with issues
+      const brokenData: any = {}
+      const issues = [
+        () => ({ ...brokenData, email: 'invalid-email' }), // Invalid email format
+        () => ({ ...brokenData, email: '' }), // Empty email
+        () => ({ ...brokenData, phone: 1234567890 }), // Wrong type (number instead of string)
+        () => ({ ...brokenData, first_name: null }), // Null value
+        () => ({ ...brokenData, last_name: undefined }), // Undefined value
+        () => ({ ...brokenData, external_id: '' }), // Empty string
+        () => ({ ...brokenData, city: 123 }), // Wrong type
+        () => ({ ...brokenData, country: 'USA123' }), // Invalid country code
+        () => ({ ...brokenData }), // Empty object
+        () => ({ ...brokenData, email: 'user@', phone: 'not-a-number' }), // Multiple issues
+      ]
+      
+      const randomIssue = issues[Math.floor(Math.random() * issues.length)]
+      return randomIssue()
+    }
+  }
+
+  const generateRandomCustomData = () => {
+    if (mode === 'fixed') {
+      // Generate valid custom data
+      const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
+      const contentTypes = ['product', 'product_group', 'destination']
+      const contentNames = ['Premium Widget', 'Basic Gadget', 'Advanced Tool', 'Standard Item']
+      
+      return {
+        currency: currencies[Math.floor(Math.random() * currencies.length)],
+        value: parseFloat((Math.random() * 1000 + 10).toFixed(2)),
+        content_ids: [`prod_${Math.floor(Math.random() * 1000)}`, `prod_${Math.floor(Math.random() * 1000)}`],
+        content_type: contentTypes[Math.floor(Math.random() * contentTypes.length)],
+        content_name: contentNames[Math.floor(Math.random() * contentNames.length)],
+        num_items: Math.floor(Math.random() * 10) + 1,
+        order_id: `order_${Math.floor(Math.random() * 100000)}`,
+      }
+    } else {
+      // Broken mode: generate custom data with issues
+      const brokenData: any = {}
+      const issues = [
+        () => ({ ...brokenData, currency: 'INVALID' }), // Invalid currency
+        () => ({ ...brokenData, value: 'not-a-number' }), // Wrong type (string instead of number)
+        () => ({ ...brokenData, value: '' }), // Empty value
+        () => ({ ...brokenData, content_ids: 123 }), // Wrong type (number instead of array)
+        () => ({ ...brokenData, content_ids: [] }), // Empty array
+        () => ({ ...brokenData, num_items: 'five' }), // Wrong type (string instead of number)
+        () => ({ ...brokenData, order_id: null }), // Null value
+        () => ({ ...brokenData }), // Empty object
+        () => ({ ...brokenData, currency: '', value: '99.99' }), // Multiple issues
+        () => ({ ...brokenData, value: -50 }), // Negative value (invalid)
+      ]
+      
+      const randomIssue = issues[Math.floor(Math.random() * issues.length)]
+      return randomIssue()
+    }
+  }
+
+  const handleGenerateEventId = () => {
+    const newEventId = generateRandomEventId()
+    setEventId(newEventId)
+    toast.success('Event ID generated', {
+      description: mode === 'fixed' ? 'Valid UUID generated' : 'Invalid event ID generated for testing',
+    })
+  }
+
+  const handleGenerateUserData = () => {
+    const newUserData = generateRandomUserData()
+    setUserData(newUserData)
+    toast.success('User data filled', {
+      description: mode === 'fixed' ? 'Valid user data generated' : 'User data with issues generated for testing',
+    })
+  }
+
+  const handleGenerateCustomData = () => {
+    const newCustomData = generateRandomCustomData()
+    setCustomData({
+      currency: newCustomData.currency || '',
+      value: newCustomData.value !== undefined ? String(newCustomData.value) : '',
+      content_ids: Array.isArray(newCustomData.content_ids) ? newCustomData.content_ids.join(', ') : '',
+      content_type: newCustomData.content_type || '',
+      content_name: newCustomData.content_name || '',
+      num_items: newCustomData.num_items !== undefined ? String(newCustomData.num_items) : '',
+      order_id: newCustomData.order_id || '',
+    })
+    toast.success('Custom data filled', {
+      description: mode === 'fixed' ? 'Valid custom data generated' : 'Custom data with issues generated for testing',
+    })
+  }
+
   const copyToClipboard = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text)
@@ -327,8 +469,110 @@ export default function CapiTestPage() {
     }
   }
 
-  const getRequestBodyPreview = () => {
-    return JSON.stringify(buildRequestBody(), null, 2)
+  const updatePreview = async () => {
+    const requestBody = buildRequestBody()
+    
+    // Transform to match what the backend actually sends to Meta's API
+    const transformedPayload: any = {
+      event_name: requestBody.event_name,
+      event_time: Math.floor(Date.now() / 1000),
+      event_source_url: 'https://example.com',
+      action_source: 'website',
+    }
+    
+    if (requestBody.event_id) {
+      transformedPayload.event_id = requestBody.event_id
+    }
+    
+    // Transform user data field names and hash values if in fixed mode
+    if (requestBody.user_data) {
+      const userData = requestBody.user_data
+      const transformedUserData: any = {}
+      
+      // Helper function to hash a string (client-side for preview)
+      const hashString = async (str: string): Promise<string> => {
+        const encoder = new TextEncoder()
+        const data = encoder.encode(str)
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+        const hashArray = Array.from(new Uint8Array(hashBuffer))
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+        return hashHex
+      }
+      
+      // Helper function to normalize and hash email
+      const hashEmail = async (email: string): Promise<string> => {
+        const normalized = email.trim().toLowerCase()
+        return await hashString(normalized)
+      }
+      
+      // Helper function to normalize and hash phone
+      const hashPhone = async (phone: string): Promise<string> => {
+        const normalized = phone.replace(/\D/g, '')
+        return await hashString(normalized)
+      }
+      
+      // Helper function to normalize and hash first name
+      const hashFirstName = async (firstName: string): Promise<string> => {
+        const normalized = firstName.trim().toLowerCase()
+        return await hashString(normalized)
+      }
+      
+      // Helper function to normalize and hash last name
+      const hashLastName = async (lastName: string): Promise<string> => {
+        const normalized = lastName.trim().toLowerCase()
+        return await hashString(normalized)
+      }
+      
+      // Helper function to hash external ID
+      const hashExternalId = async (externalId: string): Promise<string> => {
+        return await hashString(externalId)
+      }
+      
+      // Helper function to normalize and hash city
+      const hashCity = async (city: string): Promise<string> => {
+        const normalized = city.trim().toLowerCase()
+        return await hashString(normalized)
+      }
+      
+      // Helper function to normalize and hash country
+      const hashCountry = async (country: string): Promise<string> => {
+        const normalized = country.trim().toLowerCase()
+        return await hashString(normalized)
+      }
+      
+      if (mode === 'fixed') {
+        // Fixed mode: hash PII and use abbreviated field names
+        if (userData.email) transformedUserData.em = await hashEmail(userData.email)
+        if (userData.phone) transformedUserData.ph = await hashPhone(userData.phone)
+        if (userData.first_name) transformedUserData.fn = await hashFirstName(userData.first_name)
+        if (userData.last_name) transformedUserData.ln = await hashLastName(userData.last_name)
+        if (userData.external_id) transformedUserData.external_id = await hashExternalId(userData.external_id)
+        if (userData.city) transformedUserData.ct = await hashCity(userData.city)
+        if (userData.country) transformedUserData.country = await hashCountry(userData.country)
+      } else {
+        // Broken mode: use abbreviated field names but don't hash
+        if (userData.email) transformedUserData.em = userData.email
+        if (userData.phone) transformedUserData.ph = userData.phone
+        if (userData.first_name) transformedUserData.fn = userData.first_name
+        if (userData.last_name) transformedUserData.ln = userData.last_name
+        if (userData.external_id) transformedUserData.external_id = userData.external_id
+        if (userData.city) transformedUserData.ct = userData.city
+        if (userData.country) transformedUserData.country = userData.country
+      }
+      
+      // Add client IP and user agent (these are added by backend)
+      transformedUserData.client_ip_address = '127.0.0.1'
+      transformedUserData.client_user_agent = 'Mozilla/5.0'
+      
+      transformedPayload.user_data = transformedUserData
+    }
+    
+    // Add custom data if present
+    if (requestBody.custom_data) {
+      transformedPayload.custom_data = requestBody.custom_data
+    }
+    
+    setPreviewJson(JSON.stringify(transformedPayload, null, 2))
   }
 
   return (
@@ -412,20 +656,30 @@ export default function CapiTestPage() {
               Fixed Mode
             </Button>
           </div>
-          {mode === 'broken' && (
-            <div className="mt-4 rounded-md bg-red-500/10 p-3 border border-red-500/20">
-              <div className="flex items-start gap-2">
+          <div className={`mt-4 rounded-md p-3 border ${
+            mode === 'broken'
+              ? 'bg-red-500/10 border-red-500/20'
+              : 'bg-green-500/10 border-green-500/20'
+          }`}>
+            <div className="flex items-start gap-2">
+              {mode === 'broken' ? (
                 <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-medium text-red-900">Broken Mode Warning</p>
-                  <p className="text-red-800 mt-1">
-                    This mode sends un-hashed PII and missing required fields to demonstrate what NOT to do.
-                    Use dummy data only!
-                  </p>
-                </div>
+              ) : (
+                <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />
+              )}
+              <div className="text-sm">
+                <p className={`font-medium ${mode === 'broken' ? 'text-red-900' : 'text-green-900'}`}>
+                  {mode === 'broken' ? 'Broken Mode Warning' : 'Fixed Mode Active'}
+                </p>
+                <p className={`mt-1 ${mode === 'broken' ? 'text-red-800' : 'text-green-800'}`}>
+                  {mode === 'broken'
+                    ? 'This mode sends un-hashed PII and missing required fields to demonstrate what NOT to do. Random data will include common issues like wrong types, missing fields, and invalid formats for testing error handling. Use dummy data only!'
+                    : 'Random data will be valid and properly formatted for testing successful event tracking.'
+                  }
+                </p>
               </div>
             </div>
-          )}
+          </div>
         </Card>
 
         {/* Event Configuration Card */}
@@ -447,6 +701,7 @@ export default function CapiTestPage() {
                 onChange={(e) => setEventName(e.target.value)}
                 disabled={isLoading}
                 className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                title="Select event type"
               >
                 {SUPPORTED_EVENTS.map(event => (
                   <option key={event} value={event}>{event}</option>
@@ -458,9 +713,21 @@ export default function CapiTestPage() {
             </div>
 
             <div>
-              <label className="text-sm font-medium mb-1.5 block">
-                Event ID (Optional)
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-sm font-medium">
+                  Event ID (Optional)
+                </label>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleGenerateEventId}
+                  disabled={isLoading}
+                  className="h-7 gap-1"
+                >
+                  <Shuffle className="h-3 w-3" />
+                  Generate
+                </Button>
+              </div>
               <Input
                 type="text"
                 placeholder="e.g., 550e8400-e29b-41d4-a716-446655440000"
@@ -477,11 +744,23 @@ export default function CapiTestPage() {
 
         {/* User Data Card */}
         <Card className="p-6">
-          <div className="mb-4">
-            <h3 className="font-semibold">User Data (Optional)</h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Add user data for better matching. In Fixed mode, PII will be hashed.
-            </p>
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="font-semibold">User Data (Optional)</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Add user data for better matching. In Fixed mode, PII will be hashed.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateUserData}
+              disabled={isLoading}
+              className="h-8 gap-1"
+            >
+              <Shuffle className="h-3 w-3" />
+              Fill User Data
+            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
@@ -559,11 +838,23 @@ export default function CapiTestPage() {
 
         {/* Custom Data Card */}
         <Card className="p-6">
-          <div className="mb-4">
-            <h3 className="font-semibold">Custom Data (Optional)</h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Add event-specific parameters. Required fields vary by event type.
-            </p>
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="font-semibold">Custom Data (Optional)</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Add event-specific parameters. Required fields vary by event type.
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleGenerateCustomData}
+              disabled={isLoading}
+              className="h-8 gap-1"
+            >
+              <Shuffle className="h-3 w-3" />
+              Fill Custom Data
+            </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
@@ -665,7 +956,7 @@ export default function CapiTestPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => copyToClipboard(getRequestBodyPreview(), 'Request JSON')}
+                onClick={() => copyToClipboard(previewJson, 'Request JSON')}
                 className="absolute top-2 right-2 h-8 gap-1 z-10"
               >
                 <Copy className="h-3 w-3" />
@@ -673,7 +964,7 @@ export default function CapiTestPage() {
               </Button>
               <ScrollArea className="h-64 rounded-md border bg-muted/20 p-3">
                 <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
-                  {getRequestBodyPreview()}
+                  {previewJson}
                 </pre>
               </ScrollArea>
             </div>

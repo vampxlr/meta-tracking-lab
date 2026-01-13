@@ -60,6 +60,28 @@ export async function hashExternalId(externalId: string): Promise<string> {
 }
 
 /**
+ * Normalize and hash city
+ * - Trim whitespace
+ * - Convert to lowercase
+ * - Hash with SHA-256
+ */
+export async function hashCity(city: string): Promise<string> {
+  const normalized = city.trim().toLowerCase()
+  return await hashString(normalized)
+}
+
+/**
+ * Normalize and hash country
+ * - Trim whitespace
+ * - Convert to lowercase
+ * - Hash with SHA-256
+ */
+export async function hashCountry(country: string): Promise<string> {
+  const normalized = country.trim().toLowerCase()
+  return await hashString(normalized)
+}
+
+/**
  * Hash a string using SHA-256
  */
 async function hashString(str: string): Promise<string> {
@@ -80,33 +102,45 @@ export async function hashUserData(userData: {
   first_name?: string
   last_name?: string
   external_id?: string
+  city?: string
+  country?: string
 }): Promise<{
-  email?: string
-  phone?: string
-  first_name?: string
-  last_name?: string
+  em?: string
+  ph?: string
+  fn?: string
+  ln?: string
   external_id?: string
+  ct?: string
+  country?: string
 }> {
   const hashed: any = {}
   
   if (userData.email) {
-    hashed.email = await hashEmail(userData.email)
+    hashed.em = await hashEmail(userData.email)
   }
   
   if (userData.phone) {
-    hashed.phone = await hashPhone(userData.phone)
+    hashed.ph = await hashPhone(userData.phone)
   }
   
   if (userData.first_name) {
-    hashed.first_name = await hashFirstName(userData.first_name)
+    hashed.fn = await hashFirstName(userData.first_name)
   }
   
   if (userData.last_name) {
-    hashed.last_name = await hashLastName(userData.last_name)
+    hashed.ln = await hashLastName(userData.last_name)
   }
   
   if (userData.external_id) {
     hashed.external_id = await hashExternalId(userData.external_id)
+  }
+  
+  if (userData.city) {
+    hashed.ct = await hashCity(userData.city)
+  }
+  
+  if (userData.country) {
+    hashed.country = await hashCountry(userData.country)
   }
   
   return hashed
