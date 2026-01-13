@@ -4,6 +4,7 @@ import "./globals.css"
 import { AppShell } from "@/components/app-shell"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
+import { FacebookPixel } from "@/components/facebook-pixel"
 
 const inter = Inter({ 
   subsets: ["latin"],
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.variable}>
+        <FacebookPixel />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
