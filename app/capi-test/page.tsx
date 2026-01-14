@@ -191,7 +191,7 @@ export default function CapiTestPage() {
     setValidationErrors(errors)
   }, [eventName, userData, customData, eventId, mode, testEventCode])
 
-  const buildRequestBody = () => {
+  const buildRequestBody = React.useCallback(() => {
     const body: any = {
       event_name: eventName,
       mode,
@@ -232,7 +232,7 @@ export default function CapiTestPage() {
     }
 
     return body
-  }
+  }, [eventName, mode, eventId, testEventCode, userData, customData])
 
   const sendTestEvent = async () => {
     setIsLoading(true)
@@ -481,7 +481,7 @@ export default function CapiTestPage() {
   const updatePreview = useCallback(async () => {
     const requestBody = buildRequestBody()
     
-    // Transform to match what the backend actually sends to Meta's API
+    // Transform to match what the backend actually sends to Meta&apos;s API
     const transformedPayload: any = {
       event_name: requestBody.event_name,
       event_time: Math.floor(Date.now() / 1000),
@@ -581,7 +581,7 @@ export default function CapiTestPage() {
       transformedPayload.custom_data = requestBody.custom_data
     }
     
-    // Build the final payload structure that matches Meta's API expectations
+    // Build the final payload structure that matches Meta&apos;s API expectations
     // test_event_code should be at the top level, not inside the event object
     const finalPayload: any = {
       data: [transformedPayload],
@@ -594,7 +594,7 @@ export default function CapiTestPage() {
     }
     
     setPreviewJson(JSON.stringify(finalPayload, null, 2))
-  }, [eventName, userData, customData, eventId, mode, testEventCode])
+  }, [buildRequestBody, mode])
 
   // Check CAPI configuration on mount
   React.useEffect(() => {

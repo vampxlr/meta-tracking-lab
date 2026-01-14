@@ -97,7 +97,7 @@ export default function OverviewPage() {
 
       {/* Core Concepts */}
       <div className="mb-8 space-y-6">
-        <h2 className="text-2xl font-bold text-foreground">Core Concepts You'll Master</h2>
+        <h2 className="text-2xl font-bold text-foreground">Core Concepts You&apos;ll Master</h2>
         
         {/* Meta Pixel */}
         <Card className="overflow-hidden">
