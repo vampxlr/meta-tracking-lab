@@ -287,6 +287,8 @@ export default function CapiTestPage() {
         toast.success('Server Test Event Sent', {
           description: `Events received: ${data.data?.events_received || 0}`,
         })
+        // Save CAPI test timestamp for verification tracking
+        localStorage.setItem('last_capi_test_time', new Date().toISOString())
       } else {
         toast.error('Failed to Send Event', {
           description: data.error || 'Unknown error',

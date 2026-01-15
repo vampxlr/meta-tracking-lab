@@ -29,6 +29,8 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
   const [hasPixelId, setHasPixelId] = React.useState(false)
   const [capiConfigured, setCapiConfigured] = React.useState(false)
   const [pixelLoaded, setPixelLoaded] = React.useState(false)
+  const [pixelTestVerified, setPixelTestVerified] = React.useState(false)
+  const [capiTestVerified, setCapiTestVerified] = React.useState(false)
 
   // Check environment on mount
   React.useEffect(() => {
@@ -66,32 +68,15 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
     checkPixel()
   }, [hasPixelId])
 
-  // Poll for test events in localStorage (to update verification status)
+  // Poll for test events in localStorage (pixel test)
   React.useEffect(() => {
     if (typeof window === 'undefined') return
 
     const checkTestEvents = () => {
       const lastTestTime = localStorage.getItem('last_pixel_test_time')
-      const testVerified = !!lastTestTime
+      const verified = !!lastTestTime
 
-      setStatus(prev => {
-        if (!prev) return null
-        const currentPixelConnected = typeof window !== 'undefined' && typeof window.fbq === 'function'
-        
-        return {
-          ...prev,
-          testEvents: {
-            verified: testVerified,
-            lastTestTime: lastTestTime
-          },
-          overall: prev.overall ? {
-            ...prev.overall,
-            isComplete: currentPixelConnected && capiConfigured && testVerified,
-            percentage: calculatePercentage(currentPixelConnected, capiConfigured, testVerified),
-            nextStep: getNextStep(currentPixelConnected, capiConfigured, testVerified)
-          } : undefined
-        }
-      })
+      setPixelTestVerified(verified)
     }
 
     // Check immediately and then every second
@@ -99,29 +84,44 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
     const interval = setInterval(checkTestEvents, 1000)
 
     return () => clearInterval(interval)
-  }, [capiConfigured, pixelLoaded])
+  }, [])
+
+  // Poll for test events in localStorage (CAPI test)
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const checkTestEvents = () => {
+      const lastTestTime = localStorage.getItem('last_capi_test_time')
+      const verified = !!lastTestTime
+
+      setCapiTestVerified(verified)
+    }
+
+    // Check immediately and then every second
+    checkTestEvents()
+    const interval = setInterval(checkTestEvents, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   // Calculate completion percentage helper
-  const calculatePercentage = (pixelConnected: boolean, capiConfigured: boolean, testVerified: boolean): number => {
-    const checks = [pixelConnected, capiConfigured, testVerified].filter(Boolean).length
+  const calculatePercentage = (pixelConnected: boolean, capiConfigured: boolean, pixelTest: boolean, capiTest: boolean): number => {
+    const checks = [pixelConnected, capiConfigured, pixelTest || capiTest].filter(Boolean).length
     return Math.round((checks / 3) * 100)
   }
 
   // Get next step helper
-  const getNextStep = (pixelConnected: boolean, capiConfigured: boolean, testVerified: boolean): string => {
+  const getNextStep = (pixelConnected: boolean, capiConfigured: boolean, pixelTest: boolean, capiTest: boolean): string => {
     if (!hasPixelId) return 'Add Pixel ID to environment'
     if (!pixelConnected) return 'Wait for Pixel to load'
     if (!capiConfigured) return 'Configure CAPI'
-    if (!testVerified) return 'Run Connection Test'
+    if (!(pixelTest || capiTest)) return 'Run Test Events'
     return 'Start using Event Playground'
   }
 
-  // Build current status (initial setup)
+  // Build current status
   React.useEffect(() => {
     if (isLoading) return
-
-    const lastTestTime = typeof window !== 'undefined' ? localStorage.getItem('last_pixel_test_time') : null
-    const testVerified = !!lastTestTime
 
     setStatus({
       pixel: {
@@ -132,16 +132,16 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
         configured: capiConfigured
       },
       testEvents: {
-        verified: testVerified,
-        lastTestTime: lastTestTime
+        verified: pixelTestVerified || capiTestVerified,
+        lastTestTime: null // Will be set by individual checks
       },
       overall: {
-        isComplete: pixelLoaded && capiConfigured && testVerified,
-        percentage: calculatePercentage(pixelLoaded, capiConfigured, testVerified),
-        nextStep: getNextStep(pixelLoaded, capiConfigured, testVerified)
+        isComplete: pixelLoaded && capiConfigured && (pixelTestVerified || capiTestVerified),
+        percentage: calculatePercentage(pixelLoaded, capiConfigured, pixelTestVerified, capiTestVerified),
+        nextStep: getNextStep(pixelLoaded, capiConfigured, pixelTestVerified, capiTestVerified)
       }
     })
-  }, [pixelLoaded, capiConfigured, isLoading])
+  }, [pixelLoaded, capiConfigured, pixelTestVerified, capiTestVerified, isLoading])
 
   // Load status from API if not provided (for CAPI status)
   React.useEffect(() => {
@@ -158,31 +158,6 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
         const data = await response.json()
         
         // Update CAPI status while preserving client-side pixel detection
-        setStatus(prev => {
-          if (!prev) return data
-          
-          const isPixelConnected = typeof window !== 'undefined' && typeof window.fbq === 'function'
-          const lastTestTime = typeof window !== 'undefined' ? localStorage.getItem('last_pixel_test_time') : null
-          const testVerified = !!lastTestTime
-          
-          return {
-            ...data,
-            pixel: {
-              connected: isPixelConnected,
-              pixelId: data.pixel?.pixelId || process.env.NEXT_PUBLIC_FB_PIXEL_ID || null
-            },
-            testEvents: {
-              verified: testVerified,
-              lastTestTime: lastTestTime
-            },
-            overall: {
-              isComplete: isPixelConnected && data.capi?.configured && testVerified,
-              percentage: calculatePercentage(isPixelConnected, data.capi?.configured || false, testVerified),
-              nextStep: getNextStep(isPixelConnected, data.capi?.configured || false, testVerified)
-            }
-          }
-        })
-        
         setCapiConfigured(data.capi?.configured || false)
       } catch (error) {
         console.error('Failed to fetch setup status:', error)
@@ -297,11 +272,11 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
               )}
               <div>
                 <p className="font-medium text-foreground">Test Events</p>
-                {status.testEvents.lastTestTime && (
-                  <p className="text-xs text-muted-foreground">
-                    Last test: {status.testEvents.lastTestTime}
-                  </p>
-                )}
+                <p className="text-xs text-muted-foreground">
+                  {pixelTestVerified ? "Pixel Test: Verified" : ""}
+                  {capiTestVerified ? "CAPI Test: Verified" : ""}
+                  {!pixelTestVerified && !capiTestVerified && "Not verified"}
+                </p>
               </div>
             </div>
             <Badge 

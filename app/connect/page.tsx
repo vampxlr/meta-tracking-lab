@@ -60,6 +60,9 @@ export default function ConnectionTestPage() {
       const timeString = new Date().toLocaleTimeString()
       setLastTestTime(timeString)
 
+      // Save timestamp for verification tracking
+      localStorage.setItem('last_pixel_test_time', new Date().toISOString())
+
       toast.success("Test event sent successfully", {
         description: "Check Events Manager → Test Events for MTL_ConnectionTest.",
       })
