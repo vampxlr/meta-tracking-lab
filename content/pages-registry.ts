@@ -24,7 +24,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     sectionBlocks: [
       {
         heading: "Prerequisites",
-        body: "Before getting started, ensure you have Node.js 18+ installed on your machine. You'll also need npm, yarn, or pnpm as your package manager. Additionally, you should have access to your Meta Business Manager with a Pixel created and a System User Access Token with the necessary permissions (ads_management, ads_read)."
+        body: "Before getting started, ensure you have Node.js 18+ installed on your machine. You&apos;ll also need npm, yarn, or pnpm as your package manager. Additionally, you should have access to your Meta Business Manager with a Pixel created and a System User Access Token with the necessary permissions (ads_management, ads_read)."
       },
       {
         heading: "Step 1: Clone the Repository",
@@ -36,7 +36,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Step 3: Configure Environment Variables",
-        body: "Create a `.env.local` file in the root directory of the project. This file will contain your Meta Pixel ID and Conversions API Access Token:\n\n```bash\n# Meta Pixel Configuration\nNEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here\n\n# Meta CAPI Configuration\nMETA_CAPI_ACCESS_TOKEN=your_access_token_here\nMETA_GRAPH_API_VERSION=v19.0\nMETA_TEST_EVENT_CODE=TEST12345\n```\n\n**Where to find these values:**\n\n- **NEXT_PUBLIC_FB_PIXEL_ID**: Found in Meta Business Manager > Events Manager > Data Sources > Pixels. Look for your pixel and copy the Pixel ID (a numeric value).\n\n- **META_CAPI_ACCESS_TOKEN**: Generate this in Meta Business Manager > Business Settings > System Users. Create a System User, assign it to your pixel, and generate an access token with ads_management and ads_read permissions.\n\n- **META_TEST_EVENT_CODE**: Optional. Found in Events Manager > Test Events. Use this during development to keep test events separate from production data.\n\n**Important:** Never commit your `.env.local` file to version control. It's already included in `.gitignore` for your security."
+        body: "Create a `.env.local` file in the root directory of the project. This file will contain your Meta Pixel ID and Conversions API Access Token:\n\n```bash\n# Meta Pixel Configuration\nNEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here\n\n# Conversions API Configuration (Future)\nFB_ACCESS_TOKEN=your_access_token_here\nFB_PIXEL_ID=your_pixel_id_here\n```\n\n**Where to find these values:**\n\n- **NEXT_PUBLIC_FB_PIXEL_ID**: Found in Meta Business Manager > Events Manager > Data Sources > Pixels. Look for your pixel and copy the Pixel ID (a numeric value).\n\n- **FB_ACCESS_TOKEN**: Generate this in Meta Business Manager > Business Settings > System Users. Create a System User, assign it to your pixel, and generate an access token with the ads_management and ads_read permissions.\n\n- **FB_PIXEL_ID**: Same as your Pixel ID, but used for server-side tracking.\n\n**Important:** Never commit your `.env.local` file to version control. It&apos;s already included in `.gitignore` for your security."
       },
       {
         heading: "Step 4: Run the Development Server",
@@ -44,7 +44,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Step 5: Verify Your Setup",
-        body: "To verify that everything is configured correctly:\n\n1. **Check the Setup Status Panel**: Look at the right sidebar on any page. It should show green checkmarks for Pixel ID and CAPI Token if configured correctly.\n\n2. **Test CAPI Integration**: Navigate to `/capi-test` and try sending a test event. You should see a success response from Meta's API.\n\n3. **Check Events Manager**: Open Meta Events Manager in a new tab and go to Test Events. You should see your test events appearing there within a few seconds.\n\n4. **Explore the Demo**: Use the Event Playground (available on most pages via the right sidebar) to trigger different event types and see how they appear in your Meta Events Manager.\n\nIf you encounter any issues, double-check that your Pixel ID and Access Token are correct and that your System User has the appropriate permissions."
+        body: "To verify that everything is configured correctly:\n\n1. **Check the Setup Status Panel**: Look at the right sidebar on any page. It should show green checkmarks for the Pixel ID and CAPI Token if configured correctly.\n\n2. **Test the CAPI Integration**: Navigate to `/capi-test` and try sending a test event. You should see a success response from Meta&apos;s API.\n\n3. **Check the Events Manager**: Open the Meta Events Manager in a new tab and go to the Test Events. You should see your test events appearing there within a few seconds.\n\n4. **Explore the Demo**: Use the Event Playground (available on most pages via the right sidebar) to trigger different event types and see how they appear in your Meta Events Manager.\n\nIf you encounter any issues, double-check that your Pixel ID and Access Token are correct and that your System User has the appropriate permissions."
       },
       {
         heading: "Next Steps",
@@ -57,50 +57,57 @@ export const pagesRegistry: Record<string, PageMetadata> = {
 
   "/getting-started/demo-controls": {
     title: "Demo Controls",
-    description: "Learn how to use the interactive Event Playground to simulate and test various Meta Pixel event scenarios.",
+    description: "Master the interactive Event Playground with a comprehensive step-by-step guide to testing Meta Pixel events effectively.",
     badge: "Stable",
     sectionBlocks: [
       {
-        heading: "Understanding the Playground",
-        body: "The Event Playground allows you to simulate Meta Pixel events in real-time. You can test different configurations, identify issues, and verify fixes before deploying to production."
+        heading: "Overview of the Event Playground",
+        body: "The Event Playground is an interactive tool that allows you to simulate Meta Pixel events in real-time. It helps you test different configurations, identify tracking issues, and verify fixes before deploying to production. The playground appears in the right sidebar of most documentation pages."
       },
       {
-        heading: "Control Panel Features",
-        body: "Use the control panel to select event types, configure parameters, and trigger events. The panel displays real-time feedback showing what data is being sent and any potential issues with your event configuration."
+        heading: "Understanding the Interface",
+        body: "The playground interface consists of two main sections:\n\n**Controls Tab**: Configure event types, parameters, and trigger events with various settings\n\n**Logs Tab**: View event history, inspect JSON payloads, and copy data for testing\n\n**Mode Toggle**: Switch between Broken and Fixed implementations to compare differences\n\n**Real-time Feedback**: See immediate responses and validation of your event configurations"
       },
       {
-        heading: "Testing Scenarios",
-        body: "Test common problems like missing events, duplicate events, parameter mismatches, and more. Each scenario helps you understand how to identify and fix tracking issues in your implementation."
+        heading: "Step 1: Choose Your Mode",
+        body: "Start by selecting between two modes:\n\n**Broken Mode**: Demonstrates common tracking mistakes. See how missing parameters, wrong event IDs, or improper data structures look in Meta&apos;s systems. This helps you identify issues in your own implementation.\n\n**Fixed Mode**: Shows the correct way to implement events. Compare the output to understand what proper data formatting and structure looks like.\n\nUse the radio buttons at the top of the playground to instantly switch between modes. Watch how the JSON payload changes to learn the difference."
+      },
+      {
+        heading: "Step 2: Select an Event Type",
+        body: "Choose from three standard e-commerce events:\n\n**ViewContent**: Tracks when users view product pages. Essential for building remarketing audiences and measuring initial interest.\n\n**AddToCart**: Fires when users add items to their cart. Critical for measuring engagement and optimizing ad delivery.\n\n**Purchase**: The most important conversion event, triggered on checkout completion. Required for accurate ROAS and ad optimization.\n\nUse the dropdown menu to select an event type. Each event supports different parameters that you can configure and test."
+      },
+      {
+        heading: "Step 3: Configure Event Parameters",
+        body: "Customize your event with optional and required parameters:\n\n**User Data (Advanced)**: email, phone, external_id. Improves match quality by providing Meta with hashed identifiers. Automatically hashed for privacy compliance.\n\n**Custom Data**: content_ids, contents, value, currency. These parameters help Meta&apos;s AI optimize your ads and provide accurate reporting.\n\n**Event ID**: Unique identifier for deduplication. Critical when using both client-side pixel and server-side Conversions API.\n\nFill in only the parameters relevant to your test scenario. The playground validates all inputs before sending events."
+      },
+      {
+        heading: "Step 4: Trigger and Observe Events",
+        body: "Send test events and analyze the results:\n\n1. Click the **Send Test Event** button to fire your configured event\n\n2. The event immediately appears in the **Logs** tab with a timestamp\n\n3. A colored badge shows the mode (Red = Broken, Green = Fixed)\n\n4. The complete JSON payload is displayed for inspection\n\n5. Use the **Copy** button to save payloads for reference or testing\n\n6. Trigger multiple events to build up a log history\n\n7. Use the **Clear Logs** button to reset and start fresh\n\nThe log viewer auto-scrolls to show the latest events, making it easy to monitor your test sequences."
+      },
+      {
+        heading: "Step 5: Verify with Meta Events Manager",
+        body: "Confirm your events are reaching Meta&apos;s servers:\n\n1. Open Meta Business Manager > Events Manager\n\n2. Navigate to the **Test Events** tab\n\n3. Trigger an event from the playground\n\n4. Your test event should appear within a few seconds\n\n5. Click on the event to see full details\n\n6. Use the Test Events tab to inspect the received data and troubleshoot\n\nThis real-time verification confirms your implementation is working correctly. Compare the playground output with what Meta receives to catch any discrepancies."
+      },
+      {
+        heading: "Common Use Cases",
+        body: "Practical applications of the playground:\n\n**Debug Missing Events**: Verify events appear in Events Manager by triggering them from the playground\n\n**Fix Parameter Issues**: Compare Broken vs Fixed modes side-by-side to identify missing fields\n\n**Test Deduplication**: Send identical events with the same event_id to verify Meta deduplicates them\n\n**Improve Match Quality**: Add user data parameters and observe better attribution in Events Manager\n\n**Validate Data Format**: Ensure your custom data structures match Meta&apos;s expected schema\n\nThe playground is a safe testing environment - events are not attributed to your ads and don&apos;t impact performance."
+      },
+      {
+        heading: "Best Practices for Effective Testing",
+        body: "Follow these guidelines for optimal results:\n\n**Mode Comparison**: Always test in both Broken and Fixed modes to understand implementation differences\n\n**Event IDs**: Use unique, consistent event IDs when testing deduplication scenarios\n\n**Payload Templates**: Copy successful Fixed mode payloads to use as templates in your production code\n\n**Real-time Verification**: Check that events appear in Test Events tab within 10 seconds of triggering\n\n**Pre-deployment Testing**: Always use the playground before deploying to production to catch issues early\n\n**Documentation**: Keep notes on custom parameters you add for future reference\n\nRemember: The playground is designed for learning and testing purposes only."
+      },
+      {
+        heading: "Quick Reference Guide",
+        body: "Event types and their key parameters:\n\n**ViewContent**: page_url, content_name, content_category, content_ids\n\n**AddToCart**: content_ids, contents, value, currency\n\n**Purchase**: content_ids, contents, value, currency, num_items\n\n**User Data**: email, phone, external_id, gender, date_of_birth, city, state, country, zip\n\n**Event ID**: Required for deduplication when using CAPI alongside pixel"
       }
     ],
     showDemo: true,
     demoPreset: { kind: "demo" }
   },
 
-  "/roi-calculator": {
-    title: "ROI Calculator",
-    description: "Estimate the impact of improved Meta tracking on your ad performance and revenue with our interactive ROI calculator.",
-    badge: "Stable",
-    sectionBlocks: [
-      {
-        heading: "Why Tracking Improvements Boost ROI",
-        body: "Accurate Meta Pixel and Conversions API tracking recovers lost events, improves match quality, and enables better optimization. This calculator estimates the potential impact on your business by improving tracking coverage from 40-60% to 95%+."
-      },
-      {
-        heading: "Revenue Recovery",
-        body: "Browser restrictions like Safari ITP and ad blockers can block 40-50% of events. By implementing Conversions API alongside Meta Pixel, you can recover most of these lost events, directly translating to recovered revenue."
-      },
-      {
-        heading: "Optimization Savings",
-        body: "Better tracking data enables Meta's AI to optimize your ads more effectively. With accurate attribution, you can expect 30% or better improvement in ROAS by leveraging complete conversion data for optimization."
-      }
-    ],
-    showDemo: false
-  },
-
   "/problems/missing-events": {
     title: "Missing Events",
-    description: "Diagnose why events aren't appearing in your Events Manager and learn how to fix common causes.",
+    description: "Diagnose why events aren&apos;t appearing in your Events Manager and learn how to fix common causes.",
     badge: "Stable",
     sectionBlocks: [
       {
@@ -109,7 +116,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Debugging Steps",
-        body: "Use browser developer tools to check for JavaScript errors. Verify the pixel is firing using the Network tab. Test with Meta Pixel Helper extension to identify configuration issues."
+        body: "Use browser developer tools to check for JavaScript errors. Verify that the pixel is firing using the Network tab. Test with the Meta Pixel Helper extension to identify configuration issues."
       },
       {
         heading: "Prevention",
@@ -135,7 +142,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Solutions",
-        body: "Implement proper event deduplication using unique event IDs. Ensure pixel code is only loaded once. Use server-side tracking to complement client-side events while avoiding duplication."
+        body: "Implement proper event deduplication using unique event IDs. Ensure that the pixel code is only loaded once. Use server-side tracking to complement client-side events while avoiding duplication."
       }
     ],
     showDemo: true,
@@ -149,11 +156,11 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     sectionBlocks: [
       {
         heading: "Understanding Mismatch",
-        body: "Purchase mismatch occurs when the number or value of purchase events doesn't match your actual sales data. This can be caused by timing issues, currency conversion problems, or incorrect parameter values."
+        body: "Purchase mismatch occurs when the number or value of purchase events doesn&apos;t match your actual sales data. This can be caused by timing issues, currency conversion problems, or incorrect parameter values."
       },
       {
         heading: "Common Issues",
-        body: "Missing currency codes, incorrect value formatting, or sending events at the wrong stage of the purchase flow can all contribute to mismatch. Ensure events are sent only after successful transactions."
+        body: "Missing currency codes, incorrect value formatting, or sending events at the wrong stage of the purchase flow can all contribute to mismatch. Ensure that events are sent only after successful transactions."
       },
       {
         heading: "Best Practices",
@@ -171,7 +178,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     sectionBlocks: [
       {
         heading: "What is Match Quality",
-        body: "Match quality refers to how well Meta can attribute events to users based on identifiers like email, phone, or cookie data. Low match quality means many events can't be properly attributed, reducing ad effectiveness."
+        body: "Match quality refers to how well Meta can attribute events to users based on identifiers like email, phone, or cookie data. Low match quality means many events can&apos;t be properly attributed, reducing ad effectiveness."
       },
       {
         heading: "Factors Affecting Match Quality",
@@ -179,7 +186,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Improvement Strategies",
-        body: "Implement Conversions API to send server-side events with hashed user data. Collect more user identifiers when possible. Use first-party cookies and consider implementing customer matching features."
+        body: "Implement the Conversions API to send server-side events with hashed user data. Collect more user identifiers when possible. Use first-party cookies and consider implementing customer matching features."
       }
     ],
     showDemo: true,
@@ -201,7 +208,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Validation",
-        body: "Use Meta's event validation tools to check parameter correctness. Implement parameter validation in your code. Reference the official parameter documentation for each event type."
+        body: "Use Meta&apos;s event validation tools to check parameter correctness. Implement parameter validation in your code. Reference the official parameter documentation for each event type."
       }
     ],
     showDemo: true,
@@ -219,11 +226,11 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Common Order Issues",
-        body: "Purchase events sent before AddToCart, ViewContent after Purchase, or missing intermediate events can confuse the attribution algorithm. Ensure events follow the logical customer journey."
+        body: "Purchase events sent before AddToCart, ViewContent after Purchase, or missing intermediate events can confuse the attribution algorithm. Ensure that events follow a logical customer journey."
       },
       {
         heading: "Best Practices",
-        body: "Map out your customer journey and ensure events correspond to each stage. Use event_id to link related events. Test the full user flow to verify correct event sequencing."
+        body: "Map out your customer journey and ensure that events correspond to each stage. Use an event_id to link related events. Test the full user flow to verify correct event sequencing."
       }
     ],
     showDemo: true,
@@ -245,7 +252,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Best Practices",
-        body: "Use consistent ID generation across all tracking implementations. Ensure IDs are truly unique and not reused. Store event IDs if you need to reference them later for debugging."
+        body: "Use consistent ID generation across all tracking implementations. Ensure that IDs are truly unique and not reused. Store event IDs if you need to reference them later for debugging."
       }
     ],
     showDemo: true,
@@ -267,7 +274,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Correct Setup",
-        body: "Implement event_id for all events. Use the same ID format across all tracking sources. Configure Conversions API to use deduplication with client-side pixel events."
+        body: "Implement event_id for all events. Use the same ID format across all tracking sources. Configure the Conversions API to use deduplication with client-side pixel events."
       }
     ],
     showDemo: true,
@@ -311,7 +318,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Resolution Steps",
-        body: "Verify your domains in Meta Business Manager. Ensure pixel is configured for the correct domain. Check DNS settings if using CNAME or subdomain configurations."
+        body: "Verify your domains in Meta Business Manager. Ensure that the pixel is configured for the correct domain. Check DNS settings if using CNAME or subdomain configurations."
       }
     ],
     showDemo: true,
@@ -325,11 +332,11 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     sectionBlocks: [
       {
         heading: "Testing Tools",
-        body: "Meta provides several tools for testing: Pixel Helper browser extension, Test Events tab in Events Manager, and browser developer tools. Each tool offers different insights into your pixel implementation."
+        body: "Meta provides several tools for testing: the Pixel Helper browser extension, Test Events tab in Events Manager, and browser developer tools. Each tool offers different insights into your pixel implementation."
       },
       {
         heading: "Debugging Workflow",
-        body: "Start with Pixel Helper to identify basic issues. Use Test Events to see real-time event data. Check browser console for JavaScript errors. Verify network requests in the Network tab."
+        body: "Start with the Pixel Helper to identify basic issues. Use the Test Events to see real-time event data. Check the browser console for JavaScript errors. Verify network requests in the Network tab."
       },
       {
         heading: "Common Debugging Scenarios",
@@ -347,11 +354,11 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     sectionBlocks: [
       {
         heading: "What is CAPI?",
-        body: "Conversions API (CAPI) is Meta's server-side tracking solution that allows you to send web events directly from your server to Meta's servers. Unlike client-side pixel tracking, CAPI is more reliable as it's not affected by browser restrictions, ad blockers, or cookie limitations. It provides better data accuracy, improved match quality, and enhanced privacy compliance. CAPI works alongside the Meta Pixel to ensure comprehensive event tracking and attribution."
+        body: "Conversions API (CAPI) is Meta&apos;s server-side tracking solution that allows you to send web events directly from your server to Meta&apos;s servers. Unlike client-side pixel tracking, CAPI is more reliable as it&apos;s not affected by browser restrictions, ad blockers, or cookie limitations. It provides better data accuracy, improved match quality, and enhanced privacy compliance. CAPI works alongside the Meta Pixel to ensure comprehensive event tracking and attribution."
       },
       {
         heading: "Testing CAPI",
-        body: "Use the dedicated CAPI test page at /capi-test to experiment with Conversions API functionality. This interactive tool allows you to send test events to Meta's servers and observe the responses in real-time. You can configure event parameters, test different event types, and verify that your CAPI implementation is working correctly before deploying to production."
+        body: "Use the dedicated CAPI test page at `/capi-test` to experiment with Conversions API functionality. This interactive tool allows you to send test events to Meta&apos;s servers and observe the responses in real-time. You can configure event parameters, test different event types, and verify that your CAPI implementation is working correctly before deploying to production."
       },
       {
         heading: "Key Features",
@@ -376,7 +383,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Configuration",
-        body: "Update pixel initialization to use your first-party endpoint. Test that events are properly forwarded to Meta. Monitor for any delivery issues or performance impacts."
+        body: "Update the pixel initialization to use your first-party endpoint. Test that events are properly forwarded to Meta. Monitor for any delivery issues or performance impacts."
       }
     ],
     showDemo: true,
@@ -390,7 +397,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     sectionBlocks: [
       {
         heading: "Why Retry Queues Matter",
-        body: "Network failures, rate limits, or temporary Meta API issues can cause events to be lost. A retry queue ensures events are stored and retried until successful delivery, improving data completeness."
+        body: "Network failures, rate limits, or temporary Meta API issues can cause events to be lost. A retry queue ensures that events are stored and retried until successful delivery, improving data completeness."
       },
       {
         heading: "Implementation Strategy",
@@ -407,7 +414,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
 
   "/server/schema-guardrails": {
     title: "Schema Guardrails",
-    description: "Implement validation and sanitization to ensure only properly formatted events reach Meta's servers.",
+    description: "Implement validation and sanitization to ensure only properly formatted events reach Meta&apos;s servers.",
     badge: "Stable",
     sectionBlocks: [
       {
@@ -416,7 +423,7 @@ export const pagesRegistry: Record<string, PageMetadata> = {
       },
       {
         heading: "Validation Rules",
-        body: "Validate event names against allowed values. Check parameter types and formats. Ensure required fields are present. Sanitize data to prevent injection attacks or malformed content."
+        body: "Validate event names against allowed values. Check parameter types and formats. Ensure that required fields are present. Sanitize data to prevent injection attacks or malformed content."
       },
       {
         heading: "Implementation",
