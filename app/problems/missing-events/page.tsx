@@ -14,7 +14,7 @@ export default function MissingEventsPage() {
       
       {/* Common Causes */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Causes
         </h2>
         
@@ -24,7 +24,7 @@ export default function MissingEventsPage() {
           </p>
           
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+            <div className="glass hover-glow rounded-xl border border-red-500/20 p-4">
               <div className="mb-2 flex items-center gap-2">
                 <span className="font-mono text-red-400 text-lg">✗</span>
                 <span className="font-semibold text-red-400 font-mono">Common Issues</span>
@@ -49,7 +49,7 @@ export default function MissingEventsPage() {
               </ul>
             </div>
             
-            <div className="rounded-xl border border-[#00ff41]/20 bg-[#00ff41]/5 p-4">
+            <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-4">
               <div className="mb-2 flex items-center gap-2">
                 <span className="font-mono text-[#00ff41] text-lg">✓</span>
                 <span className="font-semibold text-[#00ff41] font-mono">Quick Checks</span>
@@ -133,7 +133,7 @@ export default function MissingEventsPage() {
             Implement error handling in your pixel implementation. Set up monitoring to alert you when event volumes drop unexpectedly. Regular testing helps catch issues early.
           </p>
           
-          <div className="rounded-xl border border-[#00ff41]/20 bg-[#151b26] p-6">
+          <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
             <h3 className="font-mono text-[#00ff41] font-semibold mb-4">Best Practices</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-[#8b949e] text-sm">

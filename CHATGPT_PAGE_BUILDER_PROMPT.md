@@ -90,10 +90,10 @@ scanLine: pseudo-element animation, very subtle
 </section>
 ```
 
-#### 2. Hacker Heading
+#### 2. Hacker Heading (with Glow)
 ```tsx
 <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] 
-               border-l-4 border-[#00ff41] pl-4
+               border-l-4 border-[#00ff41] pl-4 text-glow-hover
                animate-in fade-in slide-in-from-left-4 duration-300">
   <span className="inline-block animate-pulse">▸</span> Heading Text
 </h2>
@@ -102,30 +102,95 @@ scanLine: pseudo-element animation, very subtle
 #### 3. Terminal Code Block
 ```tsx
 <pre className="relative overflow-x-auto rounded-lg border border-[#00ff41]/20 
-                bg-[#0d1117] p-4 font-mono text-xs md:text-sm
-                before:absolute before:inset-0 before:bg-gradient-to-b 
-                before:from-[#00ff41]/5 before:to-transparent before:pointer-events-none">
+                bg-[#0d1117] p-4 font-mono text-xs md:text-sm">
   <code className="text-[#00ff41]">{code}</code>
 </pre>
 ```
 
-#### 4. Glowing Card
+#### 4. Glass Card (Basic)
 ```tsx
-<div className="rounded-xl border border-[#00ff41]/20 bg-[#151b26] p-6
-                shadow-lg shadow-[#00ff41]/10
-                hover:shadow-[#00ff41]/20 hover:border-[#00ff41]/40
-                transition-all duration-300">
-  {/* content */}
+<div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
+  {/* Card with frosted glass effect and hover glow */}
 </div>
 ```
 
-#### 5. Terminal List Item
+#### 5. Glass Card (Strong)
+```tsx
+<div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
+  {/* Card with stronger blur and border glow on hover */}
+</div>
+```
+
+#### 6. Interactive Card with Icon
+```tsx
+<div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 group">
+  <div className="flex items-center gap-3 mb-3">
+    <div className="p-2 rounded-lg bg-[#00ff41]/10 group-hover:bg-[#00ff41]/20 transition-colors">
+      <Icon className="h-5 w-5 text-[#00ff41] icon-spin-hover" />
+    </div>
+    <span className="font-mono font-semibold text-[#00ff41]">Title</span>
+  </div>
+  <p className="text-sm text-[#8b949e]">Description</p>
+</div>
+```
+
+#### 7. Animated Border Card
+```tsx
+<div className="border-animated glass-strong rounded-xl p-6">
+  {/* Card with pulsing border animation */}
+</div>
+```
+
+#### 8. Gradient Border Card
+```tsx
+<div className="border-gradient">
+  <div className="border-gradient-content">
+    {/* Card with rotating rainbow border */}
+  </div>
+</div>
+```
+
+#### 9. Neon Button
+```tsx
+<button className="button-neon rounded-xl px-6 py-4 flex items-center gap-3">
+  <Icon className="h-5 w-5" />
+  <span>Button Text</span>
+  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+</button>
+```
+
+#### 10. Terminal List Item
 ```tsx
 <li className="flex items-start gap-3 text-[#8b949e]">
   <span className="mt-1 text-[#00ff41] font-mono shrink-0">›</span>
   <span>List item text</span>
 </li>
 ```
+
+---
+
+## 🎭 Available CSS Classes
+
+### Glassmorphism
+- `glass` - Light blur effect
+- `glass-strong` - Heavy blur effect
+
+### Hover Effects
+- `hover-glow` - Lifts and glows (for cards)
+- `hover-lift` - Lifts and scales (for interactive cards)
+- `hover-border-glow` - Border glows on hover
+- `text-glow-hover` - Text glows on hover
+- `icon-spin-hover` - Icon rotates 15° on hover
+
+### Animations
+- `border-animated` - Pulsing border glow
+- `border-gradient` - Rotating gradient border
+- `pulse-glow` - Continuous glow pulse
+- `text-shimmer` - Animated gradient text
+- `button-neon` - Cyberpunk button with sweep
+
+### Delays
+- `delay-100` through `delay-[600ms]` for staggered animations
 
 ---
 

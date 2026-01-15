@@ -14,7 +14,7 @@ export default function SetupChecklistPage() {
       
       {/* Prerequisites Section */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Prerequisites
         </h2>
         
@@ -23,7 +23,7 @@ export default function SetupChecklistPage() {
             Before getting started, ensure you have Node.js 18+ installed on your machine. You&apos;ll also need npm, yarn, or pnpm as your package manager. Additionally, you should have access to your Meta Business Manager with a Pixel created and a System User Access Token with the necessary permissions (ads_management, ads_read).
           </p>
           
-          <div className="rounded-xl border border-[#00d9ff]/20 bg-[#00d9ff]/5 p-4">
+          <div className="glass hover-glow rounded-xl border border-[#00d9ff]/20 p-4">
             <div className="mb-2 flex items-center gap-2">
               <span className="text-[#00d9ff] text-lg">ℹ</span>
               <span className="font-semibold text-[#00d9ff] font-mono">Required Tools</span>
@@ -48,7 +48,7 @@ export default function SetupChecklistPage() {
 
       {/* Step 1 */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Step 1: Clone the Repository
         </h2>
         
@@ -113,7 +113,7 @@ FB_ACCESS_TOKEN=your_access_token_here
 FB_PIXEL_ID=your_pixel_id_here`}</code>
           </pre>
           
-          <div className="rounded-xl border border-[#00ff41]/20 bg-[#151b26] p-6 space-y-4">
+          <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-4">
             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-4">
               Where to find these values:
             </h3>
@@ -264,7 +264,7 @@ pnpm dev`}</code>
           </p>
           
           <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-[#00ff41]/20 bg-[#151b26] p-4 hover:border-[#00ff41]/40 transition-all duration-300">
+            <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-4">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Demo Controls</h3>
               <p className="text-[#8b949e] text-sm mb-3">
                 Learn how to use the interactive Event Playground
@@ -272,7 +272,7 @@ pnpm dev`}</code>
               <code className="text-xs text-[#00d9ff] font-mono">/getting-started/demo-controls</code>
             </div>
             
-            <div className="rounded-xl border border-[#00ff41]/20 bg-[#151b26] p-4 hover:border-[#00ff41]/40 transition-all duration-300">
+            <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-4">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">CAPI Test</h3>
               <p className="text-[#8b949e] text-sm mb-3">
                 Experiment with server-side event tracking
