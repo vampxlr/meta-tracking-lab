@@ -18,7 +18,9 @@ import {
   Globe,
   CheckCircle,
   Layout,
-  Server
+  Server,
+  Calculator,
+  TrendingUp
 } from "lucide-react"
 
 export interface NavItem {
@@ -46,6 +48,12 @@ export const navItems: NavItem[] = [
     title: "Demo Controls",
     href: "/getting-started/demo-controls",
     icon: Layout,
+    group: "Getting Started",
+  },
+  {
+    title: "ROI Calculator",
+    href: "/roi-calculator",
+    icon: Calculator,
     group: "Getting Started",
   },
 

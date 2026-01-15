@@ -1,4 +1,8 @@
-import { PageShell } from "@/components/page-shell"
+"use client"
+
+import { PageContent } from "@/components/page-content"
+import { SetupStatusPanel } from "@/components/setup-status-panel"
+import { LockedEventPlayground } from "@/components/locked-event-playground"
 import { 
   Target, 
   Server, 
@@ -8,17 +12,20 @@ import {
   ArrowRight,
   BookOpen,
   Code,
-  Play
+  Play,
+  Calculator,
+  TrendingUp
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function OverviewPage() {
   return (
-    <PageShell
+    <PageContent
       title="Meta Offline Tracking Guide"
       description="Master Meta Pixel & Conversions API (CAPI) to build accurate, privacy-compliant tracking systems for maximum ad optimization and ROI."
       status="Stable"
+      rightPanel={<SetupStatusPanel />}
     >
       {/* Hero Section */}
       <div className="mb-8 space-y-6">
@@ -387,6 +394,33 @@ export default function OverviewPage() {
         </p>
       </div>
 
+      {/* ROI Calculator Teaser */}
+      <div className="mb-8 rounded-2xl border border-blue-500/20 bg-blue-500/5 p-6">
+        <div className="flex items-start gap-4">
+          <div className="hidden h-12 w-12 items-center justify-center rounded-lg bg-blue-500/10 sm:flex">
+            <TrendingUp className="h-6 w-6 text-blue-500" />
+          </div>
+          <div className="flex-1">
+            <h3 className="mb-2 text-xl font-bold text-foreground">
+              Estimate Your ROI Impact
+            </h3>
+            <p className="mb-4 text-muted-foreground">
+              Calculate how much revenue you can recover by improving your Meta tracking implementation. 
+              Get personalized estimates based on your ad spend, order value, and current coverage.
+            </p>
+            <Button
+              onClick={() => window.location.pathname = '/roi-calculator'}
+              className="gap-2"
+              size="lg"
+            >
+              <Calculator className="h-4 w-4" />
+              Open ROI Calculator
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Notes & References */}
       <div className="mt-8 rounded-2xl border bg-muted/20 p-6">
         <h3 className="mb-3 font-semibold text-foreground">Resources & References</h3>
@@ -426,6 +460,6 @@ export default function OverviewPage() {
           </li>
         </ul>
       </div>
-    </PageShell>
+    </PageContent>
   )
 }

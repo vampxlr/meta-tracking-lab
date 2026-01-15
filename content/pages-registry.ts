@@ -61,6 +61,27 @@ export const pagesRegistry: Record<string, PageMetadata> = {
     demoPreset: { kind: "demo" }
   },
 
+  "/roi-calculator": {
+    title: "ROI Calculator",
+    description: "Estimate the impact of improved Meta tracking on your ad performance and revenue with our interactive ROI calculator.",
+    badge: "Stable",
+    sectionBlocks: [
+      {
+        heading: "Why Tracking Improvements Boost ROI",
+        body: "Accurate Meta Pixel and Conversions API tracking recovers lost events, improves match quality, and enables better optimization. This calculator estimates the potential impact on your business by improving tracking coverage from 40-60% to 95%+."
+      },
+      {
+        heading: "Revenue Recovery",
+        body: "Browser restrictions like Safari ITP and ad blockers can block 40-50% of events. By implementing Conversions API alongside Meta Pixel, you can recover most of these lost events, directly translating to recovered revenue."
+      },
+      {
+        heading: "Optimization Savings",
+        body: "Better tracking data enables Meta's AI to optimize your ads more effectively. With accurate attribution, you can expect 30% or better improvement in ROAS by leveraging complete conversion data for optimization."
+      }
+    ],
+    showDemo: false
+  },
+
   "/problems/missing-events": {
     title: "Missing Events",
     description: "Diagnose why events aren't appearing in your Events Manager and learn how to fix common causes.",
