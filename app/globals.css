@@ -372,3 +372,55 @@ a:hover {
 .delay-\[600ms\] {
   animation-delay: 600ms;
 }
+
+.delay-\[700ms\] {
+  animation-delay: 700ms;
+}
+
+/* Pulse slow animation */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Scrollbar thin utility */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #0f1419;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00ff41 0%, #00d9ff 100%);
+  border-radius: 10px;
+}
+
+/* Button Neon Small variant */
+.button-neon-sm {
+  position: relative;
+  background: rgba(0, 255, 65, 0.08);
+  border: 1px solid #00ff41;
+  color: #00ff41;
+  font-family: var(--font-mono), monospace;
+  font-weight: 600;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.button-neon-sm:hover {
+  background: rgba(0, 255, 65, 0.15);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.4), 0 0 15px rgba(0, 255, 65, 0.3);
+  border-color: #00ff41;
+}

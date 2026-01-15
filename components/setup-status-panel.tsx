@@ -192,225 +192,136 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
   }
 
   return (
-    <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>Quick Start + Setup Status</span>
-          <Badge 
-            variant={status.overall.isComplete ? "default" : "secondary"}
-            className={status.overall.isComplete ? "bg-green-500/10 text-green-500 hover:bg-green-500/20" : ""}
-          >
-            {status.overall.percentage}% Complete
-          </Badge>
+    <Card className="glass-strong border-[#00ff41]/20 hover-border-glow shadow-lg max-h-[85vh] overflow-y-auto scrollbar-thin">
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center gap-2 font-mono text-[#00ff41]">
+          <Zap className="h-5 w-5 animate-pulse" />
+          <span className="text-shimmer">Setup Status</span>
         </CardTitle>
-        <CardDescription>
-          {status.overall.isComplete 
-            ? "Setup complete! Your tracking is ready to use."
-            : "Complete setup to start tracking events and improving your ad performance."
-          }
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Setup Status Cards */}
-        <div className="space-y-3">
-          {/* Pixel Status */}
-          <div className="flex items-center justify-between rounded-lg border bg-background/50 p-3">
-            <div className="flex items-center gap-3">
-              {status.pixel.connected ? (
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-              ) : (
-                <AlertCircle className="h-5 w-5 text-red-500" />
-              )}
-              <div>
-                <p className="font-medium text-foreground">Meta Pixel</p>
-                <p className="text-xs text-muted-foreground">
-                  {status.pixel.pixelId || "Not configured"}
-                </p>
-              </div>
-            </div>
-            <Badge 
-              variant={status.pixel.connected ? "default" : "destructive"}
-              className={
-                status.pixel.connected
-                  ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                  : ""
-              }
-            >
-              {status.pixel.connected ? "Connected" : "Not Connected"}
-            </Badge>
-          </div>
-
-          {/* CAPI Status */}
-          <div className="flex items-center justify-between rounded-lg border bg-background/50 p-3">
-            <div className="flex items-center gap-3">
-              {status.capi.configured ? (
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-              ) : (
-                <AlertCircle className="h-5 w-5 text-red-500" />
-              )}
-              <div className="font-medium text-foreground">Conversions API</div>
-            </div>
-            <Badge 
-              variant={status.capi.configured ? "default" : "destructive"}
-              className={
-                status.capi.configured
-                  ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                  : ""
-              }
-            >
-              {status.capi.configured ? "Configured" : "Not Configured"}
-            </Badge>
-          </div>
-
-          {/* Test Events Status */}
-          <div className="flex items-center justify-between rounded-lg border bg-background/50 p-3">
-            <div className="flex items-center gap-3">
-              {status.testEvents.verified ? (
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
-              ) : (
-                <AlertCircle className="h-5 w-5 text-red-500" />
-              )}
-              <div>
-                <p className="font-medium text-foreground">Test Events</p>
-                <p className="text-xs text-muted-foreground">
-                  {pixelTestVerified ? "Pixel Test: Verified" : ""}
-                  {capiTestVerified ? "CAPI Test: Verified" : ""}
-                  {!pixelTestVerified && !capiTestVerified && "Not verified"}
-                </p>
-              </div>
-            </div>
-            <Badge 
-              variant={status.testEvents.verified ? "default" : "destructive"}
-              className={
-                status.testEvents.verified
-                  ? "bg-green-500/10 text-green-500 hover:bg-green-500/20"
-                  : ""
-              }
-            >
-              {status.testEvents.verified ? "Verified" : "Not Verified"}
-            </Badge>
-          </div>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Setup Progress</span>
-            <span className="font-medium text-foreground">{status.overall.percentage}%</span>
-          </div>
-          <div className="h-2 rounded-full bg-muted overflow-hidden">
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-sm text-[#8b949e]">
+            {status.overall.percentage}% Complete
+          </span>
+          <div className="h-1.5 w-24 rounded-full bg-[#0d1117] overflow-hidden border border-[#00ff41]/20">
             <div
-              className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-[#00ff41] to-[#00d9ff] transition-all duration-500"
               style={{ width: `${status.overall.percentage}%` }}
             />
           </div>
         </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {/* Compact Status Cards */}
+        <div className="space-y-2">
+          {/* Pixel Status */}
+          <div className="flex items-center justify-between glass rounded-lg border border-[#00ff41]/10 p-2.5 hover-glow">
+            <div className="flex items-center gap-2">
+              {status.pixel.connected ? (
+                <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-red-400" />
+              )}
+              <span className="text-sm font-mono text-[#e8f4f8]">Pixel</span>
+            </div>
+            <span className={`text-xs font-mono ${status.pixel.connected ? 'text-[#00ff41]' : 'text-red-400'}`}>
+              {status.pixel.connected ? "●  LIVE" : "○ OFFLINE"}
+            </span>
+          </div>
 
-        {/* Next Step Actions */}
-        <div className="space-y-3">
-          <p className="text-sm font-medium text-foreground">Next Steps</p>
+          {/* CAPI Status */}
+          <div className="flex items-center justify-between glass rounded-lg border border-[#00ff41]/10 p-2.5 hover-glow">
+            <div className="flex items-center gap-2">
+              {status.capi.configured ? (
+                <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-red-400" />
+              )}
+              <span className="text-sm font-mono text-[#e8f4f8]">CAPI</span>
+            </div>
+            <span className={`text-xs font-mono ${status.capi.configured ? 'text-[#00ff41]' : 'text-red-400'}`}>
+              {status.capi.configured ? "●  READY" : "○ NOT SET"}
+            </span>
+          </div>
+
+          {/* Test Status */}
+          <div className="flex items-center justify-between glass rounded-lg border border-[#00ff41]/10 p-2.5 hover-glow">
+            <div className="flex items-center gap-2">
+              {status.testEvents.verified ? (
+                <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />
+              ) : (
+                <AlertCircle className="h-4 w-4 text-red-400" />
+              )}
+              <span className="text-sm font-mono text-[#e8f4f8]">Tests</span>
+            </div>
+            <span className={`text-xs font-mono ${status.testEvents.verified ? 'text-[#00ff41]' : 'text-red-400'}`}>
+              {status.testEvents.verified ? "●  VERIFIED" : "○ PENDING"}
+            </span>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-2 pt-2">
+          <p className="text-xs font-mono text-[#8b949e] uppercase tracking-wider">Quick Actions</p>
           <div className="grid gap-2">
             <Button
               onClick={() => router.push('/getting-started/setup-checklist')}
-              className="w-full justify-start gap-2"
+              className="w-full justify-between button-neon-sm h-9 text-sm"
               variant="outline"
             >
-              <CheckCircle2 className="h-4 w-4" />
-              Start Setup Checklist
-              <ArrowRight className="ml-auto h-4 w-4" />
-            </Button>
-
-            <Button
-              onClick={() => router.push('/connect')}
-              className="w-full justify-start gap-2"
-              variant="outline"
-              disabled={!status.pixel.connected}
-            >
-              <Target className="h-4 w-4" />
-              Run Connection Test
-              <ArrowRight className="ml-auto h-4 w-4" />
+              <span className="flex items-center gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                Setup Guide
+              </span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </Button>
 
             <Button
               onClick={() => router.push('/capi-test')}
-              className="w-full justify-start gap-2"
+              className="w-full justify-between glass border-[#00d9ff]/30 hover-glow h-9 text-sm"
               variant="outline"
               disabled={!status.capi.configured}
             >
-              <Server className="h-4 w-4" />
-              Run CAPI Test
-              <ArrowRight className="ml-auto h-4 w-4" />
-            </Button>
-
-            <Button
-              onClick={() => {
-                const pixelId = status.pixel.pixelId
-                const url = pixelId
-                  ? `https://business.facebook.com/events_manager2/list/pixel/${pixelId}/test_events`
-                  : "https://business.facebook.com/events_manager2"
-                window.open(url, "_blank", "noopener,noreferrer")
-              }}
-              className="w-full justify-start gap-2"
-              variant="outline"
-            >
-              <ExternalLink className="h-4 w-4" />
-              Open Events Manager
-              <ArrowRight className="ml-auto h-4 w-4" />
+              <span className="flex items-center gap-2 text-[#00d9ff]">
+                <Server className="h-3.5 w-3.5" />
+                Test CAPI
+              </span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
 
-        {/* What This Unlocks */}
-        <div className="rounded-lg border border-blue-500/20 bg-blue-500/5 p-4">
-          <div className="mb-3 flex items-center gap-2 text-blue-600 dark:text-blue-400">
-            <Zap className="h-5 w-5" />
-            <p className="font-semibold text-blue-900 dark:text-blue-100">What This Unlocks</p>
-          </div>
-          <p className="text-sm text-blue-900/80 dark:text-blue-100/80">
-            Once connected, you can:
-          </p>
-          <ul className="mt-2 space-y-2 text-sm text-blue-900/80 dark:text-blue-100/80">
-            <li className="flex gap-2">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-              <span>Practice event deduplication scenarios</span>
-            </li>
-            <li className="flex gap-2">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-              <span>Improve match quality with hashed PII</span>
-            </li>
-            <li className="flex gap-2">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-              <span>Test offline tracking scenarios</span>
-            </li>
-            <li className="flex gap-2">
-              <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-500" />
-              <span>Access interactive Event Playground</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Setup Complete Message */}
+        {/* Setup Complete */}
         {status.overall.isComplete && (
-          <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-4">
-            <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-6 w-6 text-green-500" />
+          <div className="rounded-lg border border-[#00ff41]/30 bg-[#00ff41]/5 p-3 animate-in fade-in slide-in-from-bottom-2">
+            <div className="flex items-start gap-2">
+              <CheckCircle2 className="h-5 w-5 text-[#00ff41] shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-green-900 dark:text-green-100">
-                  Setup Complete!
+                <p className="font-mono text-sm font-semibold text-[#00ff41] mb-1">
+                  Ready to Track!
                 </p>
-                <p className="text-sm text-green-900/80 dark:text-green-100/80">
-                  Your tracking system is ready. Start using Event Playground to practice 
-                  and improve your implementation.
+                <p className="text-xs text-[#8b949e] mb-2">
+                  All systems operational. Start testing with Event Playground.
                 </p>
+                <Button
+                  onClick={() => router.push('/getting-started/demo-controls')}
+                  size="sm"
+                  className="w-full gap-2 button-neon-sm h-8"
+                >
+                  <Play className="h-3.5 w-3.5" />
+                  <span className="text-xs">Launch Playground</span>
+                </Button>
               </div>
             </div>
-            <Button
-              onClick={() => router.push('/getting-started/demo-controls')}
-              className="mt-3 w-full gap-2"
-            >
-              <Play className="h-4 w-4" />
-              Open Event Playground
-            </Button>
+          </div>
+        )}
+
+        {/* Next Step Hint */}
+        {!status.overall.isComplete && (
+          <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-3">
+            <p className="text-xs font-mono text-yellow-400 flex items-center gap-2">
+              <span className="animate-pulse">→</span>
+              Next: {status.overall.nextStep}
+            </p>
           </div>
         )}
       </CardContent>
