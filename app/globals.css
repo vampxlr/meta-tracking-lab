@@ -60,11 +60,73 @@
   }
 }
 
+/* Hacker Theme Additions */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f1419;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00ff41;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00d9ff;
+}
+
+/* Custom selection colors */
+::selection {
+  background: rgba(0, 255, 65, 0.2);
+  color: #00ff41;
+}
+
+::-moz-selection {
+  background: rgba(0, 255, 65, 0.2);
+  color: #00ff41;
+}
+
 /* Subtle grid background pattern */
 .bg-grid-pattern {
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-image: 
+    linear-gradient(to right, rgba(0, 255, 65, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 255, 65, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
+}
+
+/* Terminal-style code blocks */
+pre code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  font-variant-ligatures: none;
+}
+
+/* Glow effect for headings */
+.heading-glow {
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+}
+
+/* Scan line effect (subtle) */
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.scan-line::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 65, 0.1), transparent);
+  animation: scan-line 3s linear infinite;
+  pointer-events: none;
 }
 
 /* Smooth transitions */
@@ -72,4 +134,54 @@
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid #00ff41;
+  outline-offset: 2px;
+}
+
+/* Link hover effects */
+a:hover {
+  color: #00ff41;
+  transition: color 200ms ease;
+}
+
+/* Prose styles for markdown content */
+.prose code {
+  @apply rounded bg-[#0d1117] px-1.5 py-0.5 text-[#00ff41] text-sm font-mono;
+}
+
+.prose pre {
+  @apply rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-4;
+}
+
+.prose pre code {
+  @apply bg-transparent px-0 py-0;
+}
+
+/* Animation delays */
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+.delay-300 {
+  animation-delay: 300ms;
+}
+
+.delay-\[400ms\] {
+  animation-delay: 400ms;
+}
+
+.delay-500 {
+  animation-delay: 500ms;
+}
+
+.delay-\[600ms\] {
+  animation-delay: 600ms;
 }
