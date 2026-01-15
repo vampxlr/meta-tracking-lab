@@ -27,7 +27,9 @@ import {
   ChevronUp,
   Check,
   X,
-  Shuffle
+  Shuffle,
+  Terminal,
+  Activity
 } from 'lucide-react'
 import { SUPPORTED_EVENTS } from '@/lib/meta/capiTypes'
 
@@ -615,65 +617,84 @@ export default function CapiTestPage() {
   }, [updatePreview])
 
   return (
-    <div className="container max-w-6xl py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">CAPI Test</h1>
-        <p className="mt-2 text-muted-foreground">
-          Test Meta Conversions API server-side event tracking with comprehensive debugging
+    <div className="container max-w-6xl py-8 px-4 md:px-6">
+      
+      {/* Hero Header */}
+      <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 rounded-lg bg-[#00d9ff]/10 border border-[#00d9ff]/30 pulse-glow">
+            <Terminal className="h-6 w-6 text-[#00d9ff]" />
+          </div>
+          <h1 className="font-mono text-3xl md:text-4xl font-bold text-shimmer">CAPI Test Lab</h1>
+        </div>
+        <p className="text-base text-[#8b949e] leading-relaxed">
+          Test Meta Conversions API server-side event tracking with comprehensive debugging and real-time validation
         </p>
       </div>
 
       <div className="space-y-6">
+        
         {/* Configuration Status Card */}
-        <Card className="p-6">
+        <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
           <div className="flex items-start justify-between">
             <div className="flex items-start gap-3">
-              {isConfigured ? (
-                <CheckCircle2 className="h-5 w-5 text-green-500 mt-0.5" />
-              ) : (
-                <AlertCircle className="h-5 w-5 text-red-500 mt-0.5" />
-              )}
+              <div className={`p-2 rounded-lg ${isConfigured ? 'bg-[#00ff41]/10' : 'bg-red-500/10'} transition-colors`}>
+                {isConfigured ? (
+                  <CheckCircle2 className="h-5 w-5 text-[#00ff41] icon-spin-hover" />
+                ) : (
+                  <AlertCircle className="h-5 w-5 text-red-500 icon-spin-hover" />
+                )}
+              </div>
               <div>
-                <h3 className="font-semibold">CAPI Configuration</h3>
-                <p className="text-sm text-muted-foreground mt-1">
+                <h3 className="font-mono font-semibold text-[#e8f4f8]">CAPI Configuration</h3>
+                <p className="text-sm text-[#8b949e] mt-1">
                   {isConfigured
                     ? 'CAPI is properly configured and ready to send events'
                     : 'CAPI is not configured. Please check your environment variables.'}
                 </p>
               </div>
             </div>
-            <Badge variant={isConfigured ? 'default' : 'destructive'}>
-              {isConfigured ? 'Configured' : 'Not Configured'}
+            <Badge 
+              variant={isConfigured ? 'default' : 'destructive'}
+              className="font-mono"
+            >
+              {isConfigured ? 'READY' : 'NOT CONFIGURED'}
             </Badge>
           </div>
 
           {!isConfigured && (
-            <div className="mt-4 rounded-md bg-yellow-500/10 p-3 border border-yellow-500/20">
+            <div className="mt-4 glass rounded-lg p-3 border border-yellow-500/20">
               <div className="flex items-start gap-2">
-                <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5" />
+                <AlertTriangle className="h-4 w-4 text-yellow-400 mt-0.5" />
                 <div className="text-sm">
-                  <p className="font-medium text-yellow-900">Configuration Required</p>
-                  <p className="text-yellow-800 mt-1">
+                  <p className="font-mono font-medium text-yellow-400">Configuration Required</p>
+                  <p className="text-[#8b949e] mt-1">
                     Set the following environment variables in .env.local:
                   </p>
-                  <ul className="mt-2 list-disc list-inside text-yellow-800 space-y-1">
-                    <li className="font-mono text-xs">META_CAPI_ACCESS_TOKEN</li>
-                    <li className="font-mono text-xs">NEXT_PUBLIC_FB_PIXEL_ID</li>
+                  <ul className="mt-2 space-y-1">
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#00ff41] font-mono">›</span>
+                      <code className="font-mono text-xs text-[#00ff41]">META_CAPI_ACCESS_TOKEN</code>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-[#00ff41] font-mono">›</span>
+                      <code className="font-mono text-xs text-[#00ff41]">NEXT_PUBLIC_FB_PIXEL_ID</code>
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
           )}
-        </Card>
+        </div>
 
         {/* Mode Selection Card */}
-        <Card className="p-6">
+        <div className="glass-strong hover-glow rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
           <div className="mb-4">
-            <h3 className="font-semibold flex items-center gap-2">
-              <Server className="h-4 w-4" />
+            <h3 className="font-mono font-semibold flex items-center gap-2 text-[#e8f4f8] text-glow-hover">
+              <Activity className="h-4 w-4 text-[#00ff41]" />
               Event Mode
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="text-sm text-[#8b949e] mt-1">
               Choose between broken (demonstrating issues), fixed (best practices), and test (Meta Events Manager) modes
             </p>
           </div>
@@ -681,56 +702,52 @@ export default function CapiTestPage() {
             <Button
               variant={mode === 'broken' ? 'destructive' : 'outline'}
               onClick={() => setMode('broken')}
-              className="w-full"
+              className="w-full font-mono"
               disabled={isLoading}
             >
-              Broken Mode
+              BROKEN
             </Button>
             <Button
               variant={mode === 'fixed' ? 'default' : 'outline'}
               onClick={() => setMode('fixed')}
-              className="w-full"
+              className="w-full font-mono"
               disabled={isLoading}
             >
-              Fixed Mode
+              FIXED
             </Button>
             <Button
               variant={mode === 'test' ? 'secondary' : 'outline'}
               onClick={() => setMode('test')}
-              className="w-full"
+              className="w-full font-mono"
               disabled={isLoading}
             >
-              Test Mode
+              TEST
             </Button>
           </div>
-          <div className={`mt-4 rounded-md p-3 border ${
+          <div className={`mt-4 glass rounded-lg p-3 border ${
             mode === 'broken'
-              ? 'bg-red-500/10 border-red-500/20'
+              ? 'border-red-500/20'
               : mode === 'test'
-              ? 'bg-blue-500/10 border-blue-500/20'
-              : 'bg-green-500/10 border-green-500/20'
+              ? 'border-[#00d9ff]/20'
+              : 'border-[#00ff41]/20'
           }`}>
             <div className="flex items-start gap-2">
               {mode === 'broken' ? (
-                <AlertTriangle className="h-4 w-4 text-red-600 mt-0.5" />
+                <AlertTriangle className="h-4 w-4 text-red-400 mt-0.5" />
               ) : mode === 'test' ? (
-                <Info className="h-4 w-4 text-blue-600 mt-0.5" />
+                <Info className="h-4 w-4 text-[#00d9ff] mt-0.5" />
               ) : (
-                <CheckCircle2 className="h-4 w-4 text-green-600 mt-0.5" />
+                <CheckCircle2 className="h-4 w-4 text-[#00ff41] mt-0.5" />
               )}
               <div className="text-sm">
-                <p className={`font-medium ${
-                  mode === 'broken' ? 'text-red-900'
-                  : mode === 'test' ? 'text-blue-900'
-                  : 'text-green-900'
+                <p className={`font-mono font-medium ${
+                  mode === 'broken' ? 'text-red-400'
+                  : mode === 'test' ? 'text-[#00d9ff]'
+                  : 'text-[#00ff41]'
                 }`}>
                   {mode === 'broken' ? 'Broken Mode Warning' : mode === 'test' ? 'Test Mode Active' : 'Fixed Mode Active'}
                 </p>
-                <p className={`mt-1 ${
-                  mode === 'broken' ? 'text-red-800'
-                  : mode === 'test' ? 'text-blue-800'
-                  : 'text-green-800'
-                }`}>
+                <p className="text-[#8b949e] mt-1">
                   {mode === 'broken'
                     ? 'This mode sends un-hashed PII and missing required fields to demonstrate what NOT to do. Random data will include common issues like wrong types, missing fields, and invalid formats for testing error handling. Use dummy data only!'
                     : mode === 'test'
@@ -741,41 +758,41 @@ export default function CapiTestPage() {
               </div>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Event Configuration Card */}
-        <Card className="p-6">
+        <div className="glass hover-lift rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
           <div className="mb-4">
-            <h3 className="font-semibold">Event Configuration</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h3 className="font-mono font-semibold text-[#e8f4f8] text-glow-hover">Event Configuration</h3>
+            <p className="text-sm text-[#8b949e] mt-1">
               Configure the event details to send
             </p>
           </div>
           
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium mb-1.5 block">
-                Event Name <span className="text-red-500">*</span>
+              <label className="text-sm font-mono font-medium mb-1.5 block text-[#e8f4f8]">
+                Event Name <span className="text-red-400">*</span>
               </label>
               <select
                 value={eventName}
                 onChange={(e) => setEventName(e.target.value)}
                 disabled={isLoading}
-                className="w-full px-3 py-2 border rounded-md bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                className="w-full px-3 py-2 border border-[#00ff41]/20 rounded-md bg-[#0d1117] text-[#e8f4f8] text-sm focus:outline-none focus:ring-2 focus:ring-[#00ff41] focus:border-[#00ff41] font-mono"
                 title="Select event type"
               >
                 {SUPPORTED_EVENTS.map(event => (
                   <option key={event} value={event}>{event}</option>
                 ))}
               </select>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-[#8b949e] mt-1">
                 Select from Meta&apos;s standard event types
               </p>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-medium">
+                <label className="text-sm font-mono font-medium text-[#e8f4f8]">
                   Event ID (Optional)
                 </label>
                 <Button
@@ -783,9 +800,9 @@ export default function CapiTestPage() {
                   size="sm"
                   onClick={handleGenerateEventId}
                   disabled={isLoading}
-                  className="h-7 gap-1"
+                  className="h-7 gap-1 font-mono"
                 >
-                  <Shuffle className="h-3 w-3" />
+                  <Shuffle className="h-3 w-3 icon-spin-hover" />
                   Generate
                 </Button>
               </div>
@@ -795,20 +812,21 @@ export default function CapiTestPage() {
                 value={eventId}
                 onChange={(e) => setEventId(e.target.value)}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-[#8b949e] mt-1">
                 UUID for event deduplication. Leave blank for auto-generation.
               </p>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Test Event Code Card - Only visible in Test mode */}
         {mode === 'test' && (
-          <Card className="p-6">
+          <div className="glass hover-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="mb-4">
-              <h3 className="font-semibold">Test Event Code</h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h3 className="font-mono font-semibold text-[#00d9ff] text-glow-hover">Test Event Code</h3>
+              <p className="text-sm text-[#8b949e] mt-1">
                 Enter the test event code from Meta Events Manager Test Events tab
               </p>
             </div>
@@ -819,20 +837,21 @@ export default function CapiTestPage() {
                 value={testEventCode}
                 onChange={(e) => setTestEventCode(e.target.value)}
                 disabled={isLoading}
+                className="font-mono"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-[#8b949e] mt-1">
                 Required in Test mode. Get this code from Meta Events Manager → Test Events tab
               </p>
             </div>
-          </Card>
+          </div>
         )}
 
         {/* User Data Card */}
-        <Card className="p-6">
+        <div className="glass hover-lift rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[400ms]">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h3 className="font-semibold">User Data (Optional)</h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h3 className="font-mono font-semibold text-[#e8f4f8] text-glow-hover">User Data (Optional)</h3>
+              <p className="text-sm text-[#8b949e] mt-1">
                 Add user data for better matching. In Fixed mode, PII will be hashed.
               </p>
             </div>
@@ -841,92 +860,99 @@ export default function CapiTestPage() {
               size="sm"
               onClick={handleGenerateUserData}
               disabled={isLoading}
-              className="h-8 gap-1"
+              className="h-8 gap-1 font-mono"
             >
-              <Shuffle className="h-3 w-3" />
-              Fill User Data
+              <Shuffle className="h-3 w-3 icon-spin-hover" />
+              Fill Data
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium mb-1 block">Email</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Email</label>
               <Input
                 type="email"
                 placeholder="user@example.com"
                 value={userData.email}
                 onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Phone</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Phone</label>
               <Input
                 type="tel"
                 placeholder="+1234567890"
                 value={userData.phone}
                 onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">First Name</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">First Name</label>
               <Input
                 type="text"
                 placeholder="John"
                 value={userData.first_name}
                 onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Last Name</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Last Name</label>
               <Input
                 type="text"
                 placeholder="Doe"
                 value={userData.last_name}
                 onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">External ID</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">External ID</label>
               <Input
                 type="text"
                 placeholder="customer_123"
                 value={userData.external_id}
                 onChange={(e) => setUserData({ ...userData, external_id: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">City</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">City</label>
               <Input
                 type="text"
                 placeholder="New York"
                 value={userData.city}
                 onChange={(e) => setUserData({ ...userData, city: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Country</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Country</label>
               <Input
                 type="text"
                 placeholder="US"
                 value={userData.country}
                 onChange={(e) => setUserData({ ...userData, country: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Custom Data Card */}
-        <Card className="p-6">
+        <div className="glass hover-lift rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
           <div className="flex items-start justify-between mb-4">
             <div>
-              <h3 className="font-semibold">Custom Data (Optional)</h3>
-              <p className="text-sm text-muted-foreground mt-1">
+              <h3 className="font-mono font-semibold text-[#e8f4f8] text-glow-hover">Custom Data (Optional)</h3>
+              <p className="text-sm text-[#8b949e] mt-1">
                 Add event-specific parameters. Required fields vary by event type.
               </p>
             </div>
@@ -935,16 +961,16 @@ export default function CapiTestPage() {
               size="sm"
               onClick={handleGenerateCustomData}
               disabled={isLoading}
-              className="h-8 gap-1"
+              className="h-8 gap-1 font-mono"
             >
-              <Shuffle className="h-3 w-3" />
-              Fill Custom Data
+              <Shuffle className="h-3 w-3 icon-spin-hover" />
+              Fill Data
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
-              <label className="text-xs font-medium mb-1 block">
-                Currency {eventName === 'Purchase' && <span className="text-red-500">*</span>}
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">
+                Currency {eventName === 'Purchase' && <span className="text-red-400">*</span>}
               </label>
               <Input
                 type="text"
@@ -952,11 +978,12 @@ export default function CapiTestPage() {
                 value={customData.currency}
                 onChange={(e) => setCustomData({ ...customData, currency: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">
-                Value {eventName === 'Purchase' && <span className="text-red-500">*</span>}
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">
+                Value {eventName === 'Purchase' && <span className="text-red-400">*</span>}
               </label>
               <Input
                 type="number"
@@ -964,74 +991,80 @@ export default function CapiTestPage() {
                 value={customData.value}
                 onChange={(e) => setCustomData({ ...customData, value: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Content IDs</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content IDs</label>
               <Input
                 type="text"
                 placeholder="prod_123, prod_456"
                 value={customData.content_ids}
                 onChange={(e) => setCustomData({ ...customData, content_ids: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
-              <p className="text-xs text-muted-foreground mt-1">Comma-separated list</p>
+              <p className="text-xs text-[#8b949e] mt-1">Comma-separated list</p>
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Content Type</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Type</label>
               <Input
                 type="text"
                 placeholder="product"
                 value={customData.content_type}
                 onChange={(e) => setCustomData({ ...customData, content_type: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Content Name</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Name</label>
               <Input
                 type="text"
                 placeholder="Product Name"
                 value={customData.content_name}
                 onChange={(e) => setCustomData({ ...customData, content_name: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div>
-              <label className="text-xs font-medium mb-1 block">Number of Items</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Number of Items</label>
               <Input
                 type="number"
                 placeholder="1"
                 value={customData.num_items}
                 onChange={(e) => setCustomData({ ...customData, num_items: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="text-xs font-medium mb-1 block">Order ID</label>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Order ID</label>
               <Input
                 type="text"
                 placeholder="order_12345"
                 value={customData.order_id}
                 onChange={(e) => setCustomData({ ...customData, order_id: e.target.value })}
                 disabled={isLoading}
+                className="font-mono text-sm"
               />
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Real-time JSON Preview */}
-        <Card className="p-6">
+        <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Code className="h-4 w-4 text-blue-500" />
-              <h3 className="font-semibold">Real-time JSON Preview</h3>
+              <Code className="h-4 w-4 text-[#00d9ff] icon-spin-hover" />
+              <h3 className="font-mono font-semibold text-[#00d9ff] text-glow-hover">Real-time JSON Preview</h3>
             </div>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setPreviewExpanded(!previewExpanded)}
-              className="h-8"
+              className="h-8 font-mono"
             >
               {previewExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </Button>
@@ -1042,33 +1075,33 @@ export default function CapiTestPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => copyToClipboard(previewJson, 'Request JSON')}
-                className="absolute top-2 right-2 h-8 gap-1 z-10"
+                className="absolute top-2 right-2 h-8 gap-1 z-10 font-mono"
               >
                 <Copy className="h-3 w-3" />
                 Copy
               </Button>
-              <ScrollArea className="h-64 rounded-md border bg-muted/20 p-3">
-                <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+              <ScrollArea className="h-64 rounded-md border border-[#00ff41]/20 bg-[#0d1117] p-3">
+                <pre className="text-xs font-mono text-[#00ff41] whitespace-pre-wrap">
                   {previewJson}
                 </pre>
               </ScrollArea>
             </div>
           )}
-        </Card>
+        </div>
 
         {/* Validation Errors */}
         {validationErrors.length > 0 && (
-          <Card className={`p-6 ${validationErrors.some(e => e.severity === 'error') ? 'border-red-500/20 bg-red-500/5' : 'border-yellow-500/20 bg-yellow-500/5'}`}>
+          <div className={`glass hover-glow rounded-xl p-6 border ${validationErrors.some(e => e.severity === 'error') ? 'border-red-500/20' : 'border-yellow-500/20'}`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Bug className="h-4 w-4" />
-                <h3 className="font-semibold">Validation Results</h3>
+                <Bug className="h-4 w-4 icon-spin-hover" />
+                <h3 className="font-mono font-semibold text-[#e8f4f8]">Validation Results</h3>
               </div>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setDebugExpanded(!debugExpanded)}
-                className="h-8"
+                className="h-8 font-mono"
               >
                 {debugExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
               </Button>
@@ -1078,31 +1111,31 @@ export default function CapiTestPage() {
                 {validationErrors.map((error, index) => (
                   <div
                     key={index}
-                    className={`rounded-md p-3 border ${
-                      error.severity === 'error' ? 'bg-red-500/10 border-red-500/20' :
-                      error.severity === 'warning' ? 'bg-yellow-500/10 border-yellow-500/20' :
-                      'bg-blue-500/10 border-blue-500/20'
+                    className={`glass rounded-lg p-3 border ${
+                      error.severity === 'error' ? 'border-red-500/20' :
+                      error.severity === 'warning' ? 'border-yellow-500/20' :
+                      'border-[#00d9ff]/20'
                     }`}
                   >
                     <div className="flex items-start gap-2">
                       {error.severity === 'error' ? (
-                        <X className="h-4 w-4 text-red-600 mt-0.5 flex-shrink-0" />
+                        <X className="h-4 w-4 text-red-400 mt-0.5 flex-shrink-0" />
                       ) : error.severity === 'warning' ? (
-                        <AlertTriangle className="h-4 w-4 text-yellow-600 mt-0.5 flex-shrink-0" />
+                        <AlertTriangle className="h-4 w-4 text-yellow-400 mt-0.5 flex-shrink-0" />
                       ) : (
-                        <Info className="h-4 w-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <Info className="h-4 w-4 text-[#00d9ff] mt-0.5 flex-shrink-0" />
                       )}
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs font-medium">{error.field}</span>
-                          <Badge variant={error.severity === 'error' ? 'destructive' : error.severity === 'warning' ? 'default' : 'secondary'} className="text-xs">
+                          <span className="font-mono text-xs font-medium text-[#e8f4f8]">{error.field}</span>
+                          <Badge variant={error.severity === 'error' ? 'destructive' : error.severity === 'warning' ? 'default' : 'secondary'} className="text-xs font-mono">
                             {error.severity}
                           </Badge>
                         </div>
-                        <p className="text-sm mt-1">{error.message}</p>
+                        <p className="text-sm text-[#8b949e] mt-1">{error.message}</p>
                         {error.suggestion && (
-                          <p className="text-xs text-muted-foreground mt-1">
-                            <span className="font-medium">Suggestion:</span> {error.suggestion}
+                          <p className="text-xs text-[#8b949e] mt-1">
+                            <span className="font-mono font-medium text-[#00ff41]">Suggestion:</span> {error.suggestion}
                           </p>
                         )}
                       </div>
@@ -1111,39 +1144,42 @@ export default function CapiTestPage() {
                 ))}
               </div>
             )}
-          </Card>
+          </div>
         )}
 
         {/* Actions Card */}
-        <Card className="p-6">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              onClick={sendTestEvent}
-              disabled={!isConfigured || isLoading}
-              className="w-full sm:w-auto gap-2"
-            >
-              <Send className="h-4 w-4" />
-              <span>Send Server Test Event</span>
-            </Button>
-            {lastTestTime && (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Clock className="h-4 w-4" />
-                Last test: {lastTestTime}
-              </div>
-            )}
+        <div className="border-gradient animate-in fade-in slide-in-from-bottom-4 duration-500 delay-700">
+          <div className="border-gradient-content glass-strong p-6">
+            <div className="flex flex-col sm:flex-row gap-3 items-center">
+              <button
+                onClick={sendTestEvent}
+                disabled={!isConfigured || isLoading}
+                className="button-neon rounded-xl px-8 py-4 flex items-center gap-3 w-full sm:w-auto group"
+              >
+                <Send className="h-5 w-5" />
+                <span className="font-mono font-semibold">Send Test Event</span>
+                {isLoading && <Activity className="h-4 w-4 animate-spin" />}
+              </button>
+              {lastTestTime && (
+                <div className="flex items-center gap-2 text-sm text-[#8b949e] font-mono">
+                  <Clock className="h-4 w-4 text-[#00d9ff]" />
+                  Last test: <span className="text-[#00ff41]">{lastTestTime}</span>
+                </div>
+              )}
+            </div>
           </div>
-        </Card>
+        </div>
 
         {/* Request/Response Display */}
         {(requestDetails || responseDetails) && (
-          <Card className="p-6">
+          <div className="glass-strong hover-glow rounded-xl p-6 border border-[#00ff41]/20">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold">Request & Response Details</h3>
+              <h3 className="font-mono font-semibold text-[#e8f4f8] text-glow-hover">Request & Response Details</h3>
               <Button
                 onClick={clearResponse}
                 variant="outline"
                 size="sm"
-                className="h-8"
+                className="h-8 font-mono"
               >
                 Clear
               </Button>
@@ -1151,8 +1187,8 @@ export default function CapiTestPage() {
             
             <Tabs defaultValue="request" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="request">Request</TabsTrigger>
-                <TabsTrigger value="response">Response</TabsTrigger>
+                <TabsTrigger value="request" className="font-mono">Request</TabsTrigger>
+                <TabsTrigger value="response" className="font-mono">Response</TabsTrigger>
               </TabsList>
               
               <TabsContent value="request" className="mt-4">
@@ -1161,26 +1197,26 @@ export default function CapiTestPage() {
                     {/* Request Metadata */}
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-muted-foreground">Method:</span>{' '}
-                        <Badge variant="outline">{requestDetails.method}</Badge>
+                        <span className="text-[#8b949e] font-mono">Method:</span>{' '}
+                        <Badge variant="outline" className="font-mono">{requestDetails.method}</Badge>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">URL:</span>{' '}
-                        <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{requestDetails.url}</code>
+                        <span className="text-[#8b949e] font-mono">URL:</span>{' '}
+                        <code className="text-xs bg-[#0d1117] text-[#00ff41] px-1.5 py-0.5 rounded font-mono">{requestDetails.url}</code>
                       </div>
                       <div className="col-span-2">
-                        <span className="text-muted-foreground">Timestamp:</span>{' '}
-                        <span className="text-xs">{requestDetails.timestamp}</span>
+                        <span className="text-[#8b949e] font-mono">Timestamp:</span>{' '}
+                        <span className="text-xs text-[#00d9ff] font-mono">{requestDetails.timestamp}</span>
                       </div>
                     </div>
 
                     {/* Request Headers */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-medium">Headers</h4>
+                        <h4 className="text-sm font-mono font-medium text-[#e8f4f8]">Headers</h4>
                       </div>
-                      <ScrollArea className="h-24 rounded-md border bg-muted/20 p-3">
-                        <pre className="text-xs font-mono text-muted-foreground">
+                      <ScrollArea className="h-24 rounded-md border border-[#00ff41]/20 bg-[#0d1117] p-3">
+                        <pre className="text-xs font-mono text-[#00ff41]">
                           {JSON.stringify(requestDetails.headers, null, 2)}
                         </pre>
                       </ScrollArea>
@@ -1189,19 +1225,19 @@ export default function CapiTestPage() {
                     {/* Request Body */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-medium">Body</h4>
+                        <h4 className="text-sm font-mono font-medium text-[#e8f4f8]">Body</h4>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => copyToClipboard(JSON.stringify(requestDetails.body, null, 2), 'Request Body')}
-                          className="h-7 gap-1"
+                          className="h-7 gap-1 font-mono"
                         >
                           <Copy className="h-3 w-3" />
                           Copy
                         </Button>
                       </div>
-                      <ScrollArea className="h-64 rounded-md border bg-muted/20 p-3">
-                        <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                      <ScrollArea className="h-64 rounded-md border border-[#00ff41]/20 bg-[#0d1117] p-3">
+                        <pre className="text-xs font-mono text-[#00ff41] whitespace-pre-wrap">
                           {JSON.stringify(requestDetails.body, null, 2)}
                         </pre>
                       </ScrollArea>
@@ -1216,31 +1252,31 @@ export default function CapiTestPage() {
                     {/* Response Metadata */}
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-muted-foreground">Status:</span>{' '}
-                        <Badge variant={responseDetails.status >= 200 && responseDetails.status < 300 ? 'default' : 'destructive'}>
+                        <span className="text-[#8b949e] font-mono">Status:</span>{' '}
+                        <Badge variant={responseDetails.status >= 200 && responseDetails.status < 300 ? 'default' : 'destructive'} className="font-mono">
                           {responseDetails.status} {responseDetails.statusText}
                         </Badge>
                       </div>
                       <div>
-                        <span className="text-muted-foreground">Response Time:</span>{' '}
+                        <span className="text-[#8b949e] font-mono">Response Time:</span>{' '}
                         <span className="flex items-center gap-1">
-                          <Zap className="h-3 w-3 text-yellow-500" />
-                          {responseDetails.responseTime}ms
+                          <Zap className="h-3 w-3 text-yellow-400" />
+                          <span className="text-[#00ff41] font-mono">{responseDetails.responseTime}ms</span>
                         </span>
                       </div>
                       <div className="col-span-2">
-                        <span className="text-muted-foreground">Timestamp:</span>{' '}
-                        <span className="text-xs">{responseDetails.timestamp}</span>
+                        <span className="text-[#8b949e] font-mono">Timestamp:</span>{' '}
+                        <span className="text-xs text-[#00d9ff] font-mono">{responseDetails.timestamp}</span>
                       </div>
                     </div>
 
                     {/* Response Headers */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-medium">Headers</h4>
+                        <h4 className="text-sm font-mono font-medium text-[#e8f4f8]">Headers</h4>
                       </div>
-                      <ScrollArea className="h-24 rounded-md border bg-muted/20 p-3">
-                        <pre className="text-xs font-mono text-muted-foreground">
+                      <ScrollArea className="h-24 rounded-md border border-[#00ff41]/20 bg-[#0d1117] p-3">
+                        <pre className="text-xs font-mono text-[#00ff41]">
                           {JSON.stringify(responseDetails.headers, null, 2)}
                         </pre>
                       </ScrollArea>
@@ -1249,19 +1285,19 @@ export default function CapiTestPage() {
                     {/* Response Body */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-sm font-medium">Body</h4>
+                        <h4 className="text-sm font-mono font-medium text-[#e8f4f8]">Body</h4>
                         <Button
                           variant="outline"
                           size="sm"
                           onClick={() => copyToClipboard(JSON.stringify(responseDetails.body, null, 2), 'Response Body')}
-                          className="h-7 gap-1"
+                          className="h-7 gap-1 font-mono"
                         >
                           <Copy className="h-3 w-3" />
                           Copy
                         </Button>
                       </div>
-                      <ScrollArea className="h-64 rounded-md border bg-muted/20 p-3">
-                        <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">
+                      <ScrollArea className="h-64 rounded-md border border-[#00ff41]/20 bg-[#0d1117] p-3">
+                        <pre className="text-xs font-mono text-[#00ff41] whitespace-pre-wrap">
                           {JSON.stringify(responseDetails.body, null, 2)}
                         </pre>
                       </ScrollArea>
@@ -1270,29 +1306,29 @@ export default function CapiTestPage() {
                 )}
               </TabsContent>
             </Tabs>
-          </Card>
+          </div>
         )}
 
         {/* Instructions Card */}
-        <Card className="border-blue-500/20 bg-blue-500/5 p-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
+        <div className="glass hover-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[800ms]">
+          <h3 className="font-mono font-semibold mb-4 flex items-center gap-2 text-[#00d9ff] text-glow-hover">
             <ExternalLink className="h-4 w-4" />
             How to Verify
           </h3>
           <ol className="space-y-3 text-sm">
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-medium">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00ff41]/20 border border-[#00ff41]/30 text-[#00ff41] flex items-center justify-center text-xs font-mono font-bold">
                 1
               </span>
               <div>
-                <p className="font-medium">Open Meta Events Manager</p>
-                <p className="text-muted-foreground">
+                <p className="font-mono font-medium text-[#e8f4f8]">Open Meta Events Manager</p>
+                <p className="text-[#8b949e]">
                   Go to{' '}
                   <a
                     href="https://business.facebook.com/events_manager2"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+                    className="text-[#00d9ff] hover:text-[#00ff41] underline transition-colors"
                   >
                     Events Manager
                   </a>{' '}
@@ -1301,40 +1337,40 @@ export default function CapiTestPage() {
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-medium">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00ff41]/20 border border-[#00ff41]/30 text-[#00ff41] flex items-center justify-center text-xs font-mono font-bold">
                 2
               </span>
               <div>
-                <p className="font-medium">Navigate to Test Events</p>
-                <p className="text-muted-foreground">
-                  Click on <span className="rounded bg-muted px-1.5 py-0.5">Test Events</span> in the left sidebar
+                <p className="font-mono font-medium text-[#e8f4f8]">Navigate to Test Events</p>
+                <p className="text-[#8b949e]">
+                  Click on <span className="rounded bg-[#0d1117] text-[#00ff41] px-1.5 py-0.5 font-mono">Test Events</span> in the left sidebar
                 </p>
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-medium">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00ff41]/20 border border-[#00ff41]/30 text-[#00ff41] flex items-center justify-center text-xs font-mono font-bold">
                 3
               </span>
               <div>
-                <p className="font-medium">Send a Test Event</p>
-                <p className="text-muted-foreground">
-                  Click the <span className="rounded bg-muted px-1.5 py-0.5">Send Server Test Event</span> button above
+                <p className="font-mono font-medium text-[#e8f4f8]">Send a Test Event</p>
+                <p className="text-[#8b949e]">
+                  Click the <span className="rounded bg-[#0d1117] text-[#00ff41] px-1.5 py-0.5 font-mono">Send Test Event</span> button above
                 </p>
               </div>
             </li>
             <li className="flex gap-3">
-              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-medium">
+              <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#00ff41]/20 border border-[#00ff41]/30 text-[#00ff41] flex items-center justify-center text-xs font-mono font-bold">
                 4
               </span>
               <div>
-                <p className="font-medium">Verify Event Received</p>
-                <p className="text-muted-foreground">
-                  Look for your selected event (e.g., <span className="rounded bg-muted px-1.5 py-0.5">{eventName}</span>) in the test events list
+                <p className="font-mono font-medium text-[#e8f4f8]">Verify Event Received</p>
+                <p className="text-[#8b949e]">
+                  Look for your selected event (e.g., <span className="rounded bg-[#0d1117] text-[#00ff41] px-1.5 py-0.5 font-mono">{eventName}</span>) in the test events list
                 </p>
               </div>
             </li>
           </ol>
-        </Card>
+        </div>
       </div>
     </div>
   )
