@@ -65,25 +65,37 @@ const updatePreview = useCallback(async () => {
 
 ---
 
-### Issue 2: Unescaped Apostrophe in JSX
+### Issue 2: Unescaped Apostrophes in JSX (CRITICAL - Breaks Build)
 
-**File:** `app/page.tsx`
-**Line:** 100
+**Files Affected:**
+- `app/roi-calculator/page.tsx` (Line 469)
+- `components/locked-event-playground.tsx` (Line 41)
+- `app/page.tsx` (Line 100)
+
 **Error:** `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`
 
-**Problem:**
+**Severity:** ⚠️ **Build-Breaking Error** - Vercel/production builds will FAIL
+
+**Example Problems:**
 ```jsx
-<h2 className="text-2xl font-bold text-foreground">Core Concepts You'll Master</h2>
+// ❌ WRONG - Will break build
+<span>Meta's AI optimization...</span>
+<p>What you'll unlock:</p>
+<h2>Core Concepts You'll Master</h2>
 ```
 
 **Why it happens:**
-- ESLint rule `react/no-unescaped-entities` prevents HTML entities in JSX
-- Apostrophes need to be escaped in JSX content
+- ESLint rule `react/no-unescaped-entities` prevents unescaped HTML entities in JSX
+- Apostrophes ('), quotes ("), ampersands (&), and angle brackets (<, >) need escaping
+- Works fine in dev, but **FAILS in production builds**
 
-**Solutions:**
+**Solutions (Choose One):**
 
 **Option A (Recommended):** Use HTML entity `&apos;`
 ```jsx
+// ✅ CORRECT
+<span>Meta&apos;s AI optimization...</span>
+<p>What you&apos;ll unlock:</p>
 <h2>Core Concepts You&apos;ll Master</h2>
 ```
 
@@ -92,15 +104,94 @@ const updatePreview = useCallback(async () => {
 <h2>Core Concepts You&#39;ll Master</h2>
 ```
 
-**Option C (Recommended):** Use curly braces for apostrophes in text (if in variable)
+**Option C:** Use template literals in curly braces
 ```jsx
 <h2>{`Core Concepts You'll Master`}</h2>
 ```
 
-**Option D:** Use double quotes (no escape needed)
+**Option D:** Use double quotes (changes meaning slightly)
 ```jsx
 <h2>Core Concepts You"ll Master</h2>
-// Note: This changes the quote style
+// Note: Different quote style, use only if intentional
+```
+
+**🔍 How to Find All Apostrophes:**
+
+Before building, search for unescaped apostrophes:
+
+```bash
+# Search for potential issues in JSX
+grep -rn ">[^<]*'[^']*<" app/ components/
+
+# Or use ESLint
+npm run lint
+```
+
+---
+
+### Issue 3: React Hook Missing Dependencies
+
+**File:** `components/setup-status-panel.tsx`
+**Line:** 144
+**Error:** `React Hook useEffect has a missing dependency: 'getNextStep'`
+
+**Problem:**
+```typescript
+// ❌ WRONG - Functions used but not in deps array
+const getNextStep = (a, b, c, d) => { /* ... */ }
+const calculatePercentage = (a, b, c, d) => { /* ... */ }
+
+useEffect(() => {
+  const next = getNextStep(x, y, z, w)  // Used here
+  const pct = calculatePercentage(x, y, z, w)  // Used here
+}, [x, y, z, w])  // Missing getNextStep and calculatePercentage!
+```
+
+**Why it happens:**
+- Functions defined in component body are recreated on every render
+- When used in useEffect/useCallback/useMemo, they should be in dependencies
+- React's exhaustive-deps rule detects this
+
+**Solutions:**
+
+**Option A (Recommended):** Wrap functions in `useCallback`
+```typescript
+// ✅ CORRECT
+const getNextStep = useCallback((a, b, c, d) => {
+  return /* ... */
+}, [/* deps if any */])
+
+const calculatePercentage = useCallback((a, b, c, d) => {
+  return /* ... */
+}, [])
+
+useEffect(() => {
+  const next = getNextStep(x, y, z, w)
+  const pct = calculatePercentage(x, y, z, w)
+}, [x, y, z, w, getNextStep, calculatePercentage])  // Now includes functions
+```
+
+**Option B:** Move functions outside component (if they're pure)
+```typescript
+// ✅ CORRECT - Pure functions outside component
+function calculatePercentage(a, b, c, d) {
+  return /* ... */
+}
+
+function MyComponent() {
+  useEffect(() => {
+    const pct = calculatePercentage(x, y, z, w)
+  }, [x, y, z, w])  // No need to include function
+}
+```
+
+**Option C (Not Recommended):** Disable warning
+```typescript
+// ⚠️ USE ONLY IF YOU'RE SURE
+useEffect(() => {
+  const next = getNextStep(x, y, z, w)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [x, y, z, w])
 ```
 
 ---
@@ -254,11 +345,31 @@ return <p>{description}</p>
 
 Before running `npm run build`, check:
 
-- [ ] Run `npm run lint` first
-- [ ] Check for apostrophes in new JSX content
-- [ ] Verify all useCallback/useEffect dependencies are complete
-- [ ] Ensure no unused imports
-- [ ] Check for TypeScript errors: `npm run type-check` (if available)
+- [ ] **Run `npm run lint` first** (catches most issues)
+- [ ] **Check for apostrophes in ALL JSX content** (use search: `>[^<]*'`)
+- [ ] **Verify all useCallback/useEffect dependencies** are complete
+- [ ] **Ensure no unused imports**
+- [ ] **Check for TypeScript errors:** `npm run type-check` (if available)
+- [ ] **Test build locally:** `npm run build` (catches production-only errors)
+
+### 🚨 Critical Build Failures to Avoid
+
+These will **PASS in dev** but **FAIL in production builds:**
+
+1. **Unescaped apostrophes** - Search for `'` in JSX text
+2. **Missing React Hook dependencies** - Check all useEffect/useCallback
+3. **TypeScript errors** - Even with `any` types
+4. **Unused imports** - Clean up imports
+
+### Quick Fix Command
+
+```bash
+# Run lint and try auto-fixing
+npm run lint -- --fix
+
+# If that doesn't fix everything, check for apostrophes
+grep -rn ">[^<]*'[^']*<" app/ components/
+```
 
 ---
 
@@ -289,9 +400,9 @@ npx eslint app/capi-test/page.tsx --rule 'react-hooks/exhaustive-deps'
 
 ## When This Document Was Last Updated
 
-**Date:** January 14, 2026
-**Issues Tracked:** 2
-**Build Status:** Failed (apostrophe and missing dependency)
+**Date:** January 15, 2026
+**Issues Tracked:** 3
+**Build Status:** Passing ✅ (All critical issues fixed)
 
 ---
 

@@ -105,19 +105,19 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
   }, [])
 
   // Calculate completion percentage helper
-  const calculatePercentage = (pixelConnected: boolean, capiConfigured: boolean, pixelTest: boolean, capiTest: boolean): number => {
+  const calculatePercentage = React.useCallback((pixelConnected: boolean, capiConfigured: boolean, pixelTest: boolean, capiTest: boolean): number => {
     const checks = [pixelConnected, capiConfigured, pixelTest || capiTest].filter(Boolean).length
     return Math.round((checks / 3) * 100)
-  }
+  }, [])
 
   // Get next step helper
-  const getNextStep = (pixelConnected: boolean, capiConfigured: boolean, pixelTest: boolean, capiTest: boolean): string => {
+  const getNextStep = React.useCallback((pixelConnected: boolean, capiConfigured: boolean, pixelTest: boolean, capiTest: boolean): string => {
     if (!hasPixelId) return 'Add Pixel ID to environment'
     if (!pixelConnected) return 'Wait for Pixel to load'
     if (!capiConfigured) return 'Configure CAPI'
     if (!(pixelTest || capiTest)) return 'Run Test Events'
     return 'Start using Event Playground'
-  }
+  }, [hasPixelId])
 
   // Build current status
   React.useEffect(() => {
@@ -141,7 +141,7 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
         nextStep: getNextStep(pixelLoaded, capiConfigured, pixelTestVerified, capiTestVerified)
       }
     })
-  }, [pixelLoaded, capiConfigured, pixelTestVerified, capiTestVerified, isLoading])
+  }, [pixelLoaded, capiConfigured, pixelTestVerified, capiTestVerified, isLoading, calculatePercentage, getNextStep])
 
   // Load status from API if not provided (for CAPI status)
   React.useEffect(() => {

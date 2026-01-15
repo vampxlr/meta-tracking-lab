@@ -466,7 +466,7 @@ export default function ROICalculatorPage() {
           <li className="flex gap-3">
             <CheckCircle2 className="mt-0.5 h-5 w-5 text-green-500 shrink-0" />
             <span>
-              <strong className="text-foreground">Better data = better optimization</strong> - Meta's AI optimization requires accurate conversion data to perform well
+              <strong className="text-foreground">Better data = better optimization</strong> - Meta&apos;s AI optimization requires accurate conversion data to perform well
             </span>
           </li>
           <li className="flex gap-3">

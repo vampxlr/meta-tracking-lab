@@ -130,6 +130,52 @@ return (
 
 ## 🚫 Common Errors & Fixes
 
+### Error: `'` can be escaped with `&apos;` (BUILD BREAKING!)
+
+**Cause:** Unescaped apostrophes in JSX text
+
+**Severity:** ⚠️ **CRITICAL** - Works in dev, **FAILS in production build**
+
+**Examples:**
+```jsx
+// ❌ WRONG
+<p>What you'll learn</p>
+<span>Meta's AI</span>
+
+// ✅ CORRECT
+<p>What you&apos;ll learn</p>
+<span>Meta&apos;s AI</span>
+```
+
+**Fix:** Replace all `'` in JSX text with `&apos;`
+
+**Quick Find:** Search for patterns like `>.*'.*<` in JSX files
+
+---
+
+### Error: React Hook has missing dependency
+
+**Cause:** Function used in useEffect/useCallback but not in dependency array
+
+**Example:**
+```typescript
+// ❌ WRONG
+const myFunc = () => { /* ... */ }
+useEffect(() => {
+  myFunc()  // Used but not in deps!
+}, [other, deps])
+
+// ✅ CORRECT
+const myFunc = useCallback(() => { /* ... */ }, [])
+useEffect(() => {
+  myFunc()
+}, [other, deps, myFunc])  // Include the function
+```
+
+**Fix:** Wrap function in `useCallback` and add to dependency array
+
+---
+
 ### Error: "Event handlers cannot be passed to Client Component props"
 
 **Cause:** Component is missing `"use client"` directive
@@ -191,12 +237,30 @@ components/page-content.tsx (Client Component)
 
 Before committing changes:
 
+- [ ] **CRITICAL:** No unescaped apostrophes in JSX (search for `'` in text)
+- [ ] **CRITICAL:** All useEffect/useCallback have complete dependencies
 - [ ] All interactive components have `"use client"`
 - [ ] Using `use(params)` for async params in Client Components
 - [ ] Registry data transformed to props (not passed directly)
 - [ ] Section body markdown parsed correctly
 - [ ] Run `npm run lint` to check for errors
+- [ ] **CRITICAL:** Run `npm run build` locally (catches production errors)
 - [ ] Test the page in browser
+
+### 🚨 Critical Build Checklist (Vercel)
+
+These errors **pass in dev** but **fail in production**:
+
+```bash
+# 1. Check for apostrophes (MOST COMMON ERROR)
+grep -rn ">[^<]*'[^']*<" app/ components/
+
+# 2. Check linting (catches hook dependencies)
+npm run lint
+
+# 3. Test production build locally
+npm run build
+```
 
 ---
 

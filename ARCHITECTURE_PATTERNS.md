@@ -337,6 +337,52 @@ export function PageContent({
 
 ## Common Mistakes & Fixes
 
+### Mistake #0: Unescaped Apostrophes in JSX (MOST COMMON!)
+
+**Symptom:**
+```
+Error: `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`
+Build fails in production/Vercel
+```
+
+**Cause:**
+- Apostrophes ('), quotes, or ampersands in JSX text content
+- Works fine in development, **fails in production builds**
+- Most common build-breaking error
+
+**Examples:**
+```jsx
+// ❌ WRONG - Will break production build
+<p>What you'll learn</p>
+<span>Meta's AI performs better</span>
+<div>Don't forget to configure</div>
+
+// ✅ CORRECT - Use &apos; for apostrophes
+<p>What you&apos;ll learn</p>
+<span>Meta&apos;s AI performs better</span>
+<div>Don&apos;t forget to configure</div>
+
+// ✅ ALTERNATIVE - Use template literals
+<p>{`What you'll learn`}</p>
+<span>{`Meta's AI performs better`}</span>
+```
+
+**How to Find:**
+```bash
+# Search for apostrophes in JSX
+grep -rn ">[^<]*'[^']*<" app/ components/
+
+# Or just run lint
+npm run lint
+```
+
+**Files commonly affected in this project:**
+- `app/roi-calculator/page.tsx` ✅ (Fixed Jan 15, 2026)
+- `components/locked-event-playground.tsx` ✅ (Fixed Jan 15, 2026)
+- Any new content with contractions (you'll, don't, can't, it's, etc.)
+
+---
+
 ### Mistake #1: Forgetting "use client" Directive
 
 **Symptom:**
@@ -436,7 +482,60 @@ export default function Page({ params }: PageProps) {
 
 ---
 
-### Mistake #4: Rendering Markdown Without Parsing
+### Mistake #4: Missing React Hook Dependencies
+
+**Symptom:**
+```
+Warning: React Hook useEffect has a missing dependency: 'functionName'
+Build may fail or warning may be treated as error
+```
+
+**Cause:**
+- Function defined in component is used in useEffect/useCallback
+- Function not included in dependency array
+- Function gets recreated on every render
+
+**Example:**
+```typescript
+// ❌ WRONG - getNextStep used but not in deps
+const getNextStep = () => { return 'next' }
+
+useEffect(() => {
+  const step = getNextStep()  // Function used here
+  console.log(step)
+}, [someValue])  // Missing getNextStep!
+
+// ✅ CORRECT - Wrap in useCallback
+const getNextStep = useCallback(() => {
+  return 'next'
+}, [])
+
+useEffect(() => {
+  const step = getNextStep()
+  console.log(step)
+}, [someValue, getNextStep])  // Include the function
+```
+
+**Alternative Solution:**
+```typescript
+// ✅ CORRECT - Move outside component if pure function
+function getNextStep() {
+  return 'next'
+}
+
+function MyComponent() {
+  useEffect(() => {
+    const step = getNextStep()  // No deps needed
+  }, [someValue])
+}
+```
+
+**File fixed in this project:**
+- `components/setup-status-panel.tsx` ✅ (Fixed Jan 15, 2026)
+
+---
+
+### Mistake #5: Rendering Markdown Without Parsing
 
 **Symptom:**
 - Code blocks appear as plain text with backticks

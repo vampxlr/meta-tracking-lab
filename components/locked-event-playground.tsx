@@ -38,7 +38,7 @@ export function LockedEventPlayground() {
         {/* Preview of what's available */}
         <div className="space-y-4 pt-4">
           <p className="text-sm font-medium text-foreground">
-            What you'll unlock:
+            What you&apos;ll unlock:
           </p>
 
           <div className="grid gap-3">
