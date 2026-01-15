@@ -2,6 +2,26 @@
 
 Interactive documentation for debugging and validating Meta Pixel events and Conversions API implementations.
 
+---
+
+## 🤖 For AI Models & Developers
+
+**📖 MUST READ FIRST:** [`AI_DEVELOPER_GUIDE.md`](AI_DEVELOPER_GUIDE.md) - 30-second quick reference
+
+**📖 DETAILED GUIDE:** [`ARCHITECTURE_PATTERNS.md`](ARCHITECTURE_PATTERNS.md) - Complete patterns & fixes
+
+These documents contain critical architecture patterns and common mistakes to avoid:
+
+- ✅ Next.js 15 async params with `use()` hook
+- ✅ Client vs Server Component patterns  
+- ✅ How to properly render pages from the registry
+- ✅ Common mistakes and their fixes
+- ✅ What was fixed and why
+
+**Reading these first will save you from common errors!**
+
+---
+
 ## Current Status
 
 **Overall Completion: 94.3%** (50/53 features complete)
@@ -59,6 +79,21 @@ The project is in excellent shape with all core features implemented. The remain
 - **Accessibility** with WCAG compliant components
 
 ## Documentation
+
+### Architecture & Best Practices
+
+**🏗️ Architecture Patterns Guide** - [`ARCHITECTURE_PATTERNS.md`](ARCHITECTURE_PATTERNS.md)
+- Next.js 15 App Router patterns (async params, use() hook)
+- Client vs Server Component guidelines
+- Dynamic page rendering from registry
+- Common mistakes and fixes
+- **Read this first if you're an AI model or new developer working on this codebase**
+
+**🔍 Linting & Best Practices** - [`LINTING_AND_BEST_PRACTICES.md`](LINTING_AND_BEST_PRACTICES.md)
+- React hooks best practices
+- JSX/HTML entity escaping
+- ESLint rules and quick fixes
+- Pre-build checklist
 
 ### Features Implemented
 Detailed documentation of all implemented features is available in the [`features-implemented/`](features-implemented/) folder:

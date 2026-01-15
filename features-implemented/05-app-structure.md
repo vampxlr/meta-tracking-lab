@@ -97,18 +97,44 @@ app/
 
 **File**: [`app/[...slug]/page.tsx`](../app/[...slug]/page.tsx:1)
 
-**Status**: Complete
+**Status**: Complete ✅
 
 **Description**: Dynamic route that handles all documentation pages by looking up content in the page registry.
 
+**Component Type**: Client Component (uses `"use client"` directive)
+
 **Features**:
 - Dynamic path building from slug array
+- Uses React 19's `use()` hook for async params
 - Page lookup in registry
 - 404 handling for unknown pages
+- Transforms registry data to component props
+- Renders section blocks with markdown parsing
 - Dynamic rendering with [`PageContent`](../components/page-content.tsx:1)
 
-**Configuration**:
-- `dynamic: "force-dynamic"` - Forces dynamic rendering
+**Implementation Pattern**:
+```typescript
+"use client"
+import { use } from "react"
+
+export default function DynamicPage({ params }: PageProps) {
+  const { slug } = use(params)  // React 19 use() hook
+  const path = "/" + slug.join("/")
+  const pageData = pagesRegistry[path]
+  
+  // Transform registry data to props
+  return (
+    <PageContent
+      title={pageData.title}
+      description={pageData.description}
+      status={pageData.badge}
+      rightPanel={/* conditional panel */}
+    >
+      {/* Render section blocks */}
+    </PageContent>
+  )
+}
+```
 
 **Page Registry**: [`content/pages-registry.ts`](../content/pages-registry.ts:1)
 
@@ -530,33 +556,59 @@ app/
 
 **How It Works**:
 
-1. **Path Building**:
+1. **Unwrap Async Params** (Next.js 15):
+   ```typescript
+   const { slug } = use(params)  // React 19's use() hook
+   ```
+
+2. **Path Building**:
    ```typescript
    const path = "/" + slug.join("/")
    ```
 
-2. **Page Lookup**:
+3. **Page Lookup**:
    ```typescript
    const pageData = pagesRegistry[path]
    ```
 
-3. **404 Handling**:
+4. **404 Handling**:
    ```typescript
    if (!pageData) {
      notFound()
    }
    ```
 
-4. **Rendering**:
+5. **Transform & Render**:
    ```typescript
-   return <PageContent pageData={pageData} />
+   return (
+     <PageContent
+       title={pageData.title}
+       description={pageData.description}
+       status={pageData.badge}
+       rightPanel={
+         pageData.showDemo 
+           ? <DemoPanel preset={pageData.demoPreset?.kind} /> 
+           : <SetupStatusPanel />
+       }
+     >
+       {pageData.sectionBlocks.map((section, index) => (
+         // Render each section with markdown parsing
+       ))}
+     </PageContent>
+   )
    ```
 
 **Benefits**:
 - Single route handler for all documentation pages
 - Centralized page management
-- Easy to add new pages
-- Consistent rendering
+- Easy to add new pages (just update registry)
+- Consistent rendering across all docs
+- No individual page files needed
+
+**⚠️ Important Notes**:
+- This component MUST be a Client Component (`"use client"`)
+- Must use `use(params)` from React 19 (not `await params`)
+- Must transform registry data to component props (don't pass `pageData` directly)
 
 ---
 
