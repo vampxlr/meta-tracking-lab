@@ -28,7 +28,11 @@ export default function AemDomainIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Subdomain Tracking - GOOD",
+          test_mode: "fixed",
+          note: "Cookie domain=.example.com - works across www, app, shop subdomains"
         }
       }
     },
@@ -48,7 +52,11 @@ export default function AemDomainIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Cross-Domain Tracking - MISSING URL",
+          test_mode: "broken",
+          note: "No event_source_url - can't attribute across domains"
         }
       },
       fixedPayload: {
@@ -64,7 +72,11 @@ export default function AemDomainIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Cross-Domain Tracking - FIXED",
+          test_mode: "fixed",
+          note: "event_source_url included - proper cross-domain attribution"
         }
       }
     },
@@ -88,7 +100,11 @@ export default function AemDomainIssuesPage() {
           content_ids: ["PROD-789"],
           content_type: "product",
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Cookie Domain Config - GOOD",
+          test_mode: "fixed",
+          note: "domain=.example.com - accessible across all subdomains"
         }
       }
     },
@@ -112,7 +128,11 @@ export default function AemDomainIssuesPage() {
         custom_data: {
           currency: "USD",
           value: 299.99,
-          order_id: `ORD-PARTNER-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-PARTNER-${Math.floor(Math.random() * 10000)}`,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Multi-Domain Attribution - GOOD",
+          test_mode: "fixed",
+          note: "event_source_url from partner domain - proper attribution"
         }
       }
     },
@@ -135,7 +155,11 @@ export default function AemDomainIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "AEM Setup for >8 Domains",
+          test_mode: "fixed",
+          note: "9th domain - AEM configured in Events Manager"
         }
       }
     },
@@ -167,7 +191,11 @@ export default function AemDomainIssuesPage() {
           content_ids: ["PROD-123", "PROD-456"],
           content_type: "product",
           num_items: 2,
-          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Complete Multi-Domain Solution - PERFECT",
+          test_mode: "fixed",
+          note: "Full cross-domain setup: event_source_url + cookies + complete user_data"
         }
       }
     }

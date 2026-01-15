@@ -588,7 +588,7 @@ export default function CapiSetupPage() {
           showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
-          sendToBoth={false}
+          sendToBoth={true}
           showNetworkInspector={true}
           showMetaResponse={true}
           enableComparison={true}

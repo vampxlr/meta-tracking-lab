@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { AlertTriangle, Shield, Hash, CheckCircle2, XCircle, Users, Lock, Zap } from "lucide-react"
 
 export default function LowMatchQualityPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   // 8 comprehensive examples demonstrating PII hashing and normalization
   const matchQualityExamples = [
     {
@@ -12,18 +15,30 @@ export default function LowMatchQualityPage() {
       icon: <XCircle className="h-4 w-4 text-red-400 icon-spin-hover" />,
       description: "Plaintext email → GDPR violation + 0% match rate",
       brokenPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           email: "user@example.com"  // NOT HASHED! GDPR violation!
+        },
+        custom_data: {
+          source_page: "/problems/low-match-quality",
+          example_name: "Unhashed Email - CRITICAL",
+          test_mode: "broken",
+          note: "Plain text email - GDPR violation + 0% match"
         }
       },
       fixedPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514"  // SHA-256 hash
+        },
+        custom_data: {
+          source_page: "/problems/low-match-quality",
+          example_name: "Unhashed Email - FIXED",
+          test_mode: "fixed",
+          note: "SHA-256 hashed email - GDPR compliant + high match"
         }
       }
     },
@@ -32,20 +47,32 @@ export default function LowMatchQualityPage() {
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Email uppercase before hashing → wrong hash → 0% match",
       brokenPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           // Hash of "USER@EXAMPLE.COM" instead of "user@example.com"
           em: "8d5e957f297893487bd98fa830fa6413a9d6e2a6d51e1e5b3d4230d5d8f5b5c3"  // Wrong hash!
+        },
+        custom_data: {
+          source_page: "/problems/low-match-quality",
+          example_name: "Not Lowercased - BROKEN",
+          test_mode: "broken",
+          note: "Hash of uppercase email - wrong hash = 0% match"
         }
       },
       fixedPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514"  // Correct: lowercase first!
+        },
+        custom_data: {
+          source_page: "/problems/low-match-quality",
+          example_name: "Not Lowercased - FIXED",
+          test_mode: "fixed",
+          note: "Lowercase before hash - correct hash = high match"
         }
       }
     },
@@ -63,7 +90,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Spaces Not Trimmed - BROKEN",
+          test_mode: "broken",
+          note: "Hash of ' user@example.com ' with spaces - wrong hash"
         }
       },
       fixedPayload: {
@@ -75,7 +106,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Spaces Not Trimmed - FIXED",
+          test_mode: "fixed",
+          note: "Trimmed before hash - correct match"
         }
       }
     },
@@ -93,7 +128,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Phone Format Issues - BROKEN",
+          test_mode: "broken",
+          note: "Hash of '555-123-4567' with dashes - wrong format"
         }
       },
       fixedPayload: {
@@ -105,7 +144,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Phone Format Issues - FIXED",
+          test_mode: "fixed",
+          note: "Digits only before hash - correct match"
         }
       }
     },
@@ -123,7 +166,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Single Field Only - POOR",
+          test_mode: "broken",
+          note: "Only email - match quality ~3/10"
         }
       },
       fixedPayload: {
@@ -139,7 +186,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Single Field Only - IMPROVED",
+          test_mode: "fixed",
+          note: "4 PII fields - match quality ~7-8/10"
         }
       }
     },
@@ -148,22 +199,34 @@ export default function LowMatchQualityPage() {
       icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       description: "2 fields → Match quality ~7/10",
       brokenPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514"
           // Only email = 3-4/10 match
+        },
+        custom_data: {
+          source_page: "/problems/low-match-quality",
+          example_name: "Email Only - ~3/10 Match",
+          test_mode: "broken",
+          note: "Only 1 field - low match quality"
         }
       },
       fixedPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514",
-          ph: "254d69f6b8f6a6e9c2b1c573b0885c9b6f3f3f3c8c0f3f3f3f3f3f3f3f3f3f3"
+          ph: "254d69f6b8f6a6e9c2b1c573b0885c9b6f3f3f3f3f3f3f3f3f3f3f3f3f3f3f3"
           // Email + phone = 7-8/10 match!
+        },
+        custom_data: {
+          source_page: "/problems/low-match-quality",
+          example_name: "Email + Phone - ~7/10 Match GOOD",
+          test_mode: "fixed",
+          note: "2 fields (em + ph) - good match quality"
         }
       }
     },
@@ -182,7 +245,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "2 Fields Only - ~7/10 Match",
+          test_mode: "broken",
+          note: "em + ph only - decent but not optimal"
         }
       },
       fixedPayload: {
@@ -203,7 +270,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "Full User Data - BEST ~9-10/10",
+          test_mode: "fixed",
+          note: "All 9 fields - maximum match quality!"
         }
       }
     },
@@ -221,7 +292,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "No External ID - CRM UNLINKED",
+          test_mode: "broken",
+          note: "Can't link to offline/CRM data without external_id"
         }
       },
       fixedPayload: {
@@ -235,7 +310,11 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/low-match-quality",
+          example_name: "External ID - CRM LINKED",
+          test_mode: "fixed",
+          note: "external_id links online & offline conversions"
         }
       }
     }

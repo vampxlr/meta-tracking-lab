@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { AlertTriangle, FileQuestion, CheckCircle2, XCircle, Code2, Layers } from "lucide-react"
 
 export default function WrongParametersPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   const parameterExamples = [
     {
       name: "Wrong Field Name",
@@ -16,7 +19,11 @@ export default function WrongParametersPage() {
         custom_data: {
           currency: "USD",
           price: 99.99,  // Wrong! Should be "value"
-          items: ["prod_123"]  // Wrong! Should be "content_ids"
+          items: ["prod_123"],  // Wrong! Should be "content_ids"
+          source_page: "/problems/wrong-parameters",
+          example_name: "Wrong Field Names",
+          test_mode: "broken",
+          note: "'price' & 'items' instead of 'value' & 'content_ids'"
         }
       },
       fixedPayload: {
@@ -25,7 +32,11 @@ export default function WrongParametersPage() {
         custom_data: {
           currency: "USD",
           value: 99.99,  // Correct field name
-          content_ids: ["prod_123"]  // Correct field name
+          content_ids: ["prod_123"],  // Correct field name
+          source_page: "/problems/wrong-parameters",
+          example_name: "Wrong Field Names - FIXED",
+          test_mode: "fixed",
+          note: "Correct field names: 'value' & 'content_ids'"
         }
       }
     },
@@ -38,7 +49,11 @@ export default function WrongParametersPage() {
         event_id: `view_${Date.now()}`,
         custom_data: {
           content_ids: "product_123",  // String! Should be array
-          content_type: "product"
+          content_type: "product",
+          source_page: "/problems/wrong-parameters",
+          example_name: "Wrong Data Type - String not Array",
+          test_mode: "broken",
+          note: "content_ids as string - should be array"
         }
       },
       fixedPayload: {
@@ -46,7 +61,11 @@ export default function WrongParametersPage() {
         event_id: `view_${Date.now()}`,
         custom_data: {
           content_ids: ["product_123"],  // Array - correct!
-          content_type: "product"
+          content_type: "product",
+          source_page: "/problems/wrong-parameters",
+          example_name: "Wrong Data Type - FIXED",
+          test_mode: "fixed",
+          note: "content_ids as array - correct format"
         }
       }
     },
@@ -58,14 +77,24 @@ export default function WrongParametersPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         currency: "USD",  // Wrong! Should be in custom_data
-        value: 149.99  // Wrong! Should be in custom_data
+        value: 149.99,  // Wrong! Should be in custom_data
+        custom_data: {
+          source_page: "/problems/wrong-parameters",
+          example_name: "Wrong Nesting - ROOT LEVEL",
+          test_mode: "broken",
+          note: "currency & value at root - should be in custom_data"
+        }
       },
       fixedPayload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         custom_data: {  // Correct nesting
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "Wrong Nesting - FIXED",
+          test_mode: "fixed",
+          note: "Proper nesting in custom_data"
         }
       }
     },
@@ -78,7 +107,11 @@ export default function WrongParametersPage() {
         eventId: `purchase_${Date.now()}`,  // Wrong! Should be event_id
         customData: {  // Wrong! Should be custom_data
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "camelCase instead of snake_case",
+          test_mode: "broken",
+          note: "eventName, eventId, customData - Meta doesn't recognize"
         }
       },
       fixedPayload: {
@@ -86,7 +119,11 @@ export default function WrongParametersPage() {
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "snake_case - CORRECT",
+          test_mode: "fixed",
+          note: "event_name, event_id, custom_data - proper snake_case"
         }
       }
     },
@@ -98,7 +135,11 @@ export default function WrongParametersPage() {
         event_id: `event_${Date.now()}`,
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "Missing event_name - REJECTED",
+          test_mode: "broken",
+          note: "No event_name - Meta completely rejects event"
         }
         // Missing event_name! Critical error
       },
@@ -107,7 +148,11 @@ export default function WrongParametersPage() {
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "Missing event_name - FIXED",
+          test_mode: "fixed",
+          note: "event_name added - event accepted"
         }
       }
     },
@@ -122,7 +167,11 @@ export default function WrongParametersPage() {
           currency: "USD",
           value: 99.99,
           my_custom_field: "ignored",  // Not in Meta spec - ignored
-          another_field: 123  // Also ignored
+          another_field: 123,  // Also ignored
+          source_page: "/problems/wrong-parameters",
+          example_name: "Extra Unknown Params - WASTEFUL",
+          test_mode: "broken",
+          note: "Unknown fields silently ignored - wastes bandwidth"
         }
       },
       fixedPayload: {
@@ -132,7 +181,11 @@ export default function WrongParametersPage() {
           currency: "USD",
           value: 99.99,
           content_name: "Product Name",  // Standard field
-          content_category: "Electronics"  // Standard field
+          content_category: "Electronics",  // Standard field
+          source_page: "/problems/wrong-parameters",
+          example_name: "Extra Unknown Params - FIXED",
+          test_mode: "fixed",
+          note: "Only standard Meta fields - efficient"
         }
       }
     },
@@ -145,7 +198,11 @@ export default function WrongParametersPage() {
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "Lowercase Event Name",
+          test_mode: "broken",
+          note: "'purchase' lowercase - not recognized as standard event"
         }
       },
       fixedPayload: {
@@ -153,7 +210,11 @@ export default function WrongParametersPage() {
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/wrong-parameters",
+          example_name: "PascalCase Event Name - CORRECT",
+          test_mode: "fixed",
+          note: "'Purchase' PascalCase - recognized as standard event"
         }
       }
     },
@@ -181,7 +242,11 @@ export default function WrongParametersPage() {
           content_category: "Widgets",
           content_ids: ["widget_789"],
           content_type: "product",
-          num_items: 1
+          num_items: 1,
+          source_page: "/problems/wrong-parameters",
+          example_name: "Complete Structure - OPTIMAL",
+          test_mode: "fixed",
+          note: "All fields + user_data - maximum optimization"
         },
         user_data: {
           client_ip_address: "1.2.3.4",

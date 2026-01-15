@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { DollarSign, AlertCircle, CheckCircle2, XCircle, TrendingDown, Calculator, Globe } from "lucide-react"
 
 export default function PurchaseMismatchPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   // 8 comprehensive examples demonstrating purchase value and currency issues
   const purchaseExamples = [
     {
@@ -17,7 +20,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: "99.99"  // STRING! Meta expects NUMBER
+          value: "99.99",  // STRING! Meta expects NUMBER
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Value as String - CRITICAL",
+          test_mode: "broken",
+          note: "String '99.99' instead of number - Meta may reject"
         }
       },
       fixedPayload: {
@@ -26,7 +33,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 99.99  // NUMBER - correct!
+          value: 99.99,  // NUMBER - correct!
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Value as String - FIXED",
+          test_mode: "fixed",
+          note: "Number 99.99 - correct type"
         }
       }
     },
@@ -39,7 +50,11 @@ export default function PurchaseMismatchPage() {
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
-          value: 149.99  // No currency specified!
+          value: 149.99,  // No currency specified!
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Missing Currency - BROKEN",
+          test_mode: "broken",
+          note: "No currency - Meta can't calculate ROAS"
         }
       },
       fixedPayload: {
@@ -48,7 +63,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",  // Required!
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Missing Currency - FIXED",
+          test_mode: "fixed",
+          note: "Currency added - proper ROAS calculation"
         }
       }
     },
@@ -62,7 +81,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "US",  // Wrong! Should be "USD"
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Wrong Currency Code - BROKEN",
+          test_mode: "broken",
+          note: "'US' instead of 'USD' - invalid ISO 4217 code"
         }
       },
       fixedPayload: {
@@ -71,7 +94,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",  // ISO 4217 standard
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Wrong Currency Code - FIXED",
+          test_mode: "fixed",
+          note: "'USD' - correct ISO 4217 standard"
         }
       }
     },
@@ -85,7 +112,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: -50.00  // Negative values not allowed!
+          value: -50.00,  // Negative values not allowed!
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Negative Value - INVALID",
+          test_mode: "broken",
+          note: "Negative value - Meta rejects"
         }
       },
       fixedPayload: {
@@ -94,7 +125,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 50.00  // Always positive
+          value: 50.00,  // Always positive
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Negative Value - FIXED",
+          test_mode: "fixed",
+          note: "Positive value - valid purchase"
         }
       }
     },
@@ -108,7 +143,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 99.999999  // Too many decimals!
+          value: 99.999999,  // Too many decimals!
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Excessive Decimals - SUBOPTIMAL",
+          test_mode: "broken",
+          note: "Too many decimals - rounding errors"
         }
       },
       fixedPayload: {
@@ -117,7 +156,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 99.99  // 2 decimals for most currencies
+          value: 99.99,  // 2 decimals for most currencies
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Excessive Decimals - FIXED",
+          test_mode: "fixed",
+          note: "2 decimals - standard formatting"
         }
       }
     },
@@ -131,16 +174,24 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 0.00  // $0 purchase → not used for ROAS optimization
+          value: 0.00,  // $0 purchase → not used for ROAS optimization
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Zero Value - SUBOPTIMAL",
+          test_mode: "broken",
+          note: "$0 Purchase event - not used for ROAS"
         }
       },
       fixedPayload: {
-        event_name: "Lead",  // Use Lead event instead!
+        event_name: "CompleteRegistration",  // Use Lead event instead!
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           content_name: "Free Trial Signup",
-          content_category: "Trial"
+          content_category: "Trial",
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Zero Value - FIXED",
+          test_mode: "fixed",
+          note: "Use CompleteRegistration for $0 conversions, not Purchase"
         }
       }
     },
@@ -154,7 +205,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "EUR",
-          value: 85.5  // Inconsistent decimals
+          value: 85.5,  // Inconsistent decimals
+          source_page: "/problems/purchase-mismatch",
+          example_name: "EUR Inconsistent Decimals",
+          test_mode: "broken",
+          note: "85.5 - inconsistent decimal formatting"
         }
       },
       fixedPayload: {
@@ -163,7 +218,11 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "EUR",
-          value: 85.50  // Consistent 2 decimals
+          value: 85.50,  // Consistent 2 decimals
+          source_page: "/problems/purchase-mismatch",
+          example_name: "EUR Consistent Decimals - GOOD",
+          test_mode: "fixed",
+          note: "85.50 - proper 2 decimal formatting"
         }
       }
     },
@@ -177,8 +236,12 @@ export default function PurchaseMismatchPage() {
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 999.99
+          value: 999.99,
           // Missing product details = less optimization data
+          source_page: "/problems/purchase-mismatch",
+          example_name: "High-Value Minimal Data",
+          test_mode: "broken",
+          note: "$999 but missing product details - limited optimization"
         }
       },
       fixedPayload: {
@@ -193,8 +256,12 @@ export default function PurchaseMismatchPage() {
           content_ids: ["prod_123", "prod_456"],
           content_type: "product",
           num_items: 2,
-          order_id: "ORD_789"
+          order_id: "ORD_789",
           // Complete data = better optimization
+          source_page: "/problems/purchase-mismatch",
+          example_name: "High-Value Complete - PERFECT",
+          test_mode: "fixed",
+          note: "All product details included - maximum optimization"
         }
       }
     }

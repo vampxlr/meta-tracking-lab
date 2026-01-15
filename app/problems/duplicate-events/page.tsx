@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { Layers, Copy, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Clock, Zap } from "lucide-react"
 
 export default function DuplicateEventsPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   // 8 comprehensive examples demonstrating deduplication
   const dedupExamples = [
     {
@@ -16,7 +19,11 @@ export default function DuplicateEventsPage() {
         custom_data: {
           currency: "USD",
           value: 99.99,
-          order_id: "order_001"
+          order_id: "order_001",
+          source_page: "/problems/duplicate-events",
+          example_name: "No event_id - BROKEN",
+          test_mode: "broken",
+          note: "No event_id - counted twice (Pixel + CAPI)"
         }
         // PROBLEM: No event_id = duplicate counting!
       },
@@ -27,7 +34,11 @@ export default function DuplicateEventsPage() {
         custom_data: {
           currency: "USD",
           value: 99.99,
-          order_id: "order_001"
+          order_id: "order_001",
+          source_page: "/problems/duplicate-events",
+          example_name: "No event_id - FIXED",
+          test_mode: "fixed",
+          note: "event_id added - counted once only"
         }
       }
     },
@@ -38,13 +49,27 @@ export default function DuplicateEventsPage() {
       brokenPayload: {
         event_name: "Purchase",
         event_id: `mismatch_${Math.random()}`, // Different each time!
-        custom_data: { currency: "USD", value: 99.99 }
+        custom_data: { 
+          currency: "USD", 
+          value: 99.99,
+          source_page: "/problems/duplicate-events",
+          example_name: "Random event_id - BROKEN",
+          test_mode: "broken",
+          note: "Random ID regenerated each send - no consistency"
+        }
       },
       fixedPayload: {
         event_name: "Purchase",
         event_id: "unified_purchase_123", // Same on both!
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { currency: "USD", value: 99.99 }
+        custom_data: { 
+          currency: "USD", 
+          value: 99.99,
+          source_page: "/problems/duplicate-events",
+          example_name: "Same event_id - FIXED",
+          test_mode: "fixed",
+          note: "Static ID 'unified_purchase_123' - deduplication works"
+        }
       }
     },
     {
@@ -54,13 +79,27 @@ export default function DuplicateEventsPage() {
       brokenPayload: {
         event_name: "AddToCart",
         event_id: `pixel_${Date.now()}_${Math.random()}`, // Regenerated!
-        custom_data: { currency: "USD", value: 29.99 }
+        custom_data: { 
+          currency: "USD", 
+          value: 29.99,
+          source_page: "/problems/duplicate-events",
+          example_name: "Different event_ids - BROKEN",
+          test_mode: "broken",
+          note: "Pixel & CAPI generate different IDs - counted as 2 events"
+        }
       },
       fixedPayload: {
         event_name: "AddToCart",
         event_id: "cart_shared_456",
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { currency: "USD", value: 29.99 }
+        custom_data: { 
+          currency: "USD", 
+          value: 29.99,
+          source_page: "/problems/duplicate-events",
+          example_name: "Different event_ids - FIXED",
+          test_mode: "fixed",
+          note: "Same ID on both platforms - deduplication successful"
+        }
       }
     },
     {
@@ -72,7 +111,11 @@ export default function DuplicateEventsPage() {
         custom_data: { 
           currency: "USD", 
           value: 149.99,
-          order_id: "ORD123" // Has order_id but not using as event_id!
+          order_id: "ORD123", // Has order_id but not using as event_id!
+          source_page: "/problems/duplicate-events",
+          example_name: "Order ID Unused - BROKEN",
+          test_mode: "broken",
+          note: "Has order_id but not as event_id - still duplicates"
         }
       },
       fixedPayload: {
@@ -82,7 +125,11 @@ export default function DuplicateEventsPage() {
         custom_data: { 
           currency: "USD", 
           value: 149.99,
-          order_id: "ORD123"
+          order_id: "ORD123",
+          source_page: "/problems/duplicate-events",
+          example_name: "Order ID as event_id - BEST PRACTICE",
+          test_mode: "fixed",
+          note: "Order ID = event_id - natural deduplication"
         }
       }
     },
@@ -91,15 +138,27 @@ export default function DuplicateEventsPage() {
       icon: <RefreshCw className="h-4 w-4 text-[#00d9ff] icon-spin-hover" />,
       description: "Send twice with same event_id → still counted once",
       brokenPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         // No event_id - each send counts
-        user_data: { em: "test_hash" }
+        user_data: { em: "test_hash" },
+        custom_data: {
+          source_page: "/problems/duplicate-events",
+          example_name: "Multiple Sends No ID - BROKEN",
+          test_mode: "broken",
+          note: "Click multiple times - each send counted separately"
+        }
       },
       fixedPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         event_id: "lead_test_duplicate_123", // Same ID for multiple sends
         event_time: Math.floor(Date.now() / 1000),
-        user_data: { em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514" }
+        user_data: { em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514" },
+        custom_data: {
+          source_page: "/problems/duplicate-events",
+          example_name: "Multiple Sends Same ID - RESILIENT",
+          test_mode: "fixed",
+          note: "Click multiple times - still counted once!"
+        }
       }
     },
     {
@@ -108,14 +167,28 @@ export default function DuplicateEventsPage() {
       description: "CAPI sends 5s after Pixel → dedup still works",
       brokenPayload: {
         event_name: "InitiateCheckout",
-        custom_data: { currency: "USD", value: 79.99 }
+        custom_data: { 
+          currency: "USD", 
+          value: 79.99,
+          source_page: "/problems/duplicate-events",
+          example_name: "Delayed CAPI Send - BROKEN",
+          test_mode: "broken",
+          note: "No event_id - time delay doesn't matter, still duplicates"
+        }
         // No event_id - timing doesn't matter, still duplicates
       },
       fixedPayload: {
         event_name: "InitiateCheckout",
         event_id: `checkout_delayed_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { currency: "USD", value: 79.99 }
+        custom_data: { 
+          currency: "USD", 
+          value: 79.99,
+          source_page: "/problems/duplicate-events",
+          example_name: "Delayed CAPI Send - FIXED",
+          test_mode: "fixed",
+          note: "Same event_id - dedup works even with time delay"
+        }
       }
     },
     {
@@ -126,13 +199,25 @@ export default function DuplicateEventsPage() {
         event_name: "ViewContent",
         event_time: Math.floor(Date.now() / 1000) - 10, // 10s ago
         // Missing event_id
-        custom_data: { content_ids: ["prod_123"] }
+        custom_data: { 
+          content_ids: ["prod_123"],
+          source_page: "/problems/duplicate-events",
+          example_name: "Timestamp Mismatch - BROKEN",
+          test_mode: "broken",
+          note: "No event_id - different timestamps don't help"
+        }
       },
       fixedPayload: {
         event_name: "ViewContent",
         event_id: "view_timemismatch_789",
         event_time: Math.floor(Date.now() / 1000), // Now
-        custom_data: { content_ids: ["prod_123"] }
+        custom_data: { 
+          content_ids: ["prod_123"],
+          source_page: "/problems/duplicate-events",
+          example_name: "Timestamp Mismatch - STILL WORKS",
+          test_mode: "fixed",
+          note: "Same event_id - dedup works despite different timestamps"
+        }
       }
     },
     {
@@ -145,7 +230,11 @@ export default function DuplicateEventsPage() {
           currency: "USD", 
           value: 999.99,
           content_ids: ["premium_prod"],
-          order_id: "HIGH_VALUE_001"
+          order_id: "HIGH_VALUE_001",
+          source_page: "/problems/duplicate-events",
+          example_name: "High-Value $999 - BROKEN",
+          test_mode: "broken",
+          note: "No event_id on $999 purchase - Meta counts as $1,999.98!"
         }
         // No event_id = $1,999.98 counted instead of $999.99!
       },
@@ -157,7 +246,11 @@ export default function DuplicateEventsPage() {
           currency: "USD", 
           value: 999.99,
           content_ids: ["premium_prod"],
-          order_id: "HIGH_VALUE_001"
+          order_id: "HIGH_VALUE_001",
+          source_page: "/problems/duplicate-events",
+          example_name: "High-Value $999 - FIXED",
+          test_mode: "fixed",
+          note: "event_id = order ID - counted correctly as $999.99"
         }
       }
     }

@@ -26,7 +26,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Missing _fbp Cookie - POOR ATTRIBUTION",
+          test_mode: "broken",
+          note: "No _fbp cookie - can't track user across sessions"
         }
       },
       fixedPayload: {
@@ -43,7 +47,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Missing _fbp Cookie - FIXED",
+          test_mode: "fixed",
+          note: "Added _fbp cookie - user tracking enabled"
         }
       }
     },
@@ -65,7 +73,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Missing _fbc Cookie - NO CLICK ATTRIBUTION",
+          test_mode: "broken",
+          note: "No _fbc cookie - can't attribute to specific ad click"
         }
       },
       fixedPayload: {
@@ -83,7 +95,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Missing _fbc Cookie - FIXED",
+          test_mode: "fixed",
+          note: "Added _fbc cookie - click attribution enabled"
         }
       }
     },
@@ -105,7 +121,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Wrong Cookie Domain - NOT ACCESSIBLE",
+          test_mode: "broken",
+          note: "Cookie on wrong domain - server can't read it"
         }
       },
       fixedPayload: {
@@ -123,7 +143,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Wrong Cookie Domain - FIXED",
+          test_mode: "fixed",
+          note: "Cookie domain=.example.com - accessible on all subdomains"
         }
       }
     },
@@ -145,7 +169,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "HttpOnly Flag - CLIENT-SIDE ISSUE",
+          test_mode: "broken",
+          note: "httpOnly flag blocks JavaScript access to cookie"
         }
       },
       fixedPayload: {
@@ -163,7 +191,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "HttpOnly Flag - FIXED",
+          test_mode: "fixed",
+          note: "No httpOnly flag - JavaScript can access cookie"
         }
       }
     },
@@ -185,7 +217,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 249.99
+          value: 249.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Expired Cookie - TRACKING BREAKS",
+          test_mode: "broken",
+          note: "Cookie expired - user appears as new visitor"
         }
       },
       fixedPayload: {
@@ -203,7 +239,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 249.99
+          value: 249.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Expired Cookie - FIXED",
+          test_mode: "fixed",
+          note: "Cookie with 90-day expiration - continuous tracking"
         }
       }
     },
@@ -225,7 +265,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 129.99
+          value: 129.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Cookie Not Set - TIMING ISSUE",
+          test_mode: "broken",
+          note: "Event fired before Pixel loaded - no cookie yet"
         }
       },
       fixedPayload: {
@@ -243,7 +287,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 129.99
+          value: 129.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Cookie Not Set - FIXED",
+          test_mode: "fixed",
+          note: "Pixel loaded in <head> - cookie available before events"
         }
       }
     },
@@ -269,7 +317,11 @@ export default function CookieFbpIssuesPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 179.99
+          value: 179.99,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Proper _fbp Cookie - GOOD",
+          test_mode: "fixed",
+          note: "Valid _fbp cookie - cross-session tracking enabled"
         }
       }
     },
@@ -304,7 +356,11 @@ export default function CookieFbpIssuesPage() {
           value: 399.99,
           content_ids: ["PROD-123", "PROD-456"],
           content_type: "product",
-          num_items: 2
+          num_items: 2,
+          source_page: "/problems/cookie-fbp-issues",
+          example_name: "Complete Cookie Setup - PERFECT",
+          test_mode: "fixed",
+          note: "Both _fbp & _fbc cookies + complete user_data - maximum attribution"
         }
       }
     }

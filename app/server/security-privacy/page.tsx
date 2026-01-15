@@ -25,7 +25,11 @@ export default function SecurityPrivacyPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/server/security-privacy",
+          example_name: "Unhashed PII - GDPR VIOLATION",
+          test_mode: "broken",
+          note: "Plain text email & phone - NEVER send unhashed PII!"
         }
       },
       fixedPayload: {
@@ -40,7 +44,11 @@ export default function SecurityPrivacyPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/server/security-privacy",
+          example_name: "Unhashed PII - FIXED",
+          test_mode: "fixed",
+          note: "SHA-256 hashed PII - GDPR compliant"
         }
       }
     },
@@ -61,7 +69,11 @@ export default function SecurityPrivacyPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/server/security-privacy",
+          example_name: "No Logging Sensitive Data - SECURE",
+          test_mode: "fixed",
+          note: "IP redacted in logs - sensitive data protected"
         }
       }
     },
@@ -70,23 +82,35 @@ export default function SecurityPrivacyPage() {
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Tracking before user consent violates GDPR/CCPA - always check consent status first",
       brokenPayload: {
-        event_name: "PageView",
+        event_name: "ViewContent",
         event_id: `noconsent_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c"
+        },
+        custom_data: {
+          source_page: "/server/security-privacy",
+          example_name: "No Consent Check - PRIVACY VIOLATION",
+          test_mode: "broken",
+          note: "Tracking before consent - violates GDPR/CCPA"
         }
         // Fired without checking user consent!
       },
       fixedPayload: {
-        event_name: "PageView",
+        event_name: "ViewContent",
         event_id: `consent_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1"
+        },
+        custom_data: {
+          source_page: "/server/security-privacy",
+          example_name: "No Consent Check - FIXED",
+          test_mode: "fixed",
+          note: "Consent check implemented - only tracks after user grants permission"
         }
         // Only fired after user grants consent
       }
@@ -110,7 +134,11 @@ export default function SecurityPrivacyPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/server/security-privacy",
+          example_name: "SHA-256 Hashing - REQUIRED",
+          test_mode: "fixed",
+          note: "All PII SHA-256 hashed with normalization - privacy compliant"
         }
       }
     },
@@ -131,7 +159,11 @@ export default function SecurityPrivacyPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/server/security-privacy",
+          example_name: "Secure Token Storage - BEST PRACTICE",
+          test_mode: "fixed",
+          note: "Token in server env vars - never exposed to client"
         }
         // Access token stored in process.env.META_CAPI_ACCESS_TOKEN (server-only)
       }
@@ -157,7 +189,11 @@ export default function SecurityPrivacyPage() {
           // Too much data for a simple content view!
         },
         custom_data: {
-          content_ids: ["PROD-123"]
+          content_ids: ["PROD-123"],
+          source_page: "/server/security-privacy",
+          example_name: "Too Much Data - GDPR RISK",
+          test_mode: "broken",
+          note: "Excessive PII for ViewContent - violates data minimization"
         }
       },
       fixedPayload: {
@@ -171,7 +207,11 @@ export default function SecurityPrivacyPage() {
           // Only essential fields for content view
         },
         custom_data: {
-          content_ids: ["PROD-123"]
+          content_ids: ["PROD-123"],
+          source_page: "/server/security-privacy",
+          example_name: "Data Minimization - GDPR COMPLIANT",
+          test_mode: "fixed",
+          note: "Minimal PII - only what's needed for ViewContent"
         }
       }
     },
@@ -191,7 +231,11 @@ export default function SecurityPrivacyPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 249.99
+          value: 249.99,
+          source_page: "/server/security-privacy",
+          example_name: "User Opt-Out Handling - REQUIRED",
+          test_mode: "fixed",
+          note: "Opt-out check before tracking - GDPR/CCPA compliant"
         }
         // Event only sent if user hasn't opted out
       }
@@ -223,7 +267,11 @@ export default function SecurityPrivacyPage() {
           content_ids: ["PROD-789"],
           content_type: "product",
           num_items: 1,
-          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
+          source_page: "/server/security-privacy",
+          example_name: "Privacy-Compliant Implementation - PERFECT",
+          test_mode: "fixed",
+          note: "Gold standard: Consent + Hashing + Secure tokens + Minimal data + Opt-out"
         }
         // ✓ Consent checked, ✓ All PII hashed, ✓ Token secure, ✓ Minimal data
       }

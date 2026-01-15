@@ -23,7 +23,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Different event_ids - BOTH COUNTED",
+          test_mode: "broken",
+          note: "Pixel & CAPI have different IDs - counted as 2 separate events"
         }
       },
       fixedPayload: null
@@ -43,7 +47,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Client vs Server IDs - MISMATCH",
+          test_mode: "broken",
+          note: "Timestamp generated separately - slight difference breaks dedup"
         }
       },
       fixedPayload: null
@@ -63,7 +71,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Millisecond Differences - NO DEDUP",
+          test_mode: "broken",
+          note: "ID with milliseconds - client/server generate different times"
         }
       },
       fixedPayload: {
@@ -78,7 +90,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Millisecond Differences - FIXED",
+          test_mode: "fixed",
+          note: "Second-precision timestamp - same on client & server"
         }
       }
     },
@@ -97,7 +113,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Pixel Only ID - PARTIAL TRACKING",
+          test_mode: "broken",
+          note: "ID sent to Pixel but missing in CAPI - no deduplication"
         }
       },
       fixedPayload: {
@@ -112,7 +132,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Pixel Only ID - FIXED",
+          test_mode: "fixed",
+          note: "Same ID sent to both Pixel & CAPI - deduplication works"
         }
       }
     },
@@ -133,7 +157,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 249.99
+          value: 249.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Multiple Events Same ID - RESILIENCE TEST",
+          test_mode: "fixed",
+          note: "Static ID 'test_duplicate_123456' - Meta deduplicates repeated sends"
         }
       }
     },
@@ -154,7 +182,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 129.99
+          value: 129.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "event_time Mismatch - STILL WORKS",
+          test_mode: "fixed",
+          note: "Different timestamps OK - event_id is the dedup key"
         }
       }
     },
@@ -174,7 +206,11 @@ export default function DedupMisconfiguredPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 349.99
+          value: 349.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "48-Hour Window - EXPIRES",
+          test_mode: "fixed",
+          note: "49 hours old - outside dedup window, counted separately"
         }
       }
     },
@@ -205,7 +241,11 @@ export default function DedupMisconfiguredPage() {
           content_ids: ["PROD-789"],
           content_type: "product",
           num_items: 1,
-          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "Perfect Dedup - PERFECT",
+          test_mode: "fixed",
+          note: "Same event_id to Pixel & CAPI - counted as single event"
         }
       }
     }

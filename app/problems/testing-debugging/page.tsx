@@ -27,7 +27,11 @@ export default function TestingDebuggingPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "test_event_code - SAFE TESTING",
+          test_mode: "fixed",
+          note: "TEST_CODE_12345 - appears in Test Events tab only"
         }
       }
     },
@@ -49,7 +53,11 @@ export default function TestingDebuggingPage() {
           content_ids: ["PROD-123"],
           content_type: "product",
           currency: "USD",
-          value: 49.99
+          value: 49.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "Meta Pixel Helper - DETECTION",
+          test_mode: "fixed",
+          note: "Browser extension shows real-time Pixel events"
         }
       }
     },
@@ -71,7 +79,11 @@ export default function TestingDebuggingPage() {
         custom_data: {
           content_ids: ["PROD-456"],
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "DevTools Network - INSPECTION",
+          test_mode: "fixed",
+          note: "Network tab shows requests to facebook.com/tr"
         }
       }
     },
@@ -94,7 +106,11 @@ export default function TestingDebuggingPage() {
         custom_data: {
           currency: "USD",
           value: 149.99,
-          num_items: 2
+          num_items: 2,
+          source_page: "/problems/testing-debugging",
+          example_name: "Test Events Tab - VISIBILITY",
+          test_mode: "fixed",
+          note: "TEST_CHECKOUT - appears in Test Events within 1-2 min"
         }
       }
     },
@@ -106,7 +122,13 @@ export default function TestingDebuggingPage() {
         event_name: "Purchase",
         // Missing required fields to trigger error
         action_source: "website",
-        user_data: {}
+        user_data: {},
+        custom_data: {
+          source_page: "/problems/testing-debugging",
+          example_name: "CAPI Error Response - BROKEN",
+          test_mode: "broken",
+          note: "Missing required fields - Meta returns detailed error codes"
+        }
       },
       fixedPayload: {
         event_name: "Purchase",
@@ -119,7 +141,11 @@ export default function TestingDebuggingPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "CAPI Error Response - FIXED",
+          test_mode: "fixed",
+          note: "All required fields included - successful response"
         }
       }
     },
@@ -138,7 +164,11 @@ export default function TestingDebuggingPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 249.99
+          value: 249.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "Match Quality - LOW",
+          test_mode: "broken",
+          note: "Only email - low match quality score"
         }
       },
       fixedPayload: {
@@ -161,7 +191,11 @@ export default function TestingDebuggingPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 249.99
+          value: 249.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "Match Quality - HIGH",
+          test_mode: "fixed",
+          note: "Multiple PII fields - high match quality score"
         }
       }
     },
@@ -184,7 +218,11 @@ export default function TestingDebuggingPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/testing-debugging",
+          example_name: "Deduplication Verification - TEST",
+          test_mode: "fixed",
+          note: "TEST_DEDUP_CHECK - shows 'Deduplicated' badge in Test Events"
         }
       }
     },
@@ -222,7 +260,11 @@ export default function TestingDebuggingPage() {
           content_type: "product",
           content_name: "Test Product",
           num_items: 1,
-          order_id: "TEST-ORDER-12345"
+          order_id: "TEST-ORDER-12345",
+          source_page: "/problems/testing-debugging",
+          example_name: "Complete Debugging Workflow - PERFECT",
+          test_mode: "fixed",
+          note: "Gold standard testing: test_event_code + full payload + all metadata"
         }
       }
     }

@@ -25,7 +25,11 @@ export default function EventOrderPage() {
         custom_data: {
           currency: "USD",
           value: 99.99,
-          content_ids: ["PROD-123"]
+          content_ids: ["PROD-123"],
+          source_page: "/problems/event-order",
+          example_name: "Purchase Before ViewContent - ILLOGICAL",
+          test_mode: "broken",
+          note: "Skipped funnel steps - confuses Meta's AI optimization"
         }
       },
       fixedPayload: null
@@ -46,7 +50,11 @@ export default function EventOrderPage() {
         custom_data: {
           currency: "USD",
           value: 49.99,
-          content_ids: ["PROD-456"]
+          content_ids: ["PROD-456"],
+          source_page: "/problems/event-order",
+          example_name: "AddToCart Before ViewContent - BROKEN FUNNEL",
+          test_mode: "broken",
+          note: "Missing ViewContent - incomplete user journey"
         }
       },
       fixedPayload: null
@@ -67,7 +75,11 @@ export default function EventOrderPage() {
         custom_data: {
           currency: "USD",
           value: 149.99,
-          num_items: 1
+          num_items: 1,
+          source_page: "/problems/event-order",
+          example_name: "Checkout Before AddToCart - SKIP STEPS",
+          test_mode: "broken",
+          note: "Skipped AddToCart step - broken funnel sequence"
         }
       },
       fixedPayload: null
@@ -92,7 +104,11 @@ export default function EventOrderPage() {
           content_type: "product",
           content_name: "Premium Widget",
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/event-order",
+          example_name: "E-Commerce Sequence Step 1 - GOOD",
+          test_mode: "fixed",
+          note: "ViewContent first - proper funnel start"
         }
       }
     },
@@ -116,7 +132,11 @@ export default function EventOrderPage() {
           content_type: "product",
           currency: "USD",
           value: 159.98,
-          num_items: 2
+          num_items: 2,
+          source_page: "/problems/event-order",
+          example_name: "Multiple AddToCart - VALID PATTERN",
+          test_mode: "fixed",
+          note: "Multiple AddToCart events show user consideration"
         }
       }
     },
@@ -147,7 +167,11 @@ export default function EventOrderPage() {
           content_ids: ["PROD-789", "PROD-101"],
           content_type: "product",
           num_items: 2,
-          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
+          source_page: "/problems/event-order",
+          example_name: "Complete Funnel - PERFECT",
+          test_mode: "fixed",
+          note: "Proper sequence: ViewContent → AddToCart → InitiateCheckout → Purchase"
         }
       }
     }
