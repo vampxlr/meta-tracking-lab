@@ -40,7 +40,11 @@ export default function DemoControlsPage() {
         },
         custom_data: {
           content_name: "Documentation Page",
-          content_category: "Demo Controls"
+          content_category: "Demo Controls",
+          // Tracking metadata - shows in Events Manager
+          source_page: "/getting-started/demo-controls",
+          example_name: "ViewContent - Fixed Example",
+          test_mode: "fixed"
         }
       }
     },
@@ -59,7 +63,11 @@ export default function DemoControlsPage() {
         action_source: "website",
         custom_data: {
           search_string: "meta pixel tracking",
-          content_category: "Documentation"
+          content_category: "Documentation",
+          // Tracking metadata
+          source_page: "/getting-started/demo-controls",
+          example_name: "Search - Fixed Example",
+          test_mode: "fixed"
         },
         user_data: {
           client_ip_address: "[REDACTED]",
@@ -88,7 +96,11 @@ export default function DemoControlsPage() {
           content_type: "product",
           currency: "USD",
           value: 29.99,
-          num_items: 1
+          num_items: 1,
+          // Tracking metadata
+          source_page: "/getting-started/demo-controls",
+          example_name: "AddToCart - Fixed Example",
+          test_mode: "fixed"
         },
         user_data: {
           client_ip_address: "[REDACTED]",
@@ -115,7 +127,11 @@ export default function DemoControlsPage() {
           content_ids: ["prod_123", "prod_456"],
           currency: "USD",
           value: 149.98,
-          num_items: 2
+          num_items: 2,
+          // Tracking metadata
+          source_page: "/getting-started/demo-controls",
+          example_name: "InitiateCheckout - Fixed Example",
+          test_mode: "fixed"
         },
         user_data: {
           client_ip_address: "[REDACTED]",
@@ -144,7 +160,11 @@ export default function DemoControlsPage() {
           currency: "USD",
           value: 149.98,
           num_items: 2,
-          order_id: `order_${Date.now()}`
+          order_id: `order_${Date.now()}`,
+          // Tracking metadata
+          source_page: "/getting-started/demo-controls",
+          example_name: "Purchase - Fixed Example",
+          test_mode: "fixed"
         },
         user_data: {
           client_ip_address: "[REDACTED]",
@@ -180,7 +200,11 @@ export default function DemoControlsPage() {
         },
         custom_data: {
           status: "registered",
-          registration_method: "email"
+          registration_method: "email",
+          // Tracking metadata
+          source_page: "/getting-started/demo-controls",
+          example_name: "CompleteRegistration - Fixed Example",
+          test_mode: "fixed"
         }
       }
     }
