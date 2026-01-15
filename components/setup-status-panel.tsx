@@ -26,8 +26,124 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
   const router = useRouter()
   const [status, setStatus] = React.useState<SetupStatus | null>(null)
   const [isLoading, setIsLoading] = React.useState(true)
+  const [hasPixelId, setHasPixelId] = React.useState(false)
+  const [capiConfigured, setCapiConfigured] = React.useState(false)
+  const [pixelLoaded, setPixelLoaded] = React.useState(false)
 
-  // Load status from API if not provided
+  // Check environment on mount
+  React.useEffect(() => {
+    const pixelId = process.env.NEXT_PUBLIC_FB_PIXEL_ID
+    setHasPixelId(!!pixelId)
+    
+    // We can't reliably check CAPI config from client-side, 
+    // so we'll assume it's not configured initially
+    setCapiConfigured(false)
+    setIsLoading(false)
+  }, [])
+
+  // Check if pixel is loaded in browser (poll every 500ms for up to 10 seconds)
+  React.useEffect(() => {
+    if (!hasPixelId) {
+      setPixelLoaded(false)
+      return
+    }
+
+    let attempts = 0
+    const maxAttempts = 20 // 10 seconds worth of checking
+
+    const checkPixel = () => {
+      attempts++
+      if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+        setPixelLoaded(true)
+        return
+      }
+
+      if (attempts < maxAttempts) {
+        setTimeout(checkPixel, 500)
+      }
+    }
+
+    checkPixel()
+  }, [hasPixelId])
+
+  // Poll for test events in localStorage (to update verification status)
+  React.useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const checkTestEvents = () => {
+      const lastTestTime = localStorage.getItem('last_pixel_test_time')
+      const testVerified = !!lastTestTime
+
+      setStatus(prev => {
+        if (!prev) return null
+        const currentPixelConnected = typeof window !== 'undefined' && typeof window.fbq === 'function'
+        
+        return {
+          ...prev,
+          testEvents: {
+            verified: testVerified,
+            lastTestTime: lastTestTime
+          },
+          overall: prev.overall ? {
+            ...prev.overall,
+            isComplete: currentPixelConnected && capiConfigured && testVerified,
+            percentage: calculatePercentage(currentPixelConnected, capiConfigured, testVerified),
+            nextStep: getNextStep(currentPixelConnected, capiConfigured, testVerified)
+          } : undefined
+        }
+      })
+    }
+
+    // Check immediately and then every second
+    checkTestEvents()
+    const interval = setInterval(checkTestEvents, 1000)
+
+    return () => clearInterval(interval)
+  }, [capiConfigured, pixelLoaded])
+
+  // Calculate completion percentage helper
+  const calculatePercentage = (pixelConnected: boolean, capiConfigured: boolean, testVerified: boolean): number => {
+    const checks = [pixelConnected, capiConfigured, testVerified].filter(Boolean).length
+    return Math.round((checks / 3) * 100)
+  }
+
+  // Get next step helper
+  const getNextStep = (pixelConnected: boolean, capiConfigured: boolean, testVerified: boolean): string => {
+    if (!hasPixelId) return 'Add Pixel ID to environment'
+    if (!pixelConnected) return 'Wait for Pixel to load'
+    if (!capiConfigured) return 'Configure CAPI'
+    if (!testVerified) return 'Run Connection Test'
+    return 'Start using Event Playground'
+  }
+
+  // Build current status (initial setup)
+  React.useEffect(() => {
+    if (isLoading) return
+
+    const lastTestTime = typeof window !== 'undefined' ? localStorage.getItem('last_pixel_test_time') : null
+    const testVerified = !!lastTestTime
+
+    setStatus({
+      pixel: {
+        connected: pixelLoaded,
+        pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID || null
+      },
+      capi: {
+        configured: capiConfigured
+      },
+      testEvents: {
+        verified: testVerified,
+        lastTestTime: lastTestTime
+      },
+      overall: {
+        isComplete: pixelLoaded && capiConfigured && testVerified,
+        percentage: calculatePercentage(pixelLoaded, capiConfigured, testVerified),
+        nextStep: getNextStep(pixelLoaded, capiConfigured, testVerified)
+      }
+    })
+  }, [pixelLoaded, capiConfigured, isLoading])
+
+  // Load status from API if not provided (for CAPI status)
   React.useEffect(() => {
     if (initialStatus) {
       setStatus(initialStatus)
@@ -35,12 +151,39 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
       return
     }
 
-    // Fetch status from server API
+    // Fetch CAPI status from server API (we can check this from client)
     const fetchStatus = async () => {
       try {
         const response = await fetch('/api/setup-status')
         const data = await response.json()
-        setStatus(data)
+        
+        // Update CAPI status while preserving client-side pixel detection
+        setStatus(prev => {
+          if (!prev) return data
+          
+          const isPixelConnected = typeof window !== 'undefined' && typeof window.fbq === 'function'
+          const lastTestTime = typeof window !== 'undefined' ? localStorage.getItem('last_pixel_test_time') : null
+          const testVerified = !!lastTestTime
+          
+          return {
+            ...data,
+            pixel: {
+              connected: isPixelConnected,
+              pixelId: data.pixel?.pixelId || process.env.NEXT_PUBLIC_FB_PIXEL_ID || null
+            },
+            testEvents: {
+              verified: testVerified,
+              lastTestTime: lastTestTime
+            },
+            overall: {
+              isComplete: isPixelConnected && data.capi?.configured && testVerified,
+              percentage: calculatePercentage(isPixelConnected, data.capi?.configured || false, testVerified),
+              nextStep: getNextStep(isPixelConnected, data.capi?.configured || false, testVerified)
+            }
+          }
+        })
+        
+        setCapiConfigured(data.capi?.configured || false)
       } catch (error) {
         console.error('Failed to fetch setup status:', error)
       } finally {
@@ -88,7 +231,7 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
         <CardDescription>
           {status.overall.isComplete 
             ? "Setup complete! Your tracking is ready to use."
-            : "Complete the setup to start tracking events and improving your ad performance."
+            : "Complete setup to start tracking events and improving your ad performance."
           }
         </CardDescription>
       </CardHeader>
@@ -281,7 +424,7 @@ export function SetupStatusPanel({ initialStatus }: SetupStatusPanelProps) {
                   Setup Complete!
                 </p>
                 <p className="text-sm text-green-900/80 dark:text-green-100/80">
-                  Your tracking system is ready. Start using the Event Playground to practice 
+                  Your tracking system is ready. Start using Event Playground to practice 
                   and improve your implementation.
                 </p>
               </div>

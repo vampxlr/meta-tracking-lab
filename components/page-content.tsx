@@ -60,7 +60,7 @@ export function PageContent({
 
           {/* Right Panel - Sticky on desktop */}
           <div className="hidden lg:block">
-            <div className="sticky top-24">
+            <div className="sticky top-4">
               {rightPanel}
             </div>
           </div>
