@@ -19,23 +19,39 @@ export interface PageMetadata {
 export const pagesRegistry: Record<string, PageMetadata> = {
   "/getting-started/setup-checklist": {
     title: "Setup Checklist",
-    description: "A comprehensive checklist to ensure your Meta Pixel is properly configured and ready for accurate event tracking.",
+    description: "Get the Meta Tracking Lab running locally on your machine with this step-by-step setup guide.",
     badge: "Stable",
     sectionBlocks: [
       {
-        heading: "Before You Begin",
-        body: "Ensure you have access to your Meta Business Manager and have created a Pixel. This checklist covers the essential steps to set up your pixel correctly for accurate event tracking."
+        heading: "Prerequisites",
+        body: "Before getting started, ensure you have Node.js 18+ installed on your machine. You'll also need npm, yarn, or pnpm as your package manager. Additionally, you should have access to your Meta Business Manager with a Pixel created and a System User Access Token with the necessary permissions (ads_management, ads_read)."
       },
       {
-        heading: "Installation Steps",
-        body: "Install the Meta Pixel base code on your website. Place it in the `<head>` section of every page to ensure comprehensive tracking coverage. Verify the pixel is firing using browser developer tools or Meta Pixel Helper."
+        heading: "Step 1: Clone the Repository",
+        body: "Clone the Meta Tracking Lab repository from GitHub using the following command:\n\n```bash\ngit clone https://github.com/vampxlr/meta-tracking-lab.git\ncd meta-tracking-lab\n```\n\nThis will download the project files to your local machine and navigate into the project directory."
       },
       {
-        heading: "Event Configuration",
-        body: "Configure standard events like ViewContent, AddToCart, and Purchase based on your business model. Custom events can be added for specific user actions. Ensure all required parameters are included for optimal matching."
+        heading: "Step 2: Install Dependencies",
+        body: "Install all required dependencies using your preferred package manager:\n\n```bash\nnpm install\n# or\nyarn install\n# or\npnpm install\n```\n\nThis will install Next.js, React, TypeScript, Tailwind CSS, and all other dependencies required for the project."
+      },
+      {
+        heading: "Step 3: Configure Environment Variables",
+        body: "Create a `.env.local` file in the root directory of the project. This file will contain your Meta Pixel ID and Conversions API Access Token:\n\n```bash\n# Meta Pixel Configuration\nNEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here\n\n# Meta CAPI Configuration\nMETA_CAPI_ACCESS_TOKEN=your_access_token_here\nMETA_GRAPH_API_VERSION=v19.0\nMETA_TEST_EVENT_CODE=TEST12345\n```\n\n**Where to find these values:**\n\n- **NEXT_PUBLIC_FB_PIXEL_ID**: Found in Meta Business Manager > Events Manager > Data Sources > Pixels. Look for your pixel and copy the Pixel ID (a numeric value).\n\n- **META_CAPI_ACCESS_TOKEN**: Generate this in Meta Business Manager > Business Settings > System Users. Create a System User, assign it to your pixel, and generate an access token with ads_management and ads_read permissions.\n\n- **META_TEST_EVENT_CODE**: Optional. Found in Events Manager > Test Events. Use this during development to keep test events separate from production data.\n\n**Important:** Never commit your `.env.local` file to version control. It's already included in `.gitignore` for your security."
+      },
+      {
+        heading: "Step 4: Run the Development Server",
+        body: "Start the development server to see the Meta Tracking Lab in action:\n\n```bash\nnpm run dev\n# or\nyarn dev\n# or\npnpm dev\n```\n\nOpen your browser and navigate to http://localhost:3000. You should see the Meta Tracking Lab homepage with the navigation sidebar on the left."
+      },
+      {
+        heading: "Step 5: Verify Your Setup",
+        body: "To verify that everything is configured correctly:\n\n1. **Check the Setup Status Panel**: Look at the right sidebar on any page. It should show green checkmarks for Pixel ID and CAPI Token if configured correctly.\n\n2. **Test CAPI Integration**: Navigate to `/capi-test` and try sending a test event. You should see a success response from Meta's API.\n\n3. **Check Events Manager**: Open Meta Events Manager in a new tab and go to Test Events. You should see your test events appearing there within a few seconds.\n\n4. **Explore the Demo**: Use the Event Playground (available on most pages via the right sidebar) to trigger different event types and see how they appear in your Meta Events Manager.\n\nIf you encounter any issues, double-check that your Pixel ID and Access Token are correct and that your System User has the appropriate permissions."
+      },
+      {
+        heading: "Next Steps",
+        body: "Now that you have the Meta Tracking Lab running locally, explore the documentation pages to learn about common tracking issues and how to fix them. Visit `/getting-started/demo-controls` to learn how to use the interactive Event Playground. Check out the `/capi-test` page to experiment with server-side event tracking using the Conversions API."
       }
     ],
-    showDemo: true,
+    showDemo: false,
     demoPreset: { kind: "setup" }
   },
 

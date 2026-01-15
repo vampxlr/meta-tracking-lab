@@ -35,7 +35,11 @@ interface ROIResults {
   yearlyImpact: number
 }
 
-export function DemoPanel() {
+interface DemoPanelProps {
+  preset?: string
+}
+
+export function DemoPanel({ preset }: DemoPanelProps = {}) {
   const [mode, setMode] = React.useState<"Broken" | "Fixed">("Broken")
   const [logs, setLogs] = React.useState<LogEntry[]>([])
   const [lastPayload, setLastPayload] = React.useState<any>(null)
