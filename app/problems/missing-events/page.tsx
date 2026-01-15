@@ -1,7 +1,6 @@
 "use client"
 
 import { PageContent } from "@/components/page-content"
-import { DemoPanel } from "@/components/demo-panel"
 
 export default function MissingEventsPage() {
   return (
@@ -9,7 +8,6 @@ export default function MissingEventsPage() {
       title="Missing Events"
       description="Diagnose why events aren&apos;t appearing in your Events Manager and learn how to fix common causes."
       status="Stable"
-      rightPanel={<DemoPanel preset="missing" />}
     >
       
       {/* Common Causes */}
@@ -106,7 +104,7 @@ export default function MissingEventsPage() {
               Verify that the pixel is firing using the Network tab. Look for requests to facebook.com/tr with your pixel ID.
             </p>
             <pre className="relative overflow-x-auto rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-3 font-mono text-xs">
-              <code className="text-[#00ff41]">F12 → Network → Filter: "facebook.com/tr"</code>
+              <code className="text-[#00ff41]">F12 → Network → Filter: &quot;facebook.com/tr&quot;</code>
             </pre>
           </div>
           

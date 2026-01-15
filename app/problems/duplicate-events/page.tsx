@@ -237,7 +237,7 @@ export default function DuplicateEventsPage() {
               <div className="glass rounded-lg p-4 border border-red-500/20">
                 <p className="text-xs font-mono text-[#8b949e] mb-2">Meta Sees</p>
                 <p className="text-2xl font-bold text-red-400">$200</p>
-                <p className="text-xs text-[#8b949e] mt-1">2 "separate" events</p>
+                <p className="text-xs text-[#8b949e] mt-1">2 &quot;separate&quot; events</p>
               </div>
             </div>
           </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { PageContent } from "@/components/page-content"
-import { EventPlayground } from "@/components/event-playground"
+import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { Eye, ShoppingCart, CreditCard, MousePointerClick, UserPlus, Search } from "lucide-react"
 
 export default function DemoControlsPage() {
@@ -18,11 +18,11 @@ export default function DemoControlsPage() {
         event_name: "PageView",
         event_id: `view_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: window.location.href,
+        event_source_url: typeof window !== 'undefined' ? window.location.href : 'https://example.com',
         action_source: "website",
         user_data: {
           client_ip_address: "[REDACTED]",
-          client_user_agent: navigator.userAgent,
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
           fbp: "_fbp_cookie_value",
           fbc: "_fbc_cookie_value"
         }
@@ -364,7 +364,7 @@ export default function DemoControlsPage() {
               <div>
                 <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Use correct data types</p>
                 <p className="text-xs text-[#8b949e] mt-1">
-                  Value should be number (99.99), not string ("99.99")
+                  Value should be number (99.99), not string (&quot;99.99&quot;)
                 </p>
               </div>
             </div>
@@ -398,12 +398,18 @@ export default function DemoControlsPage() {
           <span className="inline-block animate-pulse">▸</span> Try It Yourself
         </h2>
         
-        <EventPlayground
+        <EnhancedEventPlayground
           title="Event Testing Playground"
           description="Toggle between Broken and Fixed modes, then click any event to see the payload difference"
           events={customEvents}
           showModeToggle={true}
           showLogs={true}
+          sendToMeta={true}
+          sendToBoth={true}
+          showNetworkInspector={true}
+          showMetaResponse={true}
+          testEventCode="TEST_DEMO"
+          pixelId={process.env.NEXT_PUBLIC_FB_PIXEL_ID}
         />
       </section>
 

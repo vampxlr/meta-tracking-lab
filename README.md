@@ -1,363 +1,379 @@
-# Meta Tracking Lab
+# Meta Tracking Lab 🚀
 
-Interactive documentation for debugging and validating Meta Pixel events and Conversions API implementations.
+**Interactive Learning Platform for Meta Pixel and Conversions API**
+
+An educational platform where developers **actually send real events to Meta** and see complete network transparency. Each documentation page includes interactive playgrounds that demonstrate tracking concepts through hands-on experimentation.
 
 ---
 
 ## 🤖 For AI Models & Developers
 
-**📖 MUST READ FIRST:** [`AI_DEVELOPER_GUIDE.md`](AI_DEVELOPER_GUIDE.md) - 30-second quick reference
+**📖 START HERE:** [`.ai-context.md`](.ai-context.md) - Complete architecture overview
 
-**📖 DETAILED GUIDE:** [`ARCHITECTURE_PATTERNS.md`](ARCHITECTURE_PATTERNS.md) - Complete patterns & fixes
+**📖 QUICK GUIDE:** [`AI_DEVELOPER_GUIDE.md`](AI_DEVELOPER_GUIDE.md) - Common patterns and mistakes
 
-These documents contain critical architecture patterns and common mistakes to avoid:
+**📖 IMPLEMENTATION:** [`ENHANCED_INTERACTIVE_GUIDE.md`](ENHANCED_INTERACTIVE_GUIDE.md) - How to build new pages
 
-- ✅ Next.js 15 async params with `use()` hook
-- ✅ Client vs Server Component patterns  
-- ✅ How to properly render pages from the registry
-- ✅ Common mistakes and their fixes
-- ✅ What was fixed and why
-
-**Reading these first will save you from common errors!**
+**Reading these first will save you hours of debugging!**
 
 ---
 
-## Current Status
+## ✨ What Makes This Special
 
-**Overall Completion: 94.3%** (50/53 features complete)
+This isn't just documentation—it's an **interactive learning laboratory**:
 
-The project is in excellent shape with all core features implemented. The remaining 5.7% consists of placeholder implementations for server-side tracking features planned for future development.
+- 🔴 **Send REAL Events to Meta** (both Pixel and CAPI)
+- 🔍 **Network Inspector** - See exactly what's sent and received
+- ⚡ **Instant Verification** - Check Meta Events Manager in real-time
+- 🎭 **Broken vs Fixed** - Compare implementations side-by-side
+- 📋 **Production Code** - Copy-paste ready examples
+- 🎓 **Learn by Doing** - Understand through experimentation
 
-**What's Working Now:**
-- ✅ 18 complete documentation pages with dynamic routing
-- ✅ Interactive demo panel for event testing
-- ✅ 16 fully implemented components (7 core + 9 UI)
-- ✅ Responsive design with mobile support
-- ✅ Dark mode with theme persistence
-- ✅ Event logging with JSON preview
-- ✅ Toast notifications for feedback
-- ✅ Navigation system with sidebar and mobile menu
+---
 
-**Planned for Future:**
-- ⏳ Real Meta Pixel integration (currently placeholder)
-- ⏳ Conversions API implementation (currently placeholder)
-- ⏳ Server-side event queue and retry logic (currently placeholder)
+## 🎯 Current Status
 
-## Features
+### ✅ Complete (6 Pages)
+1. Home - Project overview
+2. Setup Checklist - Installation guide
+3. Demo Controls - Playground tutorial
+4. Missing Events - Debugging guide
+5. **Duplicate Events** - Fully interactive with 8 real scenarios
+6. CAPI Test - Interactive server testing
 
-### Documentation System
-- **18 Documentation Pages** covering core tracking problems and server-side reliability
-  - Getting Started (3 pages): Overview, Setup Checklist, Demo Controls
-  - Core Problems (11 pages): Missing Events, Duplicate Events, Purchase Mismatch, Low Match Quality, Wrong Parameters, Event Order, Missing Event ID, Dedup Misconfigured, Cookie FBP Issues, AEM Domain Issues, Testing & Debugging
-  - Server-Side & Reliability (4 pages): First-Party Endpoint, Retry Queue, Schema Guardrails, Security & Privacy
-- **Dynamic Page Routing** using Next.js catch-all routes
-- **Page Registry System** for centralized content management
-- **Consistent Page Structure** with section-based content and status badges
+### 🚧 To Build (11 Pages)
+Each with 6-8 interactive scenarios and real Meta integration.
 
-### Interactive Demo Panel
-- **Event Mode Switching** (Broken/Fixed) to demonstrate tracking issues
-- **Event Triggering** for common e-commerce events (ViewContent, AddToCart, Purchase)
-- **Real-time Event Logging** with timestamps
-- **JSON Payload Preview** with pretty-printed formatting
-- **Copy to Clipboard** functionality for payloads
-- **Event History** with scrollable log viewer
-- **Clear Logs** functionality
+See [`ENHANCED_INTERACTIVE_GUIDE.md`](ENHANCED_INTERACTIVE_GUIDE.md) for pre-written examples and implementation guide.
 
-### Component Architecture
-- **16 Components** (7 core + 9 UI components)
-  - Core Components: AppShell, DemoPanel, FacebookPixel, PageContent, PageShell, ThemeProvider, Toaster
-  - UI Components: Badge, Button, Card, Input, ScrollArea, Separator, Sheet, Tabs, Tooltip
-- **Responsive Layout** with collapsible sidebar for mobile
-- **Dark Mode Support** with system theme detection and persistence
-- **Navigation System** with active route highlighting
+---
 
-### User Experience
-- **Dark, Modern UI** built with shadcn/ui and Tailwind CSS
-- **Responsive Design** optimized for desktop and mobile devices
-- **Toast Notifications** using Sonner for user feedback
-- **Smooth Animations** and transitions
-- **Accessibility** with WCAG compliant components
-
-## Documentation
-
-### Architecture & Best Practices
-
-**🏗️ Architecture Patterns Guide** - [`ARCHITECTURE_PATTERNS.md`](ARCHITECTURE_PATTERNS.md)
-- Next.js 15 App Router patterns (async params, use() hook)
-- Client vs Server Component guidelines
-- Dynamic page rendering from registry
-- Common mistakes and fixes
-- **Read this first if you're an AI model or new developer working on this codebase**
-
-**🔍 Linting & Best Practices** - [`LINTING_AND_BEST_PRACTICES.md`](LINTING_AND_BEST_PRACTICES.md)
-- React hooks best practices
-- JSX/HTML entity escaping
-- ESLint rules and quick fixes
-- Pre-build checklist
-
-### Features Implemented
-Detailed documentation of all implemented features is available in the [`features-implemented/`](features-implemented/) folder:
-
-- [`01-documentation-pages.md`](features-implemented/01-documentation-pages.md) - Complete list of all 18 documentation pages
-- [`02-components.md`](features-implemented/02-components.md) - All 16 components with details
-- [`03-utilities.md`](features-implemented/03-utilities.md) - Utility functions and helpers
-- [`04-api-routes.md`](features-implemented/04-api-routes.md) - API route implementations
-- [`05-app-structure.md`](features-implemented/05-app-structure.md) - Application architecture
-- [`06-configuration.md`](features-implemented/06-configuration.md) - Configuration details
-- [`07-ui-components.md`](features-implemented/07-ui-components.md) - UI component library
-- [`08-summary.md`](features-implemented/08-summary.md) - Comprehensive project summary
-
-### Todos & Future Work
-Tracking for remaining work and future enhancements is available in the [`todos/`](todos/) folder:
-
-- [`01-placeholder-features.md`](todos/01-placeholder-features.md) - Placeholder implementations
-- [`02-future-enhancements.md`](todos/02-future-enhancements.md) - Planned features
-- [`03-bug-fixes.md`](todos/03-bug-fixes.md) - Known issues and fixes
-- [`04-improvements.md`](todos/04-improvements.md) - Suggested improvements
-- [`05-testing.md`](todos/05-testing.md) - Testing requirements
-- [`06-documentation.md`](todos/06-documentation.md) - Documentation tasks
-- [`07-active-todos.md`](todos/07-active-todos.md) - Active development tasks
-
-## Tech Stack
-
-- **Next.js 15** with App Router
-- **React 19** for UI components
-- **TypeScript 5** for type safety
-- **Tailwind CSS 3.4.19** for styling
-- **shadcn/ui** as the primary UI component library (Radix UI based)
-- **lucide-react** for icons
-- **sonner** for toast notifications
-- **next-themes** for dark mode support
-
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-
-- Node.js 18+ installed
+- Node.js 18+
 - npm, yarn, or pnpm
+- Meta Pixel ID (for real event sending)
 
 ### Installation
 
-1. Install dependencies:
-   ```bash
-   npm install
-   npm i -D autoprefixer postcss tailwindcss
-   ```
-2. Run the development server:
-   ```bash
-   npm run dev
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/vampxlr/meta-tracking-lab.git
+cd meta-tracking-lab
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser
+# Install dependencies
+npm install
 
-### Environment Variables
+# Create environment file
+cp .env.example .env.local
+```
 
-Create a `.env.local` file in the root directory:
+### Configuration
+
+Edit `.env.local`:
 
 ```bash
-# Meta Pixel Configuration
+# Required - Your Meta Pixel ID
 NEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here
 
-# Conversions API Configuration (Future)
-FB_ACCESS_TOKEN=your_access_token_here
-FB_PIXEL_ID=your_pixel_id_here
+# Optional - For CAPI testing
+META_CAPI_ACCESS_TOKEN=your_access_token_here
+META_TEST_EVENT_CODE=TEST12345
 ```
 
-## CAPI Setup
+**Where to find these:**
+- **Pixel ID**: Meta Business Manager → Events Manager → Data Sources → Pixels
+- **Access Token**: Meta Business Manager → Business Settings → System Users → Generate Token (with `ads_management` permission)
+- **Test Code**: Events Manager → Test Events tab
 
-This lab includes a functional Conversions API (CAPI) implementation for server-side event tracking. The CAPI Test page allows you to send events directly to Meta's Graph API, bypassing browser restrictions and improving tracking reliability.
+### Run Development Server
 
-### Prerequisites
-
-Before setting up CAPI, ensure you have:
-
-- **Meta Pixel** - A Meta Pixel created in Meta Business Manager
-- **Access Token** - A System User Access Token with appropriate permissions
-
-### Setup Steps
-
-1. **Create a Meta Pixel**
-   
-   Navigate to Meta Business Manager > Events Manager > Pixels and create a new pixel for your app.
-
-2. **Generate a System User Access Token**
-   
-   Create a System User in Meta Business Manager and generate an access token with the following permissions:
-   - `ads_management`
-   - `ads_read`
-
-3. **Configure Environment Variables**
-   
-   Add the following variables to your `.env.local` file:
-   
-   ```bash
-   # Meta CAPI Configuration
-   META_CAPI_ACCESS_TOKEN=your_access_token_here
-   NEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here
-   META_GRAPH_API_VERSION=v19.0
-   META_TEST_EVENT_CODE=your_test_code_here
-   ```
-   
-   - `META_CAPI_ACCESS_TOKEN` (required) - Your System User Access Token
-   - `NEXT_PUBLIC_FB_PIXEL_ID` (required) - Your Meta Pixel ID
-   - `META_GRAPH_API_VERSION` (optional) - Graph API version (defaults to v19.0)
-   - `META_TEST_EVENT_CODE` (optional) - Test event code for development testing
-
-4. **Run the Development Server**
-   
-   ```bash
-   npm run dev
-   ```
-
-5. **Test CAPI**
-   
-   Navigate to [`/capi-test`](http://localhost:3000/capi-test) to access the CAPI Test page and send test events.
-
-### Testing CAPI
-
-The CAPI Test page provides an interactive interface for testing server-side event tracking:
-
-- **Send Test Events** - Choose between different event types (ViewContent, AddToCart, Purchase)
-- **Mode Selection** - Test both "Broken" and "Fixed" implementations to understand common issues
-- **Event Logging** - View real-time event logs with JSON payloads
-- **Verification** - Use Meta Events Manager's Test Events tab to verify received events
-
-### Important Notes
-
-- **Security** - Never commit `.env.local` to version control. Add it to your `.gitignore` file.
-- **Access Tokens** - Keep your access tokens secure and rotate them periodically.
-- **Test Events** - Always use test event codes during development to avoid polluting production data.
-- **Broken Mode** - The "Broken" mode is for demonstration purposes only and shows common implementation mistakes.
-- **Production** - When moving to production, remove test event codes and ensure proper error handling and retry logic.
-
-## Project Structure
-
-```
-├── app/                          # Next.js app directory
-│   ├── api/meta/capi/           # API routes (placeholder)
-│   ├── getting-started/         # Getting Started pages
-│   ├── problems/                # Core Problems pages
-│   ├── server/                  # Server-Side & Reliability pages
-│   ├── connect/                 # Connection test page
-│   ├── [...slug]/               # Dynamic routes for documentation
-│   ├── globals.css              # Global styles
-│   ├── layout.tsx               # Root layout
-│   └── page.tsx                 # Home page
-├── components/
-│   ├── ui/                      # shadcn/ui components (9 components)
-│   ├── app-shell.tsx            # Main layout (header + sidebar)
-│   ├── demo-panel.tsx           # Interactive event playground
-│   ├── facebook-pixel.tsx       # Pixel integration
-│   ├── page-content.tsx         # Dynamic page renderer
-│   ├── page-shell.tsx           # Page wrapper component
-│   ├── theme-provider.tsx       # Theme provider
-│   └── toaster.tsx              # Toast configuration
-├── content/
-│   ├── nav.ts                   # Sidebar navigation config
-│   └── pages-registry.ts        # Page registry for dynamic routing
-├── features-implemented/        # Feature documentation
-│   ├── 01-documentation-pages.md
-│   ├── 02-components.md
-│   ├── 03-utilities.md
-│   ├── 04-api-routes.md
-│   ├── 05-app-structure.md
-│   ├── 06-configuration.md
-│   ├── 07-ui-components.md
-│   └── 08-summary.md
-├── todos/                       # Future work and enhancements
-│   ├── 01-placeholder-features.md
-│   ├── 02-future-enhancements.md
-│   ├── 03-bug-fixes.md
-│   ├── 04-improvements.md
-│   ├── 05-testing.md
-│   ├── 06-documentation.md
-│   └── 07-active-todos.md
-├── lib/
-│   ├── meta/                    # Client-side Meta helpers
-│   │   ├── client.ts           # Client utilities
-│   │   └── event-utils.ts      # Event utilities
-│   ├── server/meta/             # Server-side CAPI helpers
-│   │   └── index.ts            # Server utilities
-│   └── utils.ts                 # Utility functions
-└── package.json
+```bash
+npm run dev
 ```
 
-## Pages
+Open [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🎓 How to Use
+
+### 1. Visit Any Documentation Page
+Start with `/problems/duplicate-events` for a complete example.
+
+### 2. Read the Concept
+Each page explains a specific tracking problem or concept.
+
+### 3. Try the Interactive Playground
+- Toggle between "Broken" and "Fixed" modes
+- Click event buttons to send REAL events to Meta
+- View the Network Inspector to see:
+  - Pixel Request (browser-side)
+  - CAPI Request (server-side)
+  - Meta's Response
+- Check Event History for all sent events
+
+### 4. Verify in Meta Events Manager
+- Click "Open Events Manager" button
+- See your events appear within 5-10 seconds
+- Verify deduplication works (Fixed mode = 1 event, not 2)
+
+### 5. Copy Production Code
+All code examples are production-ready—just copy and paste!
+
+---
+
+## 🏗️ Architecture
+
+### Tech Stack
+- **Next.js 15** - App Router
+- **React 19** - Latest features
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Custom hacker theme
+- **shadcn/ui** - UI components
+- **Meta Pixel** - Real client-side tracking
+- **Conversions API** - Real server-side tracking
+
+### Key Component: EnhancedEventPlayground
+
+The core of the interactive experience:
+
+```typescript
+<EnhancedEventPlayground
+  title="Your Test Suite"
+  description="What users will learn"
+  events={customEvents}          // 6-8 scenarios
+  sendToMeta={true}               // Send real events
+  sendToBoth={true}               // Both Pixel & CAPI
+  showNetworkInspector={true}     // Show network details
+  showMetaResponse={true}         // Show Meta's response
+  testEventCode="TEST_CODE"       // Use test mode
+  pixelId={process.env.NEXT_PUBLIC_FB_PIXEL_ID}
+/>
+```
+
+### Project Structure
+
+```
+app/
+├── page.tsx                              # Home
+├── layout.tsx                            # Root layout
+├── globals.css                           # Global styles + theme
+├── getting-started/
+│   ├── setup-checklist/page.tsx         # Setup guide
+│   └── demo-controls/page.tsx           # Playground tutorial
+├── problems/
+│   ├── duplicate-events/page.tsx        # ✅ FULLY INTERACTIVE
+│   └── missing-events/page.tsx          # Basic version
+├── capi-test/page.tsx                   # CAPI testing
+└── api/
+    ├── meta/capi/route.ts               # CAPI endpoint
+    └── setup-status/route.ts            # Status check
+
+components/
+├── enhanced-event-playground.tsx        # ✅ Core interactive component
+├── page-content.tsx                     # Page layout wrapper
+├── app-shell.tsx                        # Main app layout
+├── setup-status-panel.tsx               # Sidebar status
+└── ui/                                  # shadcn components
+
+content/
+└── nav.ts                               # Navigation config
+```
+
+---
+
+## 📖 Documentation Pages
 
 ### Getting Started
-- **Overview** - Introduction to Meta Tracking Lab
-- **Setup Checklist** - Configuration verification
-- **Demo Controls** - How to use the Event Playground
+- **Setup Checklist** - Environment setup and configuration
+- **Demo Controls** - How to use the interactive playground
 
-### Core Problems
-- **Missing Events** - Diagnose and fix missing event issues
-- **Duplicate Events** - Prevent and resolve duplicate events
-- **Purchase Mismatch** - Resolve purchase discrepancies
-- **Low Match Quality** - Improve attribution accuracy
-- **Wrong Parameters** - Fix parameter configuration issues
-- **Event Order** - Correct event sequencing
-- **Missing Event ID** - Understand event ID importance
-- **Dedup Misconfigured** - Fix deduplication problems
-- **Cookie FBP Issues** - Resolve cookie-related issues
-- **AEM Domain Issues** - Address domain configuration problems
-- **Testing & Debugging** - Master debugging tools and techniques
+### Core Problems (5 complete, 9 to build)
+- ✅ **Missing Events** - Debug missing event issues
+- ✅ **Duplicate Events** - Prevent duplicate counting (FULLY INTERACTIVE)
+- 🚧 **Low Match Quality** - Improve PII hashing and matching
+- 🚧 **Purchase Mismatch** - Fix value and currency issues
+- 🚧 **Wrong Parameters** - Correct field names and types
+- 🚧 **Event Order** - Logical event sequences
+- 🚧 **Missing Event ID** - Deduplication fundamentals
+- 🚧 **Dedup Misconfigured** - Advanced dedup scenarios
+- 🚧 **Cookie FBP Issues** - First-party cookie setup
+- 🚧 **AEM Domain Issues** - Multi-domain tracking
+- 🚧 **Testing & Debugging** - Tools and techniques
 
-### Server-Side & Reliability
-- **First-Party Endpoint** - Implement first-party tracking
-- **Retry Queue** - Robust retry mechanism for failed events
-- **Schema Guardrails** - Validation and sanitization
-- **Security & Privacy** - Best practices for data protection
+### Server-Side & Reliability (4 to build)
+- 🚧 **CAPI Setup** - Server-side configuration
+- 🚧 **First-Party Endpoint** - Custom tracking endpoint
+- 🚧 **Retry Queue** - Resilient event sending
+- 🚧 **Schema Guardrails** - Event validation
+- 🚧 **Security & Privacy** - Data protection
 
-## Demo Panel Features
+---
 
-The Event Playground allows you to:
-- Switch between **Broken** and **Fixed** modes to see tracking issues
-- Trigger common e-commerce events (ViewContent, AddToCart, Purchase)
-- View JSON payloads with pretty-printed formatting
-- Copy payloads to clipboard for testing
-- View event history with timestamps
-- Clear logs to start fresh
-- Test different event configurations in real-time
+## 🎨 Design System
 
-## Future Development
+### Theme: Hacker/Cyberpunk
+- **Colors**: Neon green (`#00ff41`), Cyan (`#00d9ff`)
+- **Fonts**: Inter (body), JetBrains Mono (code)
+- **Effects**: Glassmorphism, animated borders, neon glows
 
-### Phase 2: Real Integration
-The following features are currently placeholders and planned for future implementation:
+### CSS Classes
+```css
+.glass              /* Light glassmorphism */
+.glass-strong       /* Strong glassmorphism */
+.hover-glow         /* Glow on hover */
+.hover-lift         /* Lift and scale on hover */
+.border-animated    /* Pulsing border */
+.text-glow-hover    /* Text glow on hover */
+.button-neon        /* Cyberpunk button */
+```
 
-- **Real Meta Pixel Integration**
-  - Actual `fbq()` function integration
-  - Event validation and error handling
-  - Queue management for failed events
+---
 
-- **Conversions API Implementation**
-  - Server-side event submission
-  - Event validation and sanitization
-  - Response handling and error management
+## 🛠️ Building New Pages
 
-- **Event Deduplication**
-  - Client-server deduplication logic
-  - Event ID matching
-  - Duplicate detection and prevention
+### Step 1: Copy Template
+```bash
+cp app/problems/duplicate-events/page.tsx app/problems/your-page/page.tsx
+```
 
-- **Server-Side Event Queue**
-  - Retry mechanism for failed events
-  - Exponential backoff strategy
-  - Queue persistence
+### Step 2: Get Pre-Written Examples
+Open [`ENHANCED_INTERACTIVE_GUIDE.md`](ENHANCED_INTERACTIVE_GUIDE.md) and find your page's section. It includes 6-8 pre-written event examples!
 
-- **Advanced Testing Scenarios**
-  - A/B testing capabilities
-  - Load testing tools
-  - Performance benchmarking
+### Step 3: Customize Content
+- Update title/description
+- Replace event definitions
+- Update educational sections
+- Add code examples
 
-### Long-term Enhancements
+### Step 4: Add to Navigation
+```typescript
+// content/nav.ts
+{
+  title: "Your Page",
+  href: "/problems/your-page",
+  icon: YourIcon,
+  group: "Core Problems"
+}
+```
 
-- **Search Functionality** - Full-text search across documentation
-- **User Authentication** - Personalized tracking configurations
-- **Analytics Dashboard** - View tracking statistics
-- **Video Tutorials** - Interactive walkthroughs
-- **API Reference** - Complete API documentation
-- **Automated Testing** - Unit and integration tests
+### Step 5: Test
+```bash
+npm run dev
+# Visit page, send events, check Meta Events Manager
+```
 
-## License
+**Time:** 30-45 minutes per page using the guide!
 
-MIT
+---
+
+## 🧪 Testing
+
+### Local Testing
+```bash
+npm run dev
+# Visit http://localhost:3000
+# Send events from any interactive playground
+# Check browser console and Network tab
+```
+
+### Meta Events Manager
+1. Open Meta Events Manager
+2. Go to Test Events tab
+3. Send events from playground
+4. See them appear within 5-10 seconds
+5. Verify deduplication (Fixed mode)
+
+### Build Test
+```bash
+npm run build
+# Must pass with no errors
+```
+
+---
+
+## 📚 Meta Integration
+
+### Client-Side (Meta Pixel)
+- Loads via `FacebookPixel` component
+- Sends via `fbq('track', eventName, data, { eventID })`
+- Automatic page view tracking
+- Manual event triggering from playground
+
+### Server-Side (Conversions API)
+- API route: `/api/meta/capi`
+- Endpoint: `https://graph.facebook.com/v19.0/{pixel-id}/events`
+- Access token from environment
+- Full request/response logging
+
+### Deduplication
+- Both use same `event_id`
+- Meta automatically deduplicates
+- Within 48-hour window
+- Verify in Events Manager
+
+---
+
+## ⚠️ Important Notes
+
+### Security
+- Never commit `.env.local` to git (already in `.gitignore`)
+- Rotate access tokens periodically
+- Use test event codes in development
+
+### Data Privacy
+- All PII must be hashed (SHA-256)
+- Normalize before hashing (lowercase, trim)
+- No plaintext emails, phones, names
+
+### Production
+- Remove test event codes
+- Use production access tokens
+- Enable error monitoring
+- Implement retry logic
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome! To add a new page:
+
+1. Read [`ENHANCED_INTERACTIVE_GUIDE.md`](ENHANCED_INTERACTIVE_GUIDE.md)
+2. Copy the duplicate-events template
+3. Use pre-written examples from guide
+4. Test thoroughly
+5. Submit PR with:
+   - New page file
+   - Navigation update
+   - Screenshot of working playground
+
+---
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+---
+
+## 🌟 Acknowledgments
+
+Built with:
+- [Next.js](https://nextjs.org/) - React framework
+- [shadcn/ui](https://ui.shadcn.com/) - UI components
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Lucide](https://lucide.dev/) - Icons
+- [Meta Graph API](https://developers.facebook.com/docs/graph-api/) - Conversions API
+
+---
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/vampxlr/meta-tracking-lab/issues)
+- **Documentation**: All `.md` files in root directory
+- **AI Guide**: [`.ai-context.md`](.ai-context.md) for AI models
+
+---
+
+**Start building interactive tracking education today!** 🚀

@@ -1,7 +1,6 @@
 import { ReactNode } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { DemoPanel } from "@/components/demo-panel"
 
 interface PageShellProps {
   title: string
@@ -88,17 +87,6 @@ export function PageShell({
             </div>
           </div>
 
-          {/* Demo Panel - Sticky on desktop */}
-          <div className="hidden lg:block">
-            <div className="sticky top-24">
-              <DemoPanel />
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile Demo Panel */}
-        <div className="mt-8 lg:hidden">
-          <DemoPanel />
         </div>
       </div>
     </div>

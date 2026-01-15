@@ -1,299 +1,508 @@
-# Quick Reference for AI Models & Developers
+# AI Developer Guide - Meta Tracking Lab
 
-**Last Updated:** January 15, 2026
+**For:** AI Models working on this project
+**Updated:** January 15, 2026
 
 ---
 
-## ⚡ Quick Start (30 Second Read)
+## 🎯 Quick Context
 
-If you're working on this codebase, here are the **5 critical rules** to follow:
+This is an **interactive educational platform** for Meta Pixel and Conversions API. Each documentation page sends **real events to Meta** and shows complete network transparency.
 
-### 1️⃣ Client Component Rule
+---
 
-**ANY component that receives interactive elements MUST have `"use client"`**
+## 📁 Current Architecture
+
+### ✅ What EXISTS Now
+
+```
+app/
+├── page.tsx                              # Home
+├── layout.tsx                            # Root layout
+├── globals.css                           # Global styles
+├── getting-started/
+│   ├── setup-checklist/page.tsx
+│   └── demo-controls/page.tsx
+├── problems/
+│   ├── duplicate-events/page.tsx        # FULLY INTERACTIVE (example)
+│   └── missing-events/page.tsx
+└── capi-test/page.tsx
+
+components/
+├── enhanced-event-playground.tsx        # ✅ CURRENT component
+├── page-content.tsx
+├── app-shell.tsx
+├── setup-status-panel.tsx
+└── ui/                                  # shadcn components
+
+content/
+└── nav.ts                               # Navigation only
+```
+
+### ❌ What NO LONGER EXISTS (DELETED)
+
+```
+❌ app/[...slug]/                        # Dynamic route deleted
+❌ content/pages-registry.ts             # Registry system deleted
+❌ components/demo-panel.tsx             # Old component deleted
+❌ components/event-playground.tsx       # Old component deleted
+❌ components/locked-event-playground.tsx # Old component deleted
+```
+
+---
+
+## 🚀 The Core Component: EnhancedEventPlayground
+
+### Location
+`components/enhanced-event-playground.tsx`
+
+### What It Does
+- Sends REAL events to Meta Pixel (browser)
+- Sends REAL events to CAPI (server)
+- Shows Network Inspector (3 tabs)
+- Logs event history
+- Displays match quality
+- Links to Meta Events Manager
+
+### How to Use It
 
 ```typescript
-// ✅ CORRECT
-"use client"
+import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
+import { Zap } from "lucide-react"
 
-import { ReactNode } from "react"
+export default function YourPage() {
+  const customEvents = [
+    {
+      name: "Example Event",
+      icon: <Zap className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "What this demonstrates",
+      brokenPayload: {
+        event_name: "Purchase",
+        // Missing required fields - shows the problem
+      },
+      fixedPayload: {
+        event_name: "Purchase",
+        event_id: `purchase_${Date.now()}`,
+        event_time: Math.floor(Date.now() / 1000),
+        custom_data: {
+          currency: "USD",
+          value: 99.99
+        }
+        // All required fields - shows the solution
+      }
+    },
+    // Add 5-7 more event examples
+  ]
 
-export function PageContent({ rightPanel }: { rightPanel?: ReactNode }) {
-  return <div>{rightPanel}</div>
+  return (
+    <PageContent title="Your Title" description="Your description">
+      {/* Educational content */}
+      
+      <EnhancedEventPlayground
+        title="Interactive Testing"
+        description="Try these scenarios"
+        events={customEvents}
+        sendToMeta={true}
+        sendToBoth={true}
+        showNetworkInspector={true}
+        showMetaResponse={true}
+        testEventCode="TEST_CODE"
+        pixelId={process.env.NEXT_PUBLIC_FB_PIXEL_ID}
+      />
+    </PageContent>
+  )
 }
 ```
 
-**Files that MUST be Client Components:**
-- ✅ `components/page-content.tsx`
-- ✅ `components/setup-status-panel.tsx`
-- ✅ `components/demo-panel.tsx`
-- ✅ `app/[...slug]/page.tsx`
-- ✅ `app/page.tsx`
-
 ---
 
-### 2️⃣ Next.js 15 Async Params
+## 📖 Building New Pages
 
-**In Next.js 15, `params` is a Promise. Use `use()` hook in Client Components.**
-
-```typescript
-"use client"
-import { use } from "react"
-
-export default function Page({ params }: { params: Promise<{ slug: string[] }> }) {
-  const { slug } = use(params)  // ✅ CORRECT
-  // NOT: const { slug } = params  // ❌ WRONG
-}
+### Step 1: Copy Template
+```bash
+cp app/problems/duplicate-events/page.tsx app/problems/your-new-page/page.tsx
 ```
 
----
+### Step 2: Define 6-8 Custom Events
 
-### 3️⃣ Registry → Props Transformation
-
-**NEVER pass registry objects directly. Transform to component props.**
-
+**Pattern:**
 ```typescript
-// ❌ WRONG
-return <PageContent pageData={pagesRegistry[path]} />
-
-// ✅ CORRECT
-const pageData = pagesRegistry[path]
-return (
-  <PageContent
-    title={pageData.title}
-    description={pageData.description}
-    status={pageData.badge}
-    rightPanel={/* ... */}
-  >
-    {/* render sections */}
-  </PageContent>
-)
-```
-
----
-
-### 4️⃣ Adding New Documentation Pages
-
-**NO need to create page files! Just update the registry.**
-
-1. Add to `content/pages-registry.ts`:
-   ```typescript
-   "/your-page": {
-     title: "Your Title",
-     description: "Description",
-     badge: "Stable",
-     sectionBlocks: [/* ... */],
-     showDemo: false
-   }
-   ```
-
-2. Add to `content/nav.ts`:
-   ```typescript
-   {
-     title: "Your Page",
-     href: "/your-page",
-     icon: YourIcon,
-     group: "Your Group"
-   }
-   ```
-
-3. Done! Visit `/your-page`
-
----
-
-### 5️⃣ Markdown Parsing in Section Bodies
-
-**Section bodies support simple markdown. Parse it properly.**
-
-```typescript
-{section.body.split('\n\n').map((para, i) => {
-  // Handle code blocks
-  if (para.startsWith('```')) {
-    const match = para.match(/```(\w+)?\n([\s\S]*?)```/)
-    if (match) {
-      return <pre key={i}><code>{match[2]}</code></pre>
+const customEvents = [
+  {
+    name: "Descriptive Name",
+    icon: <Icon className="h-4 w-4 text-[#00ff41]" />,
+    description: "What this demonstrates",
+    brokenPayload: {
+      // Shows the problem
+    },
+    fixedPayload: {
+      // Shows the solution
+      event_id: `unique_${Date.now()}`,
+      event_time: Math.floor(Date.now() / 1000),
+      // All required fields
     }
   }
-  
-  // Handle inline formatting
-  return (
-    <div key={i} dangerouslySetInnerHTML={{
-      __html: para
-        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/`([^`]+)`/g, '<code>$1</code>')
-    }} />
-  )
-})}
+]
 ```
 
----
+### Step 3: Update Content
+- Title and description
+- Problem explanation with examples
+- "How It Works" section
+- Implementation guide with code
+- Best practices
+- Related topics
 
-## 🚫 Common Errors & Fixes
-
-### Error: `'` can be escaped with `&apos;` (BUILD BREAKING!)
-
-**Cause:** Unescaped apostrophes in JSX text
-
-**Severity:** ⚠️ **CRITICAL** - Works in dev, **FAILS in production build**
-
-**Examples:**
-```jsx
-// ❌ WRONG
-<p>What you'll learn</p>
-<span>Meta's AI</span>
-
-// ✅ CORRECT
-<p>What you&apos;ll learn</p>
-<span>Meta&apos;s AI</span>
-```
-
-**Fix:** Replace all `'` in JSX text with `&apos;`
-
-**Quick Find:** Search for patterns like `>.*'.*<` in JSX files
-
----
-
-### Error: React Hook has missing dependency
-
-**Cause:** Function used in useEffect/useCallback but not in dependency array
-
-**Example:**
-```typescript
-// ❌ WRONG
-const myFunc = () => { /* ... */ }
-useEffect(() => {
-  myFunc()  // Used but not in deps!
-}, [other, deps])
-
-// ✅ CORRECT
-const myFunc = useCallback(() => { /* ... */ }, [])
-useEffect(() => {
-  myFunc()
-}, [other, deps, myFunc])  // Include the function
-```
-
-**Fix:** Wrap function in `useCallback` and add to dependency array
-
----
-
-### Error: "Event handlers cannot be passed to Client Component props"
-
-**Cause:** Component is missing `"use client"` directive
-
-**Fix:** Add `"use client"` at the top of the file
-
----
-
-### Error: "params.slug is not iterable"
-
-**Cause:** Trying to destructure `params` directly (it's a Promise in Next.js 15)
-
-**Fix:** Use `use(params)` in Client Components or `await params` in Server Components
-
----
-
-### Error: Component receives `pageData` prop but doesn't work
-
-**Cause:** Passing registry object instead of transforming to props
-
-**Fix:** Extract props from registry object and pass individually
-
----
-
-## 📚 Detailed Documentation
-
-For comprehensive information, see:
-
-- **[ARCHITECTURE_PATTERNS.md](ARCHITECTURE_PATTERNS.md)** - Complete patterns guide
-- **[LINTING_AND_BEST_PRACTICES.md](LINTING_AND_BEST_PRACTICES.md)** - ESLint & React best practices
-
----
-
-## 🏗️ Project Architecture
-
-```
-User visits /getting-started/setup-checklist
-           ↓
-app/[...slug]/page.tsx (Client Component)
-           ↓
-   use(params) → extract slug
-           ↓
-   Build path: "/getting-started/setup-checklist"
-           ↓
-   Lookup in pagesRegistry
-           ↓
-   Transform to PageContent props
-           ↓
-components/page-content.tsx (Client Component)
-           ↓
-   Renders with rightPanel:
-     - SetupStatusPanel (if showDemo: false)
-     - DemoPanel (if showDemo: true)
-```
-
----
-
-## ✅ Pre-Commit Checklist
-
-Before committing changes:
-
-- [ ] **CRITICAL:** No unescaped apostrophes in JSX (search for `'` in text)
-- [ ] **CRITICAL:** All useEffect/useCallback have complete dependencies
-- [ ] All interactive components have `"use client"`
-- [ ] Using `use(params)` for async params in Client Components
-- [ ] Registry data transformed to props (not passed directly)
-- [ ] Section body markdown parsed correctly
-- [ ] Run `npm run lint` to check for errors
-- [ ] **CRITICAL:** Run `npm run build` locally (catches production errors)
-- [ ] Test the page in browser
-
-### 🚨 Critical Build Checklist (Vercel)
-
-These errors **pass in dev** but **fail in production**:
-
+### Step 4: Test
 ```bash
-# 1. Check for apostrophes (MOST COMMON ERROR)
-grep -rn ">[^<]*'[^']*<" app/ components/
+npm run dev
+# Click event buttons
+# View Network Inspector
+# Check Meta Events Manager
+# Verify events appear correctly
+```
 
-# 2. Check linting (catches hook dependencies)
-npm run lint
+---
 
-# 3. Test production build locally
+## ⚠️ Common Mistakes to AVOID
+
+### 1. ❌ Using Deleted Components
+```typescript
+// DON'T DO THIS - Component doesn't exist!
+import { DemoPanel } from "@/components/demo-panel"
+import { EventPlayground } from "@/components/event-playground"
+```
+
+```typescript
+// DO THIS - Use current component
+import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
+```
+
+### 2. ❌ Using Deleted Registry System
+```typescript
+// DON'T DO THIS - File doesn't exist!
+import { pagesRegistry } from "@/content/pages-registry"
+```
+
+```typescript
+// DO THIS - Create individual page files
+// app/problems/your-page/page.tsx
+export default function YourPage() {
+  return <PageContent>...</PageContent>
+}
+```
+
+### 3. ❌ Using Dynamic Route
+```typescript
+// DON'T DO THIS - Route doesn't exist!
+// app/[...slug]/page.tsx
+```
+
+```typescript
+// DO THIS - Create specific route folders
+// app/problems/low-match-quality/page.tsx
+// app/problems/purchase-mismatch/page.tsx
+```
+
+### 4. ❌ ESLint Errors
+
+**Apostrophes:**
+```typescript
+// DON'T
+<p>It's broken</p>  // Build error!
+
+// DO
+<p>It&apos;s broken</p>  // Or use {`It's broken`}
+```
+
+**useEffect Dependencies:**
+```typescript
+// DON'T
+useEffect(() => {
+  doSomething()  // Missing from deps!
+}, [])
+
+// DO
+const doSomething = useCallback(() => {
+  // ...
+}, [])
+
+useEffect(() => {
+  doSomething()
+}, [doSomething])  // Include in deps
+```
+
+---
+
+## 🎨 Design System
+
+### Colors
+```typescript
+// Primary
+"#00ff41"  // Neon green (main accent)
+"#00d9ff"  // Cyan (secondary accent)
+"#0a0e14"  // Dark background
+"#151b26"  // Card background
+"#8b949e"  // Text gray
+"#e8f4f8"  // Light text
+```
+
+### Fonts
+- **Inter** - Body text
+- **JetBrains Mono** - Code/monospace
+
+### Key CSS Classes
+```css
+.glass                    /* Light glassmorphism */
+.glass-strong             /* Strong glassmorphism */
+.hover-glow               /* Glow on hover */
+.hover-lift               /* Lift on hover */
+.border-animated          /* Pulsing border */
+.text-glow-hover          /* Text glow on hover */
+.icon-spin-hover          /* Icon spin on hover */
+.button-neon              /* Neon button effect */
+```
+
+### Component Patterns
+
+**Section:**
+```tsx
+<section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+  {/* content */}
+</section>
+```
+
+**Heading:**
+```tsx
+<h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] 
+               border-l-4 border-[#00ff41] pl-4 text-glow-hover">
+  <span className="inline-block animate-pulse">▸</span> Your Heading
+</h2>
+```
+
+**Glass Card:**
+```tsx
+<div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
+  {/* content */}
+</div>
+```
+
+**Code Block:**
+```tsx
+<pre className="text-xs font-mono text-[#00ff41] bg-[#0d1117] rounded p-4 overflow-x-auto">
+  {code}
+</pre>
+```
+
+---
+
+## 📚 Documentation Reference
+
+### Read These (Current)
+1. **`ENHANCED_INTERACTIVE_GUIDE.md`** - Implementation guide with pre-written examples
+2. **`INTERACTIVE_TRANSFORMATION_COMPLETE.md`** - Project status
+3. **`.ai-context.md`** - Architecture overview (this file's companion)
+4. **`LINTING_AND_BEST_PRACTICES.md`** - Code quality
+
+### Ignore These (Deleted/Outdated)
+- ❌ Any file with "REFACTOR", "TRANSFORMATION", "VISUAL_ENHANCEMENTS" in name
+- ❌ `features-implemented/` folder
+- ❌ `CHATGPT_PAGE_BUILDER_PROMPT.md`
+- ❌ `PAGE_BUILDER_BLUEPRINT.md`
+
+---
+
+## 🔧 Technical Stack
+
+- **Next.js 15** - App Router, React Server Components
+- **React 19** - Latest features
+- **TypeScript** - Strict mode
+- **Tailwind CSS** - Custom theme
+- **shadcn/ui** - Component library
+- **Meta Pixel** - `fbq()` integration
+- **Conversions API** - Server-side tracking
+- **Sonner** - Toast notifications
+
+---
+
+## 🎯 Development Workflow
+
+### Adding a New Page
+
+1. **Check the Guide**
+   - Open `ENHANCED_INTERACTIVE_GUIDE.md`
+   - Find pre-written events for your page
+   - Copy event definitions
+
+2. **Create Page File**
+   ```bash
+   mkdir -p app/problems/your-page
+   cp app/problems/duplicate-events/page.tsx app/problems/your-page/page.tsx
+   ```
+
+3. **Update Navigation**
+   ```typescript
+   // content/nav.ts
+   {
+     title: "Your Page Title",
+     href: "/problems/your-page",
+     icon: YourIcon,
+     group: "Core Problems"
+   }
+   ```
+
+4. **Customize Content**
+   - Update title, description
+   - Replace event examples
+   - Update educational sections
+   - Add relevant code examples
+
+5. **Test Locally**
+   ```bash
+   npm run dev
+   # Visit http://localhost:3000/problems/your-page
+   # Send events, check Meta Events Manager
+   ```
+
+---
+
+## 🚨 Build Requirements
+
+### Before Committing
+- ✅ No TypeScript errors
+- ✅ No ESLint warnings
+- ✅ All apostrophes escaped (`&apos;`)
+- ✅ All `useEffect` dependencies included
+- ✅ Test pages load correctly
+- ✅ Test event sending works
+- ✅ Mobile responsive
+
+### Build Command
+```bash
 npm run build
 ```
 
----
-
-## 💡 Key Insights
-
-1. **This is a registry-based system** - Content lives in `content/pages-registry.ts`, not individual page files
-2. **Next.js 15 changed params** - They're now Promises, use `use()` hook
-3. **Client Components are required** - Because interactive elements are everywhere
-4. **Props must be explicit** - Transform registry objects to individual props
+**If build fails:**
+1. Check ESLint errors in output
+2. Fix apostrophes: `'` → `&apos;`
+3. Fix missing dependencies in `useEffect`
+4. Re-run build
 
 ---
 
-## 🔗 Quick Links
+## 💡 Pro Tips
 
-| File | Purpose | Type |
-|------|---------|------|
-| [`app/[...slug]/page.tsx`](app/[...slug]/page.tsx) | Dynamic page handler | Client Component ✅ |
-| [`components/page-content.tsx`](components/page-content.tsx) | Page layout | Client Component ✅ |
-| [`content/pages-registry.ts`](content/pages-registry.ts) | Content registry | Data file |
-| [`content/nav.ts`](content/nav.ts) | Navigation config | Data file |
+### Event ID Generation
+```typescript
+// Good patterns
+`event_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+`purchase_${orderId}`
+`lead_${userId}_${Date.now()}`
+```
+
+### Broken Payload Ideas
+- Missing `event_id`
+- Missing `event_time`
+- Wrong data types (string instead of number)
+- Unhashed PII
+- Missing required fields
+- Wrong field names
+
+### Fixed Payload Checklist
+- ✅ `event_id` present and unique
+- ✅ `event_time` (Unix timestamp)
+- ✅ `event_name` from standard events
+- ✅ `custom_data` properly nested
+- ✅ All PII hashed (SHA-256)
+- ✅ Correct data types
+- ✅ All required fields
 
 ---
 
-## 🤝 Contributing
+## 🎓 Example: Complete Page Structure
 
-When adding new features:
+```typescript
+"use client"
 
-1. Follow the patterns in [`ARCHITECTURE_PATTERNS.md`](ARCHITECTURE_PATTERNS.md)
-2. Use TypeScript strictly (no `any` without good reason)
-3. Add proper interfaces for all props
-4. Document new patterns in architecture docs
-5. Update this quick reference if adding critical patterns
+import { PageContent } from "@/components/page-content"
+import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
+import { Icon1, Icon2 } from "lucide-react"
+
+export default function YourPage() {
+  const customEvents = [
+    // 6-8 event definitions here
+  ]
+
+  return (
+    <PageContent
+      title="Your Page Title"
+      description="Brief description"
+      status="Stable"
+    >
+      
+      {/* Problem Explanation */}
+      <section className="mb-12">
+        <h2 className="mb-6 font-mono text-xl font-bold text-[#00ff41]">
+          The Problem
+        </h2>
+        <p>Explanation...</p>
+      </section>
+
+      {/* How It Works */}
+      <section className="mb-12">
+        <h2 className="mb-6 font-mono text-xl font-bold text-[#00ff41]">
+          How It Works
+        </h2>
+        <p>Explanation...</p>
+      </section>
+
+      {/* Interactive Playground */}
+      <section className="mb-12">
+        <h2 className="mb-6 font-mono text-xl font-bold text-[#00ff41]">
+          Interactive Testing
+        </h2>
+        
+        <EnhancedEventPlayground
+          title="Test Suite"
+          description="Try these scenarios"
+          events={customEvents}
+          sendToMeta={true}
+          sendToBoth={true}
+          showNetworkInspector={true}
+          pixelId={process.env.NEXT_PUBLIC_FB_PIXEL_ID}
+        />
+      </section>
+
+      {/* Best Practices */}
+      <section className="mb-12">
+        <h2 className="mb-6 font-mono text-xl font-bold text-[#00ff41]">
+          Best Practices
+        </h2>
+        <ul>...</ul>
+      </section>
+
+    </PageContent>
+  )
+}
+```
 
 ---
 
-**Remember:** This guide exists because these patterns are non-obvious and easy to get wrong. Following these rules prevents 95% of common errors.
+## 🎉 Summary
+
+**What to Do:**
+- ✅ Use `enhanced-event-playground` component
+- ✅ Create individual page files
+- ✅ Follow `ENHANCED_INTERACTIVE_GUIDE.md`
+- ✅ Test with real Meta integration
+- ✅ Escape apostrophes
+- ✅ Include useEffect dependencies
+
+**What NOT to Do:**
+- ❌ Use deleted components (demo-panel, event-playground)
+- ❌ Reference pages-registry.ts
+- ❌ Use dynamic [...slug] route
+- ❌ Leave apostrophes unescaped
+- ❌ Forget useEffect dependencies
+
+**Result:** Clean, consistent, interactive pages that actually teach users by letting them experiment with real Meta events!
