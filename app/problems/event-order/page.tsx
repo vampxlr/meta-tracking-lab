@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { AlertTriangle, ShoppingCart, Eye, CreditCard, CheckCircle, TrendingUp } from "lucide-react"
 
 export default function EventOrderPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   const examples = [
     {
       name: "Purchase Before ViewContent (ILLOGICAL)",
@@ -126,7 +129,7 @@ export default function EventOrderPage() {
         event_name: "Purchase",
         event_id: `purchase_complete_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: "https://example.com/checkout/success",
+        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",

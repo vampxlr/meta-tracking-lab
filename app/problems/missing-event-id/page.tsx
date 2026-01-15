@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { AlertTriangle, CheckCircle, Hash, ShoppingBag, TrendingUp, Package } from "lucide-react"
 
 export default function MissingEventIdPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   const examples = [
     {
       name: "No Event ID (BROKEN)",
@@ -189,7 +192,7 @@ export default function MissingEventIdPage() {
         event_name: "Purchase",
         event_id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: typeof window !== 'undefined' ? window.location.href : 'https://example.com/checkout',
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",

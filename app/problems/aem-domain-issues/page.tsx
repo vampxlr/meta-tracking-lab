@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { Globe, Link2, AlertTriangle, CheckCircle, Network, Settings } from "lucide-react"
 
 export default function AemDomainIssuesPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   const examples = [
     {
       name: "Subdomain Tracking (www vs app)",
@@ -145,7 +148,7 @@ export default function AemDomainIssuesPage() {
         event_name: "Purchase",
         event_id: `complete_multidomain_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: typeof window !== 'undefined' ? window.location.href : "https://checkout.example.com/success",
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",

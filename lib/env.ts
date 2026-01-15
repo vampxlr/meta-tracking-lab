@@ -26,6 +26,7 @@ export function getPublicEnvVar(key: string): string {
 export const env = {
   // Public (client-side)
   NEXT_PUBLIC_FB_PIXEL_ID: () => getPublicEnvVar('NEXT_PUBLIC_FB_PIXEL_ID'),
+  NEXT_PUBLIC_SITE_URL: () => getOptionalEnvVar('NEXT_PUBLIC_SITE_URL', 'https://meta-tracking-lab.vercel.app'),
   
   // Server-only (CAPI)
   META_CAPI_ACCESS_TOKEN: () => getRequiredEnvVar('META_CAPI_ACCESS_TOKEN'),

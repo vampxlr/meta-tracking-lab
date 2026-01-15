@@ -5,6 +5,9 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { Bug, TestTube, Search, CheckCircle, AlertCircle, Chrome, Network, Activity } from "lucide-react"
 
 export default function TestingDebuggingPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
   const examples = [
     {
       name: "Using test_event_code (SAFE TESTING)",
@@ -194,7 +197,7 @@ export default function TestingDebuggingPage() {
         event_name: "Purchase",
         event_id: `complete_test_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: typeof window !== 'undefined' ? window.location.href : 'https://example.com/test',
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
         action_source: "website",
         test_event_code: "TEST_COMPLETE",
         user_data: {

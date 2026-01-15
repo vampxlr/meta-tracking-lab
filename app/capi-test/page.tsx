@@ -66,6 +66,9 @@ interface ResponseDetails {
 }
 
 export default function CapiTestPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+  
   const [isConfigured, setIsConfigured] = React.useState(false)
   const [mode, setMode] = React.useState<'broken' | 'fixed' | 'test'>('broken')
   const [testEventCode, setTestEventCode] = React.useState('')
@@ -489,7 +492,7 @@ export default function CapiTestPage() {
     const transformedPayload: any = {
       event_name: requestBody.event_name,
       event_time: Math.floor(Date.now() / 1000),
-      event_source_url: 'https://example.com',
+      event_source_url: SITE_URL,
       action_source: 'website',
     }
     

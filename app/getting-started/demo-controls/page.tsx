@@ -5,46 +5,67 @@ import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { Eye, ShoppingCart, CreditCard, MousePointerClick, UserPlus, Search } from "lucide-react"
 
 export default function DemoControlsPage() {
+  // Get site URL from environment
+  const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
+  // Helper function to generate proper UUID v4
+  const generateUUID = () => {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0
+      const v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
+  }
+
   // Custom events for this page
   const customEvents = [
     {
-      name: "PageView",
+      name: "ViewContent",
       icon: <Eye className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
-        event_name: "PageView"
+        event_name: "ViewContent"
         // Missing: event_id, event_time, user_data
       },
       fixedPayload: {
-        event_name: "PageView",
-        event_id: `view_${Date.now()}`,
+        event_name: "ViewContent",
+        event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: typeof window !== 'undefined' ? window.location.href : 'https://example.com',
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
         action_source: "website",
         user_data: {
           client_ip_address: "[REDACTED]",
           client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
           fbp: "_fbp_cookie_value",
           fbc: "_fbc_cookie_value"
+        },
+        custom_data: {
+          content_name: "Documentation Page",
+          content_category: "Demo Controls"
         }
       }
     },
     {
-      name: "ViewContent",
+      name: "Search",
       icon: <Search className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
-        event_name: "ViewContent"
-        // Missing: content info, event_id
+        event_name: "Search"
+        // Missing: search_string, event_id
       },
       fixedPayload: {
-        event_name: "ViewContent",
-        event_id: `content_${Date.now()}`,
+        event_name: "Search",
+        event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
+        action_source: "website",
         custom_data: {
-          content_ids: ["prod_123"],
-          content_type: "product",
-          content_name: "Premium Widget",
-          currency: "USD",
-          value: 29.99
+          search_string: "meta pixel tracking",
+          content_category: "Documentation"
+        },
+        user_data: {
+          client_ip_address: "[REDACTED]",
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
+          fbp: "_fbp_cookie_value",
+          fbc: "_fbc_cookie_value"
         }
       }
     },
@@ -58,14 +79,22 @@ export default function DemoControlsPage() {
       },
       fixedPayload: {
         event_name: "AddToCart",
-        event_id: `cart_${Date.now()}`,
+        event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
+        action_source: "website",
         custom_data: {
           content_ids: ["prod_123"],
           content_type: "product",
           currency: "USD",
           value: 29.99,
           num_items: 1
+        },
+        user_data: {
+          client_ip_address: "[REDACTED]",
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
+          fbp: "_fbp_cookie_value",
+          fbc: "_fbc_cookie_value"
         }
       }
     },
@@ -78,13 +107,21 @@ export default function DemoControlsPage() {
       },
       fixedPayload: {
         event_name: "InitiateCheckout",
-        event_id: `checkout_${Date.now()}`,
+        event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
+        action_source: "website",
         custom_data: {
           content_ids: ["prod_123", "prod_456"],
           currency: "USD",
           value: 149.98,
           num_items: 2
+        },
+        user_data: {
+          client_ip_address: "[REDACTED]",
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
+          fbp: "_fbp_cookie_value",
+          fbc: "_fbc_cookie_value"
         }
       }
     },
@@ -98,34 +135,52 @@ export default function DemoControlsPage() {
       },
       fixedPayload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
+        event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
+        action_source: "website",
         custom_data: {
           content_ids: ["prod_123", "prod_456"],
           currency: "USD",
           value: 149.98,
           num_items: 2,
           order_id: `order_${Date.now()}`
+        },
+        user_data: {
+          client_ip_address: "[REDACTED]",
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
+          fbp: "_fbp_cookie_value",
+          fbc: "_fbc_cookie_value"
         }
       }
     },
     {
-      name: "Lead",
+      name: "CompleteRegistration",
       icon: <UserPlus className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
-        event_name: "Lead",
+        event_name: "CompleteRegistration",
         email: "user@example.com" // NOT HASHED!
         // Security risk: PII should be hashed
       },
       fixedPayload: {
-        event_name: "Lead",
-        event_id: `lead_${Date.now()}`,
+        event_name: "CompleteRegistration",
+        event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
+        event_source_url: typeof window !== 'undefined' ? window.location.href : SITE_URL,
+        action_source: "website",
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514", // SHA-256 hashed
           ph: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
           fn: "46070d4bf934fb0d4b06d9e2c46e346944e322444900a435d7d9a95e6d7435f5",
-          ln: "8f9bfe9d1345237cb3b2b037656f3490c6f0b6d4a2c8c8b6d7f8e9a0b1c2d3e4"
+          ln: "8f9bfe9d1345237cb3b2b037656f3490c6f0b6d4a2c8c8b6d7f8e9a0b1c2d3e4",
+          client_ip_address: "[REDACTED]",
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Mozilla/5.0',
+          fbp: "_fbp_cookie_value",
+          fbc: "_fbc_cookie_value"
+        },
+        custom_data: {
+          status: "registered",
+          registration_method: "email"
         }
       }
     }

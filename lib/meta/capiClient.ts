@@ -90,7 +90,7 @@ async function buildCapiPayload(
   const event: any = {
     event_name,
     event_time: Math.floor(Date.now() / 1000),
-    event_source_url: event_source_url || 'https://example.com',
+    event_source_url: event_source_url || process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app',
     action_source: 'website',
     event_id: eventId,
   }
