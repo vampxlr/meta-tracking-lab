@@ -22,7 +22,12 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          // Tracking metadata
+          source_page: "/problems/capi-setup",
+          example_name: "Missing event_time - REJECTED",
+          test_mode: "broken",
+          note: "No event_time field - Meta will reject entirely"
         }
       },
       fixedPayload: {
@@ -35,7 +40,12 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          // Tracking metadata
+          source_page: "/problems/capi-setup",
+          example_name: "Missing event_time - FIXED",
+          test_mode: "fixed",
+          note: "Added event_time: Math.floor(Date.now() / 1000) - Unix timestamp"
         }
       }
     },
@@ -52,7 +62,12 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          // Tracking metadata
+          source_page: "/problems/capi-setup",
+          example_name: "Missing action_source - INVALID",
+          test_mode: "broken",
+          note: "No action_source - can't attribute to correct channel"
         }
       },
       fixedPayload: {
@@ -65,7 +80,12 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          // Tracking metadata
+          source_page: "/problems/capi-setup",
+          example_name: "Missing action_source - FIXED",
+          test_mode: "fixed",
+          note: "Added action_source: 'website' - proper channel attribution"
         }
       }
     },
@@ -83,7 +103,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing event_source_url - POOR ATTRIBUTION",
+          test_mode: "broken",
+          note: "No source URL - can't determine which page drove conversion"
         }
       },
       fixedPayload: {
@@ -97,7 +121,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing event_source_url - FIXED",
+          test_mode: "fixed",
+          note: "Added event_source_url - page-level attribution enabled"
         }
       }
     },
@@ -113,7 +141,11 @@ export default function CapiSetupPage() {
         action_source: "website",
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing user_data - 0% MATCH QUALITY",
+          test_mode: "broken",
+          note: "No user_data - Meta can't match event to any user"
         }
       },
       fixedPayload: {
@@ -130,7 +162,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing user_data - FIXED",
+          test_mode: "fixed",
+          note: "Added user_data with em, ph, fn, ln - high match quality"
         }
       }
     },
@@ -149,7 +185,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing client_ip_address - LOW MATCH",
+          test_mode: "broken",
+          note: "No IP - reduces geo-targeting & match quality"
         }
       },
       fixedPayload: {
@@ -165,7 +205,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 299.99
+          value: 299.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing client_ip_address - FIXED",
+          test_mode: "fixed",
+          note: "Added IP address - improved geo-targeting"
         }
       }
     },
@@ -185,7 +229,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 129.99
+          value: 129.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing client_user_agent - REDUCED MATCHING",
+          test_mode: "broken",
+          note: "No user agent - loses device/browser context"
         }
       },
       fixedPayload: {
@@ -201,7 +249,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 129.99
+          value: 129.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Missing client_user_agent - FIXED",
+          test_mode: "fixed",
+          note: "Added user agent - device/browser context restored"
         }
       }
     },
@@ -220,7 +272,11 @@ export default function CapiSetupPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 59.99
+          value: 59.99,
+          source_page: "/problems/capi-setup",
+          example_name: "Minimal Server Event - LIMITED",
+          test_mode: "fixed",
+          note: "Only required fields - works but limited attribution"
         }
       }
     },
@@ -257,7 +313,12 @@ export default function CapiSetupPage() {
           content_type: "product",
           content_name: "Premium Bundle",
           num_items: 2,
-          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
+          // Tracking metadata
+          source_page: "/problems/capi-setup",
+          example_name: "Complete Server Event - PERFECT",
+          test_mode: "fixed",
+          note: "Gold standard: All recommended fields + comprehensive user_data"
         }
       }
     }

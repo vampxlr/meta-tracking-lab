@@ -24,7 +24,12 @@ export default function MissingEventIdPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 99.99
+          value: 99.99,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "No Event ID - BROKEN",
+          test_mode: "broken",
+          note: "Missing event_id field entirely - can't track or deduplicate"
         }
       },
       fixedPayload: null
@@ -43,7 +48,12 @@ export default function MissingEventIdPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 49.99
+          value: 49.99,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Reused Event ID - BROKEN",
+          test_mode: "broken",
+          note: "Same static event_id 'static_id_123' reused - can't distinguish events"
         }
       },
       fixedPayload: null
@@ -62,7 +72,12 @@ export default function MissingEventIdPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 199.99
+          value: 199.99,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Non-Unique Event ID - BROKEN",
+          test_mode: "broken",
+          note: "Short predictable ID '123' - high collision risk"
         }
       },
       fixedPayload: null
@@ -81,7 +96,12 @@ export default function MissingEventIdPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Poor Format Event ID - SUBOPTIMAL",
+          test_mode: "broken",
+          note: "Generic format 'abc123xyz' - works but hard to debug"
         }
       },
       fixedPayload: {
@@ -96,7 +116,12 @@ export default function MissingEventIdPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 149.99
+          value: 149.99,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Poor Format Event ID - FIXED",
+          test_mode: "fixed",
+          note: "Structured format: purchase_[timestamp]_[random] - unique and traceable"
         }
       }
     },
@@ -114,7 +139,12 @@ export default function MissingEventIdPage() {
         custom_data: {
           currency: "USD",
           value: 2499.99,
-          content_name: "MacBook Pro"
+          content_name: "MacBook Pro",
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "High-Value Purchase Without ID - CRITICAL",
+          test_mode: "broken",
+          note: "No event_id on $2499 purchase - can't track ROI or refunds"
         }
       },
       fixedPayload: {
@@ -130,7 +160,12 @@ export default function MissingEventIdPage() {
         custom_data: {
           currency: "USD",
           value: 2499.99,
-          content_name: "MacBook Pro"
+          content_name: "MacBook Pro",
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "High-Value Purchase - FIXED",
+          test_mode: "fixed",
+          note: "Unique ID purchase_high_[timestamp]_[random] - enables ROI tracking"
         }
       }
     },
@@ -151,7 +186,12 @@ export default function MissingEventIdPage() {
         },
         custom_data: {
           currency: "USD",
-          value: 79.99
+          value: 79.99,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Timestamp-Based ID - GOOD",
+          test_mode: "fixed",
+          note: "Simple timestamp ensures uniqueness - purchase_[timestamp]"
         }
       }
     },
@@ -179,7 +219,12 @@ export default function MissingEventIdPage() {
           order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
           content_ids: ["SKU-001", "SKU-045"],
           content_type: "product",
-          num_items: 2
+          num_items: 2,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Order ID as Event ID - BEST PRACTICE",
+          test_mode: "fixed",
+          note: "Using actual order ID - enables refund tracking & reconciliation"
         }
       }
     },
@@ -216,7 +261,12 @@ export default function MissingEventIdPage() {
           content_type: "product",
           content_name: "Premium Bundle",
           num_items: 3,
-          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`
+          order_id: `ORD-2026-${Math.floor(Math.random() * 10000)}`,
+          // Tracking metadata
+          source_page: "/problems/missing-event-id",
+          example_name: "Complete Event Structure - PERFECT",
+          test_mode: "fixed",
+          note: "Gold standard: txn_[timestamp]_[random] + comprehensive user_data + all required fields"
         }
       }
     }

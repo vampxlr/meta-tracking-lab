@@ -23,7 +23,13 @@ export default function DemoControlsPage() {
       name: "ViewContent",
       icon: <Eye className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
-        event_name: "ViewContent"
+        event_name: "ViewContent",
+        custom_data: {
+          source_page: "/getting-started/demo-controls",
+          example_name: "ViewContent - BROKEN Example",
+          test_mode: "broken",
+          note: "Missing: event_id, event_time, event_source_url, action_source, user_data"
+        }
         // Missing: event_id, event_time, user_data
       },
       fixedPayload: {
@@ -52,7 +58,13 @@ export default function DemoControlsPage() {
       name: "Search",
       icon: <Search className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
-        event_name: "Search"
+        event_name: "Search",
+        custom_data: {
+          source_page: "/getting-started/demo-controls",
+          example_name: "Search - BROKEN Example",
+          test_mode: "broken",
+          note: "Missing: event_id, event_time, event_source_url, action_source, user_data, search_string"
+        }
         // Missing: search_string, event_id
       },
       fixedPayload: {
@@ -82,7 +94,13 @@ export default function DemoControlsPage() {
       icon: <ShoppingCart className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
         event_name: "AddToCart",
-        value: "29.99" // Wrong type: should be number
+        value: "29.99", // Wrong type: should be number
+        custom_data: {
+          source_page: "/getting-started/demo-controls",
+          example_name: "AddToCart - BROKEN Example",
+          test_mode: "broken",
+          note: "Wrong value type (string instead of number), Missing: currency, content_ids, event_id, event_time, user_data"
+        }
         // Missing: currency, content_ids, event_id
       },
       fixedPayload: {
@@ -114,7 +132,13 @@ export default function DemoControlsPage() {
       name: "InitiateCheckout",
       icon: <MousePointerClick className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
-        event_name: "InitiateCheckout"
+        event_name: "InitiateCheckout",
+        custom_data: {
+          source_page: "/getting-started/demo-controls",
+          example_name: "InitiateCheckout - BROKEN Example",
+          test_mode: "broken",
+          note: "Missing: event_id, event_time, event_source_url, action_source, user_data, currency, value, content_ids"
+        }
         // Missing: everything except event_name
       },
       fixedPayload: {
@@ -146,7 +170,13 @@ export default function DemoControlsPage() {
       icon: <CreditCard className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
         event_name: "Purchase",
-        currency: "USD"
+        currency: "USD",
+        custom_data: {
+          source_page: "/getting-started/demo-controls",
+          example_name: "Purchase - BROKEN Example",
+          test_mode: "broken",
+          note: "Missing REQUIRED value field, event_id, event_time, user_data, order_id"
+        }
         // Missing: value (REQUIRED!), event_id, order_id
       },
       fixedPayload: {
@@ -179,7 +209,13 @@ export default function DemoControlsPage() {
       icon: <UserPlus className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       brokenPayload: {
         event_name: "CompleteRegistration",
-        email: "user@example.com" // NOT HASHED!
+        email: "user@example.com", // NOT HASHED!
+        custom_data: {
+          source_page: "/getting-started/demo-controls",
+          example_name: "CompleteRegistration - BROKEN Example",
+          test_mode: "broken",
+          note: "Security risk: PII not hashed, Missing: event_id, event_time, event_source_url, action_source, proper user_data"
+        }
         // Security risk: PII should be hashed
       },
       fixedPayload: {
