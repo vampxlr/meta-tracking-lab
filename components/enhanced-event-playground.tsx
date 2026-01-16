@@ -66,8 +66,9 @@ interface EventPlaygroundProps {
   events?: Array<{
     name: string
     icon?: React.ReactNode
-    brokenPayload?: any
-    fixedPayload?: any
+    payload?: any  // Single payload mode
+    brokenPayload?: any  // Legacy: broken mode payload
+    fixedPayload?: any  // Legacy: fixed mode payload
     description?: string
   }>
   showModeToggle?: boolean
@@ -193,9 +194,28 @@ export function EnhancedEventPlayground({
   const sendEvent = async (event: typeof events[0]) => {
     setIsSending(true)
     const timestamp = new Date().toLocaleTimeString()
-    const eventId = `evt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     
-    const payload = mode === "Broken" ? event.brokenPayload : event.fixedPayload
+    // Support both single-payload and dual-payload modes
+    const payload = event.payload || (mode === "Broken" ? event.brokenPayload : event.fixedPayload)
+    
+    // Check for special flags
+    const forceDifferentIds = payload?.custom_data?._force_different_ids
+    const delayCapiMs = payload?.custom_data?._delay_capi
+    
+    // Generate event IDs
+    let pixelEventId: string
+    let capiEventId: string
+    
+    if (forceDifferentIds) {
+      // Generate different IDs for Pixel and CAPI to simulate the problem
+      pixelEventId = crypto.randomUUID()
+      capiEventId = crypto.randomUUID()
+    } else {
+      // Use event_id from payload if provided, otherwise generate one shared ID
+      const sharedId = payload?.event_id || crypto.randomUUID()
+      pixelEventId = sharedId
+      capiEventId = sharedId
+    }
     
     // Initialize network log
     const networkLog: NetworkLog = {}
@@ -206,21 +226,37 @@ export function EnhancedEventPlayground({
       
       // Send to Pixel if enabled
       if (sendToMeta && sendToBoth) {
-        pixelResult = await sendToMetaPixel(event.name, payload, eventId)
+        pixelResult = await sendToMetaPixel(event.name, payload, pixelEventId)
         networkLog.pixelRequest = {
           url: pixelResult.url,
           params: pixelResult.params,
           timestamp: Date.now(),
           duration: pixelResult.duration
         }
+        
+        // Show Pixel toast immediately
+        toast.info(`Pixel Event Sent`, {
+          description: `${event.name} • ${Math.round(pixelResult.duration)}ms`,
+        })
+      }
+      
+      // Delay CAPI if requested
+      if (delayCapiMs) {
+        await new Promise(resolve => setTimeout(resolve, delayCapiMs))
       }
       
       // Send to CAPI if enabled
       if (sendToMeta && sendToBoth) {
-        capiResult = await sendToCAPI(event.name, payload)
+        // Create CAPI payload with correct event_id
+        const capiPayload = {
+          ...payload,
+          event_id: capiEventId
+        }
+        
+        capiResult = await sendToCAPI(event.name, capiPayload)
         networkLog.capiRequest = {
           url: capiResult.url,
-          body: payload,
+          body: capiPayload,
           timestamp: Date.now(),
           duration: capiResult.duration
         }
@@ -230,38 +266,38 @@ export function EnhancedEventPlayground({
           timestamp: Date.now(),
           duration: capiResult.duration
         }
+        
+        // Show CAPI toast
+        if (capiResult?.success) {
+          toast.success(`CAPI Event Sent${delayCapiMs ? ' (delayed)' : ''}`, {
+            description: `${event.name} • ${Math.round(capiResult.duration)}ms`,
+          })
+        } else {
+          toast.error(`CAPI Event Failed`, {
+            description: capiResult?.error || 'Unknown error',
+          })
+        }
       }
       
       // Create log entry
       const newLog: LogEntry = {
-        id: eventId,
+        id: pixelEventId,
         timestamp,
         event: event.name,
         mode,
-        pixelPayload: payload,
-        capiPayload: payload,
+        pixelPayload: { ...payload, event_id: pixelEventId },
+        capiPayload: { ...payload, event_id: capiEventId },
         pixelSent: !!pixelResult?.success,
         capiSent: !!capiResult?.success,
         pixelTime: pixelResult?.duration,
         capiTime: capiResult?.duration,
         capiResponse: capiResult?.body,
-        success: mode === "Fixed" && capiResult?.success,
-        matchQuality: capiResult?.body?.match_quality || (mode === "Fixed" ? 8.5 : 3.2)
+        success: capiResult?.success,
+        matchQuality: capiResult?.body?.match_quality || 7.5
       }
       
       setLogs(prev => [...prev, newLog])
       setCurrentNetwork(networkLog)
-      
-      // Show success/error toast
-      if (capiResult?.success) {
-        toast.success(`${event.name} Event Sent Successfully`, {
-          description: `Sent to ${sendToBoth ? 'Pixel & CAPI' : 'CAPI only'} • ${Math.round(capiResult.duration)}ms`,
-        })
-      } else {
-        toast.error(`${event.name} Event Failed`, {
-          description: capiResult?.error || 'Unknown error',
-        })
-      }
       
     } catch (error) {
       toast.error('Failed to send event', {

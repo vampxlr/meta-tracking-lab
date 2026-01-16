@@ -7,6 +7,17 @@ import { AlertTriangle, CheckCircle, Copy, Clock, Hash, Link2Off, Link2, Trendin
 export default function DedupMisconfiguredPage() {
   // Get site URL from environment
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+  // UUID generator helper (Meta requires UUID v4 format)
+  const generateUUID = () => {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return crypto.randomUUID()
+    }
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = Math.random() * 16 | 0
+      const v = c === 'x' ? r : (r & 0x3 | 0x8)
+      return v.toString(16)
+    })
+  }
 
   const examples = [
     {
