@@ -116,16 +116,27 @@ async function buildCapiPayload(
         client_ip_address: client_ip_address || '127.0.0.1',
         client_user_agent: client_user_agent || 'Mozilla/5.0',
       }
-      
+
       // Map to abbreviated field names without hashing
       if (user_data.email) brokenUserData.em = user_data.email
       if (user_data.phone) brokenUserData.ph = user_data.phone
       if (user_data.first_name) brokenUserData.fn = user_data.first_name
       if (user_data.last_name) brokenUserData.ln = user_data.last_name
-      if (user_data.external_id) brokenUserData.external_id = user_data.external_id
+      if (user_data.gender) brokenUserData.ge = user_data.gender
+      if (user_data.date_of_birth) brokenUserData.db = user_data.date_of_birth
       if (user_data.city) brokenUserData.ct = user_data.city
+      if (user_data.state) brokenUserData.st = user_data.state
+      if (user_data.zip) brokenUserData.zp = user_data.zip
       if (user_data.country) brokenUserData.country = user_data.country
-      
+      if (user_data.external_id) brokenUserData.external_id = user_data.external_id
+
+      // Pass through new IDs
+      if (user_data.fbc) brokenUserData.fbc = user_data.fbc
+      if (user_data.fbp) brokenUserData.fbp = user_data.fbp
+      if (user_data.subscription_id) brokenUserData.subscription_id = user_data.subscription_id
+      if (user_data.fb_login_id) brokenUserData.fb_login_id = user_data.fb_login_id
+      if (user_data.lead_id) brokenUserData.lead_id = user_data.lead_id
+
       event.user_data = brokenUserData
     }
   } else {
@@ -148,12 +159,12 @@ async function buildCapiPayload(
  */
 function sanitizePayload(payload: any): any {
   const sanitized = { ...payload }
-  
+
   // Remove access token
   if (sanitized.access_token) {
     sanitized.access_token = 'REDACTED'
   }
-  
+
   return sanitized
 }
 

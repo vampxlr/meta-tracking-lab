@@ -83,8 +83,13 @@ export default function CapiTestPage() {
     content_ids: '',
     content_type: '',
     content_name: '',
+    content_category: '',
     num_items: '',
     order_id: '',
+    status: '',
+    predicted_ltv: '',
+    search_string: '',
+    delivery_category: '',
   })
 
   // Optional user data fields
@@ -93,10 +98,26 @@ export default function CapiTestPage() {
     phone: '',
     first_name: '',
     last_name: '',
-    external_id: '',
+    gender: '',
+    date_of_birth: '', // YYYYMMDD
     city: '',
+    state: '',
+    zip: '',
     country: '',
+    external_id: '',
+    client_ip_address: '',
+    client_user_agent: '',
+    fbc: '',
+    fbp: '',
+    subscription_id: '',
+    fb_login_id: '',
+    lead_id: '',
   })
+
+  // Event context state
+  const [actionSource, setActionSource] = React.useState('website')
+  const [eventSourceUrl, setEventSourceUrl] = React.useState(SITE_URL)
+  const [sendBrowserEvent, setSendBrowserEvent] = React.useState(false)
 
   // Request/Response tracking
   const [requestDetails, setRequestDetails] = React.useState<RequestDetails | null>(null)
@@ -119,6 +140,46 @@ export default function CapiTestPage() {
       setIsConfigured(false)
     }
   }, [])
+
+  const fireBrowserEvent = useCallback(() => {
+    // Check if fbq exists
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      const fbq = (window as any).fbq
+
+      // Map params for browser event
+      const browserParams: any = {}
+
+      // Add custom data properties
+      if (customData.value) browserParams.value = parseFloat(customData.value)
+      if (customData.currency) browserParams.currency = customData.currency
+      if (customData.content_ids) browserParams.content_ids = customData.content_ids.split(',').map(s => s.trim()).filter(Boolean)
+      if (customData.content_type) browserParams.content_type = customData.content_type
+      if (customData.content_name) browserParams.content_name = customData.content_name
+      if (customData.content_category) browserParams.content_category = customData.content_category
+      if (customData.num_items) browserParams.num_items = parseFloat(customData.num_items)
+      if (customData.order_id) browserParams.order_id = customData.order_id
+      if (customData.status) browserParams.status = customData.status === 'true'
+      if (customData.predicted_ltv) browserParams.predicted_ltv = parseFloat(customData.predicted_ltv)
+      if (customData.search_string) browserParams.search_string = customData.search_string
+      if (customData.delivery_category) browserParams.delivery_category = customData.delivery_category
+
+      const eventIdParam = eventId ? { eventID: eventId } : {}
+
+      try {
+        fbq('track', eventName, browserParams, eventIdParam)
+        toast.success('Browser Event Fired', {
+          description: `Sent ${eventName} to Pixel with Event ID: ${eventId || 'None'}`
+        })
+      } catch (err) {
+        console.error('Error firing browser event:', err)
+        toast.error('Failed to fire browser event')
+      }
+    } else {
+      toast.warning('Meta Pixel not found', {
+        description: 'Make sure your ad blocker is disabled and Pixel is initialized.'
+      })
+    }
+  }, [eventName, customData, eventId])
 
   const validateForm = useCallback(() => {
     const errors: ValidationError[] = []
@@ -200,6 +261,8 @@ export default function CapiTestPage() {
     const body: any = {
       event_name: eventName,
       mode,
+      action_source: actionSource,
+      event_source_url: eventSourceUrl,
     }
 
     if (eventId) {
@@ -222,8 +285,10 @@ export default function CapiTestPage() {
       const value = customData[key as keyof typeof customData]
       if (value) {
         // Convert numeric fields
-        if (key === 'value' || key === 'num_items') {
+        if (key === 'value' || key === 'num_items' || key === 'predicted_ltv') {
           customDataFilled[key] = parseFloat(value) || 0
+        } else if (key === 'status') {
+          customDataFilled[key] = value === 'true'
         } else if (key === 'content_ids') {
           customDataFilled[key] = value.split(',').map(s => s.trim()).filter(Boolean)
         } else {
@@ -237,13 +302,18 @@ export default function CapiTestPage() {
     }
 
     return body
-  }, [eventName, mode, eventId, testEventCode, userData, customData])
+  }, [eventName, mode, eventId, testEventCode, userData, customData, actionSource, eventSourceUrl])
 
   const sendTestEvent = async () => {
     setIsLoading(true)
     setLastResponse(null)
     setRequestDetails(null)
     setResponseDetails(null)
+
+    // Fire browser event first if enabled
+    if (sendBrowserEvent) {
+      fireBrowserEvent()
+    }
 
     const startTime = Date.now()
     const timestamp = new Date().toISOString()
@@ -364,19 +434,35 @@ export default function CapiTestPage() {
       const firstNames = ['John', 'Jane', 'Michael', 'Sarah', 'David', 'Emily']
       const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Davis']
       const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix']
+      const states = ['NY', 'CA', 'IL', 'TX', 'AZ']
       const countries = ['US', 'UK', 'CA', 'AU', 'DE']
+      const zips = ['10001', '90001', '60601', '77001', '85001']
 
       const randomEmail = `${firstNames[Math.floor(Math.random() * firstNames.length)].toLowerCase()}.${lastNames[Math.floor(Math.random() * lastNames.length)].toLowerCase()}@example.com`
       const randomPhone = `+1${Math.floor(Math.random() * 9000000000 + 1000000000)}`
+      const year = Math.floor(Math.random() * (2000 - 1970) + 1970)
+      const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0')
+      const day = String(Math.floor(Math.random() * 28) + 1).padStart(2, '0')
 
       return {
         email: randomEmail,
         phone: randomPhone,
         first_name: firstNames[Math.floor(Math.random() * firstNames.length)],
         last_name: lastNames[Math.floor(Math.random() * lastNames.length)],
-        external_id: `customer_${Math.floor(Math.random() * 100000)}`,
+        gender: Math.random() > 0.5 ? 'm' : 'f',
+        date_of_birth: `${year}${month}${day}`,
         city: cities[Math.floor(Math.random() * cities.length)],
+        state: states[Math.floor(Math.random() * states.length)],
+        zip: zips[Math.floor(Math.random() * zips.length)],
         country: countries[Math.floor(Math.random() * countries.length)],
+        external_id: `customer_${Math.floor(Math.random() * 100000)}`,
+        client_ip_address: '192.168.1.1',
+        client_user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        fbc: `fb.1.${Date.now()}.${Math.floor(Math.random() * 1000000000)}`,
+        fbp: `fb.1.${Date.now()}.${Math.floor(Math.random() * 1000000000)}`,
+        subscription_id: `sub_${Math.floor(Math.random() * 10000)}`,
+        fb_login_id: `fb_login_${Math.floor(Math.random() * 10000)}`,
+        lead_id: `lead_${Math.floor(Math.random() * 10000)}`,
       }
     } else {
       // Broken mode: generate user data with issues
@@ -390,6 +476,8 @@ export default function CapiTestPage() {
         () => ({ ...brokenData, external_id: '' }), // Empty string
         () => ({ ...brokenData, city: 123 }), // Wrong type
         () => ({ ...brokenData, country: 'USA123' }), // Invalid country code
+        () => ({ ...brokenData, gender: 'male' }), // Should be 'm'
+        () => ({ ...brokenData, date_of_birth: '1990-01-01' }), // Should be YYYYMMDD
         () => ({ ...brokenData }), // Empty object
         () => ({ ...brokenData, email: 'user@', phone: 'not-a-number' }), // Multiple issues
       ]
@@ -405,6 +493,8 @@ export default function CapiTestPage() {
       const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
       const contentTypes = ['product', 'product_group', 'destination']
       const contentNames = ['Premium Widget', 'Basic Gadget', 'Advanced Tool', 'Standard Item']
+      const categories = ['Electronics', 'Home', 'Apparel']
+      const deliveryCategories = ['home_delivery', 'curbside', 'in_store']
 
       return {
         currency: currencies[Math.floor(Math.random() * currencies.length)],
@@ -412,8 +502,13 @@ export default function CapiTestPage() {
         content_ids: [`prod_${Math.floor(Math.random() * 1000)}`, `prod_${Math.floor(Math.random() * 1000)}`],
         content_type: contentTypes[Math.floor(Math.random() * contentTypes.length)],
         content_name: contentNames[Math.floor(Math.random() * contentNames.length)],
+        content_category: categories[Math.floor(Math.random() * categories.length)],
         num_items: Math.floor(Math.random() * 10) + 1,
         order_id: `order_${Math.floor(Math.random() * 100000)}`,
+        status: 'active',
+        predicted_ltv: Math.floor(Math.random() * 5000),
+        search_string: 'best widgets 2024',
+        delivery_category: deliveryCategories[Math.floor(Math.random() * deliveryCategories.length)],
       }
     } else {
       // Broken mode: generate custom data with issues
@@ -451,9 +546,20 @@ export default function CapiTestPage() {
       phone: newUserData.phone || '',
       first_name: newUserData.first_name || '',
       last_name: newUserData.last_name || '',
-      external_id: newUserData.external_id || '',
+      gender: newUserData.gender || '',
+      date_of_birth: newUserData.date_of_birth || '',
       city: newUserData.city || '',
+      state: newUserData.state || '',
+      zip: newUserData.zip || '',
       country: newUserData.country || '',
+      external_id: newUserData.external_id || '',
+      client_ip_address: newUserData.client_ip_address || '',
+      client_user_agent: newUserData.client_user_agent || '',
+      fbc: newUserData.fbc || '',
+      fbp: newUserData.fbp || '',
+      subscription_id: newUserData.subscription_id || '',
+      fb_login_id: newUserData.fb_login_id || '',
+      lead_id: newUserData.lead_id || '',
     })
     toast.success('User data filled', {
       description: mode === 'broken' ? 'User data with issues generated for testing' : 'Valid user data generated',
@@ -468,8 +574,13 @@ export default function CapiTestPage() {
       content_ids: Array.isArray(newCustomData.content_ids) ? newCustomData.content_ids.join(', ') : '',
       content_type: newCustomData.content_type || '',
       content_name: newCustomData.content_name || '',
+      content_category: newCustomData.content_category || '',
       num_items: newCustomData.num_items !== undefined ? String(newCustomData.num_items) : '',
       order_id: newCustomData.order_id || '',
+      status: newCustomData.status || '',
+      predicted_ltv: newCustomData.predicted_ltv !== undefined ? String(newCustomData.predicted_ltv) : '',
+      search_string: newCustomData.search_string || '',
+      delivery_category: newCustomData.delivery_category || '',
     })
     toast.success('Custom data filled', {
       description: mode === 'broken' ? 'Custom data with issues generated for testing' : 'Valid custom data generated',
@@ -488,7 +599,7 @@ export default function CapiTestPage() {
   const updatePreview = useCallback(async () => {
     const requestBody = buildRequestBody()
 
-    // Transform to match what the backend actually sends to Meta&apos;s API
+    // Transform to match what the backend actually sends to Meta's API
     const transformedPayload: any = {
       event_name: requestBody.event_name,
       event_time: Math.floor(Date.now() / 1000),
@@ -515,70 +626,60 @@ export default function CapiTestPage() {
         return hashHex
       }
 
-      // Helper function to normalize and hash email
-      const hashEmail = async (email: string): Promise<string> => {
-        const normalized = email.trim().toLowerCase()
-        return await hashString(normalized)
-      }
-
-      // Helper function to normalize and hash phone
-      const hashPhone = async (phone: string): Promise<string> => {
-        const normalized = phone.replace(/\D/g, '')
-        return await hashString(normalized)
-      }
-
-      // Helper function to normalize and hash first name
-      const hashFirstName = async (firstName: string): Promise<string> => {
-        const normalized = firstName.trim().toLowerCase()
-        return await hashString(normalized)
-      }
-
-      // Helper function to normalize and hash last name
-      const hashLastName = async (lastName: string): Promise<string> => {
-        const normalized = lastName.trim().toLowerCase()
-        return await hashString(normalized)
-      }
-
-      // Helper function to hash external ID
-      const hashExternalId = async (externalId: string): Promise<string> => {
-        return await hashString(externalId)
-      }
-
-      // Helper function to normalize and hash city
-      const hashCity = async (city: string): Promise<string> => {
-        const normalized = city.trim().toLowerCase()
-        return await hashString(normalized)
-      }
-
-      // Helper function to normalize and hash country
-      const hashCountry = async (country: string): Promise<string> => {
-        const normalized = country.trim().toLowerCase()
-        return await hashString(normalized)
-      }
+      // Helper functions
+      const hashEmail = async (email: string) => await hashString(email.trim().toLowerCase())
+      const hashPhone = async (phone: string) => await hashString(phone.replace(/\D/g, ''))
+      const hashName = async (name: string) => await hashString(name.trim().toLowerCase())
+      const hashGender = async (gender: string) => await hashString(gender.trim().toLowerCase())
+      const hashDOB = async (dob: string) => await hashString(dob.trim())
+      const hashCity = async (city: string) => await hashString(city.trim().toLowerCase())
+      const hashState = async (state: string) => await hashString(state.trim().toLowerCase())
+      const hashZip = async (zip: string) => await hashString(zip.trim().toLowerCase().replace(/\s/g, ''))
+      const hashCountry = async (country: string) => await hashString(country.trim().toLowerCase())
+      const hashExternalId = async (id: string) => await hashString(id)
 
       if (mode === 'fixed' || mode === 'test') {
         // Fixed and test mode: hash PII and use abbreviated field names
         if (userData.email) transformedUserData.em = await hashEmail(userData.email)
         if (userData.phone) transformedUserData.ph = await hashPhone(userData.phone)
-        if (userData.first_name) transformedUserData.fn = await hashFirstName(userData.first_name)
-        if (userData.last_name) transformedUserData.ln = await hashLastName(userData.last_name)
-        if (userData.external_id) transformedUserData.external_id = await hashExternalId(userData.external_id)
+        if (userData.first_name) transformedUserData.fn = await hashName(userData.first_name)
+        if (userData.last_name) transformedUserData.ln = await hashName(userData.last_name)
+        if (userData.gender) transformedUserData.ge = await hashGender(userData.gender)
+        if (userData.date_of_birth) transformedUserData.db = await hashDOB(userData.date_of_birth)
         if (userData.city) transformedUserData.ct = await hashCity(userData.city)
+        if (userData.state) transformedUserData.st = await hashState(userData.state)
+        if (userData.zip) transformedUserData.zp = await hashZip(userData.zip)
         if (userData.country) transformedUserData.country = await hashCountry(userData.country)
+        if (userData.external_id) transformedUserData.external_id = await hashExternalId(userData.external_id)
       } else {
         // Broken mode: use abbreviated field names but don't hash
         if (userData.email) transformedUserData.em = userData.email
         if (userData.phone) transformedUserData.ph = userData.phone
         if (userData.first_name) transformedUserData.fn = userData.first_name
         if (userData.last_name) transformedUserData.ln = userData.last_name
-        if (userData.external_id) transformedUserData.external_id = userData.external_id
+        if (userData.gender) transformedUserData.ge = userData.gender
+        if (userData.date_of_birth) transformedUserData.db = userData.date_of_birth
         if (userData.city) transformedUserData.ct = userData.city
+        if (userData.state) transformedUserData.st = userData.state
+        if (userData.zip) transformedUserData.zp = userData.zip
         if (userData.country) transformedUserData.country = userData.country
+        if (userData.external_id) transformedUserData.external_id = userData.external_id
       }
 
-      // Add client IP and user agent (these are added by backend)
-      transformedUserData.client_ip_address = '127.0.0.1'
-      transformedUserData.client_user_agent = 'Mozilla/5.0'
+      // Add non-hashed identifiers and context
+      if (userData.client_ip_address) transformedUserData.client_ip_address = userData.client_ip_address
+      if (userData.client_user_agent) transformedUserData.client_user_agent = userData.client_user_agent
+      if (userData.fbc) transformedUserData.fbc = userData.fbc
+      if (userData.fbp) transformedUserData.fbp = userData.fbp
+      if (userData.subscription_id) transformedUserData.subscription_id = userData.subscription_id
+      if (userData.fb_login_id) transformedUserData.fb_login_id = userData.fb_login_id
+      if (userData.lead_id) transformedUserData.lead_id = userData.lead_id
+
+      // Fill in defaults if empty and in fixed/test (mimic backend behavior)
+      if ((mode === 'fixed' || mode === 'test')) {
+        if (!transformedUserData.client_ip_address) transformedUserData.client_ip_address = '127.0.0.1'
+        if (!transformedUserData.client_user_agent) transformedUserData.client_user_agent = 'Mozilla/5.0'
+      }
 
       transformedPayload.user_data = transformedUserData
     }
@@ -588,8 +689,7 @@ export default function CapiTestPage() {
       transformedPayload.custom_data = requestBody.custom_data
     }
 
-    // Build the final payload structure that matches Meta&apos;s API expectations
-    // test_event_code should be at the top level, not inside the event object
+    // Build the final payload structure that matches Meta's API expectations
     const finalPayload: any = {
       data: [transformedPayload],
       access_token: 'REDACTED',
@@ -847,6 +947,45 @@ export default function CapiTestPage() {
           </div>
         )}
 
+        {/* Event Context Card */}
+        <div className="glass hover-lift rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[350ms]">
+          <div className="mb-4">
+            <h3 className="font-mono font-semibold text-[#e8f4f8] text-glow-hover">Event Context</h3>
+            <p className="text-sm text-[#8b949e] mt-1">
+              Configure where the event took place
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Action Source</label>
+              <select
+                value={actionSource}
+                onChange={(e) => setActionSource(e.target.value)}
+                disabled={isLoading}
+                className="w-full px-3 py-2 border border-[#00ff41]/20 rounded-md bg-[#0d1117] text-[#e8f4f8] text-xs focus:outline-none focus:ring-2 focus:ring-[#00ff41] focus:border-[#00ff41] font-mono h-9"
+              >
+                <option value="website">Website</option>
+                <option value="physical_store">Physical Store</option>
+                <option value="app">App</option>
+                <option value="system_generated">System Generated</option>
+                <option value="chat">Chat</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Event Source URL</label>
+              <Input
+                type="text"
+                placeholder="https://example.com"
+                value={eventSourceUrl}
+                onChange={(e) => setEventSourceUrl(e.target.value)}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+          </div>
+        </div>
+
         {/* User Data Card */}
         <div className="glass hover-lift rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[400ms]">
           <div className="flex items-start justify-between mb-4">
@@ -867,8 +1006,9 @@ export default function CapiTestPage() {
               Fill Data
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Contact Info */}
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Email</label>
               <Input
                 type="email"
@@ -876,10 +1016,10 @@ export default function CapiTestPage() {
                 value={userData.email}
                 onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Phone</label>
               <Input
                 type="tel"
@@ -887,10 +1027,10 @@ export default function CapiTestPage() {
                 value={userData.phone}
                 onChange={(e) => setUserData({ ...userData, phone: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">First Name</label>
               <Input
                 type="text"
@@ -898,10 +1038,10 @@ export default function CapiTestPage() {
                 value={userData.first_name}
                 onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Last Name</label>
               <Input
                 type="text"
@@ -909,21 +1049,36 @@ export default function CapiTestPage() {
                 value={userData.last_name}
                 onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
-              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">External ID</label>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Gender</label>
+              <select
+                value={userData.gender}
+                onChange={(e) => setUserData({ ...userData, gender: e.target.value })}
+                disabled={isLoading}
+                className="w-full px-3 py-2 border border-[#00ff41]/20 rounded-md bg-[#0d1117] text-[#e8f4f8] text-xs focus:outline-none focus:ring-2 focus:ring-[#00ff41] focus:border-[#00ff41] font-mono h-9"
+              >
+                <option value="">Select Gender</option>
+                <option value="m">Male (m)</option>
+                <option value="f">Female (f)</option>
+              </select>
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">DOB (YYYYMMDD)</label>
               <Input
                 type="text"
-                placeholder="customer_123"
-                value={userData.external_id}
-                onChange={(e) => setUserData({ ...userData, external_id: e.target.value })}
+                placeholder="19900101"
+                value={userData.date_of_birth}
+                onChange={(e) => setUserData({ ...userData, date_of_birth: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
+
+            {/* Location */}
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">City</label>
               <Input
                 type="text"
@@ -931,18 +1086,132 @@ export default function CapiTestPage() {
                 value={userData.city}
                 onChange={(e) => setUserData({ ...userData, city: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">State</label>
+              <Input
+                type="text"
+                placeholder="NY"
+                value={userData.state}
+                onChange={(e) => setUserData({ ...userData, state: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Zip Code</label>
+              <Input
+                type="text"
+                placeholder="10001"
+                value={userData.zip}
+                onChange={(e) => setUserData({ ...userData, zip: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Country</label>
               <Input
                 type="text"
-                placeholder="US"
+                placeholder="us"
                 value={userData.country}
                 onChange={(e) => setUserData({ ...userData, country: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
+              />
+            </div>
+
+            {/* IDs */}
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">External ID</label>
+              <Input
+                type="text"
+                placeholder="cust_123"
+                value={userData.external_id}
+                onChange={(e) => setUserData({ ...userData, external_id: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">fbp (Browser ID)</label>
+              <Input
+                type="text"
+                placeholder="fb.1.123.456"
+                value={userData.fbp}
+                onChange={(e) => setUserData({ ...userData, fbp: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">fbc (Click ID)</label>
+              <Input
+                type="text"
+                placeholder="fb.1.123.456"
+                value={userData.fbc}
+                onChange={(e) => setUserData({ ...userData, fbc: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Subscription ID</label>
+              <Input
+                type="text"
+                placeholder="sub_123"
+                value={userData.subscription_id}
+                onChange={(e) => setUserData({ ...userData, subscription_id: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">FB Login ID</label>
+              <Input
+                type="text"
+                placeholder="fb_login_123"
+                value={userData.fb_login_id}
+                onChange={(e) => setUserData({ ...userData, fb_login_id: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Lead ID</label>
+              <Input
+                type="text"
+                placeholder="lead_123"
+                value={userData.lead_id}
+                onChange={(e) => setUserData({ ...userData, lead_id: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+
+            {/* Tech Context */}
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Client IP</label>
+              <Input
+                type="text"
+                placeholder="192.168.1.1"
+                value={userData.client_ip_address}
+                onChange={(e) => setUserData({ ...userData, client_ip_address: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-3">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">User Agent</label>
+              <Input
+                type="text"
+                placeholder="Mozilla/5.0..."
+                value={userData.client_user_agent}
+                onChange={(e) => setUserData({ ...userData, client_user_agent: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
               />
             </div>
           </div>
@@ -968,8 +1237,9 @@ export default function CapiTestPage() {
               Fill Data
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Financial */}
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">
                 Currency {eventName === 'Purchase' && <span className="text-red-400">*</span>}
               </label>
@@ -979,10 +1249,10 @@ export default function CapiTestPage() {
                 value={customData.currency}
                 onChange={(e) => setCustomData({ ...customData, currency: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">
                 Value {eventName === 'Purchase' && <span className="text-red-400">*</span>}
               </label>
@@ -992,55 +1262,10 @@ export default function CapiTestPage() {
                 value={customData.value}
                 onChange={(e) => setCustomData({ ...customData, value: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
               />
             </div>
-            <div>
-              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content IDs</label>
-              <Input
-                type="text"
-                placeholder="prod_123, prod_456"
-                value={customData.content_ids}
-                onChange={(e) => setCustomData({ ...customData, content_ids: e.target.value })}
-                disabled={isLoading}
-                className="font-mono text-sm"
-              />
-              <p className="text-xs text-[#8b949e] mt-1">Comma-separated list</p>
-            </div>
-            <div>
-              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Type</label>
-              <Input
-                type="text"
-                placeholder="product"
-                value={customData.content_type}
-                onChange={(e) => setCustomData({ ...customData, content_type: e.target.value })}
-                disabled={isLoading}
-                className="font-mono text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Name</label>
-              <Input
-                type="text"
-                placeholder="Product Name"
-                value={customData.content_name}
-                onChange={(e) => setCustomData({ ...customData, content_name: e.target.value })}
-                disabled={isLoading}
-                className="font-mono text-sm"
-              />
-            </div>
-            <div>
-              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Number of Items</label>
-              <Input
-                type="number"
-                placeholder="1"
-                value={customData.num_items}
-                onChange={(e) => setCustomData({ ...customData, num_items: e.target.value })}
-                disabled={isLoading}
-                className="font-mono text-sm"
-              />
-            </div>
-            <div className="md:col-span-2">
+            <div className="lg:col-span-1">
               <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Order ID</label>
               <Input
                 type="text"
@@ -1048,7 +1273,113 @@ export default function CapiTestPage() {
                 value={customData.order_id}
                 onChange={(e) => setCustomData({ ...customData, order_id: e.target.value })}
                 disabled={isLoading}
-                className="font-mono text-sm"
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Predicted LTV</label>
+              <Input
+                type="number"
+                placeholder="0.00"
+                value={customData.predicted_ltv}
+                onChange={(e) => setCustomData({ ...customData, predicted_ltv: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+
+            {/* Content */}
+            <div className="lg:col-span-2">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content IDs (comma separated)</label>
+              <Input
+                type="text"
+                placeholder="prod_123, prod_456"
+                value={customData.content_ids}
+                onChange={(e) => setCustomData({ ...customData, content_ids: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Type</label>
+              <Input
+                type="text"
+                placeholder="product"
+                value={customData.content_type}
+                onChange={(e) => setCustomData({ ...customData, content_type: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Name</label>
+              <Input
+                type="text"
+                placeholder="Product Name"
+                value={customData.content_name}
+                onChange={(e) => setCustomData({ ...customData, content_name: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Content Category</label>
+              <Input
+                type="text"
+                placeholder="Electronics"
+                value={customData.content_category}
+                onChange={(e) => setCustomData({ ...customData, content_category: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Num Items</label>
+              <Input
+                type="number"
+                placeholder="1"
+                value={customData.num_items}
+                onChange={(e) => setCustomData({ ...customData, num_items: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+
+            {/* Context */}
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Status</label>
+              <Input
+                type="text"
+                placeholder="completed"
+                value={customData.status}
+                onChange={(e) => setCustomData({ ...customData, status: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
+              />
+            </div>
+            <div className="lg:col-span-1">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Delivery Category</label>
+              <select
+                value={customData.delivery_category}
+                onChange={(e) => setCustomData({ ...customData, delivery_category: e.target.value })}
+                disabled={isLoading}
+                className="w-full px-3 py-2 border border-[#00ff41]/20 rounded-md bg-[#0d1117] text-[#e8f4f8] text-xs focus:outline-none focus:ring-2 focus:ring-[#00ff41] focus:border-[#00ff41] font-mono h-9"
+              >
+                <option value="">None</option>
+                <option value="home_delivery">Home Delivery</option>
+                <option value="curbside">Curbside</option>
+                <option value="in_store">In Store</option>
+              </select>
+            </div>
+            <div className="lg:col-span-2">
+              <label className="text-xs font-mono font-medium mb-1 block text-[#8b949e]">Search String</label>
+              <Input
+                type="text"
+                placeholder="search query"
+                value={customData.search_string}
+                onChange={(e) => setCustomData({ ...customData, search_string: e.target.value })}
+                disabled={isLoading}
+                className="font-mono text-xs"
               />
             </div>
           </div>
