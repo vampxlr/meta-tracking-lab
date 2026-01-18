@@ -24,8 +24,7 @@ export default function TestingDebuggingPage() {
       name: "Using test_event_code (SAFE TESTING)",
       icon: <TestTube className="h-4 w-4 text-[#00ff41]" />,
       description: "Events with test_event_code appear in Test Events tab only - won&apos;t affect real campaign data",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `test_purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -50,8 +49,7 @@ export default function TestingDebuggingPage() {
       name: "Meta Pixel Helper Detection",
       icon: <Chrome className="h-4 w-4 text-[#00ff41]" />,
       description: "Browser extension shows real-time Pixel events with full payload inspection",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "ViewContent",
         event_id: `view_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -76,8 +74,7 @@ export default function TestingDebuggingPage() {
       name: "DevTools Network Inspection",
       icon: <Network className="h-4 w-4 text-[#00ff41]" />,
       description: "Browser Network tab shows exact requests to facebook.com/tr and your CAPI endpoint",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -102,8 +99,7 @@ export default function TestingDebuggingPage() {
       name: "Test Events Tab Visibility",
       icon: <Search className="h-4 w-4 text-[#00ff41]" />,
       description: "Events appear in Test Events within 1-2 minutes with full diagnostics",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "InitiateCheckout",
         event_id: `checkout_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -126,10 +122,10 @@ export default function TestingDebuggingPage() {
       }
     },
     {
-      name: "CAPI Error Response Interpretation",
+      name: "CAPI Error Response (BROKEN)",
       icon: <AlertCircle className="h-4 w-4 text-yellow-400" />,
       description: "Meta returns detailed error codes for malformed CAPI events",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         // Missing required fields to trigger error
         action_source: "website",
@@ -140,8 +136,13 @@ export default function TestingDebuggingPage() {
           test_mode: "broken",
           note: "Missing required fields - Meta returns detailed error codes"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "CAPI Error Response (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Correctly formed CAPI event returns success response",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -161,10 +162,10 @@ export default function TestingDebuggingPage() {
       }
     },
     {
-      name: "Match Quality Score Analysis",
-      icon: <Activity className="h-4 w-4 text-[#00ff41]" />,
+      name: "Match Quality Score (LOW)",
+      icon: <Activity className="h-4 w-4 text-yellow-400" />,
       description: "Events Manager shows match quality score based on PII provided",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_lowmatch_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -181,8 +182,13 @@ export default function TestingDebuggingPage() {
           test_mode: "broken",
           note: "Only email - low match quality score"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Match Quality Score (HIGH)",
+      icon: <Activity className="h-4 w-4 text-[#00ff41]" />,
+      description: "High match quality with multiple PII fields",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_highmatch_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -214,8 +220,7 @@ export default function TestingDebuggingPage() {
       name: "Event Deduplication Verification",
       icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
       description: "Test Events shows &quot;Deduplicated&quot; badge when Pixel and CAPI use same event_id",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `dedup_verify_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -241,8 +246,7 @@ export default function TestingDebuggingPage() {
       name: "Complete Debugging Workflow",
       icon: <Bug className="h-4 w-4 text-[#00ff41]" />,
       description: "Full event with test code, proper structure, and all debugging metadata",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `complete_test_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -254,10 +258,6 @@ export default function TestingDebuggingPage() {
           ph: "16505551234567890abcdef0123456789abcdef0123456789abcdef012345",
           fn: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
           ln: "6b23c0d5f35d1b11f9b683f0b0a617355deb11277d91ae091d399c655b87940d",
-          ct: "2d5c6b8e6f4c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e",
-          st: "3e6d7c9f7g5d6f4e4d6f4e4d6f4e4d6f4e4d6f4e4d6f4e4d6f4e4d6f4e4d6f",
-          zp: "94043",
-          country: "us",
           external_id: "test_user_12345",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0 (Test Environment)",

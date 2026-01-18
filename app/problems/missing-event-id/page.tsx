@@ -23,8 +23,8 @@ export default function MissingEventIdPage() {
     {
       name: "No Event ID (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
-      description: "Event sent without any event_id - can&apos;t track or debug individual events",
-      brokenPayload: {
+      description: "Event sent without any event_id - can't track or debug individual events",
+      payload: {
         event_name: "Purchase",
         event_time: Math.floor(Date.now() / 1000),
         action_source: "website",
@@ -42,14 +42,13 @@ export default function MissingEventIdPage() {
           test_mode: "broken",
           note: "Missing event_id field entirely - can't track or deduplicate"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "Reused Event ID (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
-      description: "Same event_id used for multiple events - can&apos;t distinguish between them",
-      brokenPayload: {
+      description: "Same event_id used for multiple events - can't distinguish between them",
+      payload: {
         event_name: "Purchase",
         event_id: "static_id_123",
         event_time: Math.floor(Date.now() / 1000),
@@ -66,14 +65,13 @@ export default function MissingEventIdPage() {
           test_mode: "broken",
           note: "Same static event_id 'static_id_123' reused - can't distinguish events"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "Non-Unique Event ID (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
       description: "Short or predictable event_id - high collision risk, deduplication fails",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: "123",
         event_time: Math.floor(Date.now() / 1000),
@@ -90,14 +88,13 @@ export default function MissingEventIdPage() {
           test_mode: "broken",
           note: "Short predictable ID '123' - high collision risk"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
-      name: "Poor Format Event ID (WORKS BUT SUBOPTIMAL)",
+      name: "Poor Format Event ID (SUBOPTIMAL)",
       icon: <Package className="h-4 w-4 text-yellow-400" />,
       description: "Event ID exists but lacks structure - harder to debug and trace",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: "abc123xyz",
         event_time: Math.floor(Date.now() / 1000),
@@ -114,8 +111,13 @@ export default function MissingEventIdPage() {
           test_mode: "broken",
           note: "Generic format 'abc123xyz' - works but hard to debug"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Poor Format Event ID (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Structured event ID - easy to debug and trace",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -137,10 +139,10 @@ export default function MissingEventIdPage() {
       }
     },
     {
-      name: "High-Value Purchase Without ID (CRITICAL)",
+      name: "High-Value Purchase (BROKEN)",
       icon: <TrendingUp className="h-4 w-4 text-red-400" />,
-      description: "High-value transaction missing event_id - can&apos;t track ROI or refunds",
-      brokenPayload: {
+      description: "High-value transaction missing event_id - can't track ROI or refunds",
+      payload: {
         event_name: "Purchase",
         event_time: Math.floor(Date.now() / 1000),
         action_source: "website",
@@ -157,8 +159,13 @@ export default function MissingEventIdPage() {
           test_mode: "broken",
           note: "No event_id on $2499 purchase - can't track ROI or refunds"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "High-Value Purchase (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "High-value transaction with unique ID - fully trackable",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_high_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -184,8 +191,7 @@ export default function MissingEventIdPage() {
       name: "Timestamp-Based ID (GOOD)",
       icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
       description: "Using timestamp ensures uniqueness - simple and effective approach",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -210,8 +216,7 @@ export default function MissingEventIdPage() {
       name: "Order ID as Event ID (BEST PRACTICE)",
       icon: <ShoppingBag className="h-4 w-4 text-[#00ff41]" />,
       description: "Using actual order ID - enables refund tracking and business reconciliation",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `order_ORD-2026-${Math.floor(Math.random() * 10000)}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -243,8 +248,7 @@ export default function MissingEventIdPage() {
       name: "Complete Event Structure (PERFECT)",
       icon: <Hash className="h-4 w-4 text-[#00ff41]" />,
       description: "Comprehensive event with structured event_id and all required fields",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `txn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         event_time: Math.floor(Date.now() / 1000),

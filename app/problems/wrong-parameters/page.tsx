@@ -10,10 +10,10 @@ export default function WrongParametersPage() {
 
   const parameterExamples = [
     {
-      name: "Wrong Field Name",
+      name: "Wrong Field Name (BROKEN)",
       icon: <XCircle className="h-4 w-4 text-red-400 icon-spin-hover" />,
       description: "Using 'price' instead of 'value' → Field ignored by Meta",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         custom_data: {
@@ -21,12 +21,17 @@ export default function WrongParametersPage() {
           price: 99.99,  // Wrong! Should be "value"
           items: ["prod_123"],  // Wrong! Should be "content_ids"
           source_page: "/problems/wrong-parameters",
-          example_name: "Wrong Field Names",
+          example_name: "Wrong Field Names - BROKEN",
           test_mode: "broken",
           note: "'price' & 'items' instead of 'value' & 'content_ids'"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Wrong Field Name (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Correct field names 'value' and 'content_ids'",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         custom_data: {
@@ -41,22 +46,27 @@ export default function WrongParametersPage() {
       }
     },
     {
-      name: "Wrong Data Type (Array vs String)",
+      name: "Wrong Data Type (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "content_ids as string instead of array → Meta can't parse",
-      brokenPayload: {
+      payload: {
         event_name: "ViewContent",
         event_id: `view_${Date.now()}`,
         custom_data: {
           content_ids: "product_123",  // String! Should be array
           content_type: "product",
           source_page: "/problems/wrong-parameters",
-          example_name: "Wrong Data Type - String not Array",
+          example_name: "Wrong Data Type - BROKEN",
           test_mode: "broken",
           note: "content_ids as string - should be array"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Wrong Data Type (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "content_ids as array → parsed correctly",
+      payload: {
         event_name: "ViewContent",
         event_id: `view_${Date.now()}`,
         custom_data: {
@@ -70,22 +80,27 @@ export default function WrongParametersPage() {
       }
     },
     {
-      name: "Wrong Nesting Level",
+      name: "Wrong Nesting Level (BROKEN)",
       icon: <Layers className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Fields at root instead of in custom_data → Ignored",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         currency: "USD",  // Wrong! Should be in custom_data
         value: 149.99,  // Wrong! Should be in custom_data
         custom_data: {
           source_page: "/problems/wrong-parameters",
-          example_name: "Wrong Nesting - ROOT LEVEL",
+          example_name: "Wrong Nesting - BROKEN",
           test_mode: "broken",
           note: "currency & value at root - should be in custom_data"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Wrong Nesting Level (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Fields nested correctly in custom_data",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         custom_data: {  // Correct nesting
@@ -99,10 +114,10 @@ export default function WrongParametersPage() {
       }
     },
     {
-      name: "Wrong Parameter Name (Snake vs Camel)",
+      name: "Wrong Parameter Name (BROKEN)",
       icon: <Code2 className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Using camelCase instead of snake_case → Not recognized",
-      brokenPayload: {
+      payload: {
         eventName: "Purchase",  // Wrong! Should be event_name
         eventId: `purchase_${Date.now()}`,  // Wrong! Should be event_id
         customData: {  // Wrong! Should be custom_data
@@ -113,37 +128,47 @@ export default function WrongParametersPage() {
           test_mode: "broken",
           note: "eventName, eventId, customData - Meta doesn't recognize"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Wrong Parameter Name (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Using snake_case → Recognized correcty",
+      payload: {
         event_name: "Purchase",  // snake_case - correct!
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
           value: 199.99,
           source_page: "/problems/wrong-parameters",
-          example_name: "snake_case - CORRECT",
+          example_name: "snake_case - FIXED",
           test_mode: "fixed",
           note: "event_name, event_id, custom_data - proper snake_case"
         }
       }
     },
     {
-      name: "Missing Required Parameters",
+      name: "Missing Required Parameters (BROKEN)",
       icon: <FileQuestion className="h-4 w-4 text-red-400 icon-spin-hover" />,
       description: "Missing event_name → Event completely rejected",
-      brokenPayload: {
+      payload: {
         event_id: `event_${Date.now()}`,
         custom_data: {
           currency: "USD",
           value: 99.99,
           source_page: "/problems/wrong-parameters",
-          example_name: "Missing event_name - REJECTED",
+          example_name: "Missing event_name - BROKEN",
           test_mode: "broken",
           note: "No event_name - Meta completely rejects event"
         }
         // Missing event_name! Critical error
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Missing Required Parameters (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "All required parameters present",
+      payload: {
         event_name: "Purchase",  // Required!
         event_id: `purchase_${Date.now()}`,
         custom_data: {
@@ -157,10 +182,10 @@ export default function WrongParametersPage() {
       }
     },
     {
-      name: "Extra Unknown Parameters",
+      name: "Extra Unknown Parameters (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
-      description: "Custom params not in spec → Silently ignored (not an error but wasteful)",
-      brokenPayload: {
+      description: "Custom params not in spec → Silently ignored (wasteful)",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         custom_data: {
@@ -169,12 +194,17 @@ export default function WrongParametersPage() {
           my_custom_field: "ignored",  // Not in Meta spec - ignored
           another_field: 123,  // Also ignored
           source_page: "/problems/wrong-parameters",
-          example_name: "Extra Unknown Params - WASTEFUL",
+          example_name: "Extra Unknown Params - BROKEN",
           test_mode: "broken",
           note: "Unknown fields silently ignored - wastes bandwidth"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Extra Unknown Parameters (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Only standard, recognized parameters",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         custom_data: {
@@ -190,47 +220,57 @@ export default function WrongParametersPage() {
       }
     },
     {
-      name: "Wrong Event Name Case",
+      name: "Wrong Event Name Case (BROKEN)",
       icon: <Code2 className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Lowercase event name → Not recognized as standard event",
-      brokenPayload: {
+      payload: {
         event_name: "purchase",  // Wrong! Should be PascalCase
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
           value: 299.99,
           source_page: "/problems/wrong-parameters",
-          example_name: "Lowercase Event Name",
+          example_name: "Lowercase Event Name - BROKEN",
           test_mode: "broken",
           note: "'purchase' lowercase - not recognized as standard event"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Wrong Event Name Case (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "PascalCase event name → Correctly recognized",
+      payload: {
         event_name: "Purchase",  // PascalCase - correct!
         event_id: `purchase_${Date.now()}`,
         custom_data: {
           currency: "USD",
           value: 299.99,
           source_page: "/problems/wrong-parameters",
-          example_name: "PascalCase Event Name - CORRECT",
+          example_name: "PascalCase Event Name - FIXED",
           test_mode: "fixed",
           note: "'Purchase' PascalCase - recognized as standard event"
         }
       }
     },
     {
-      name: "Complete vs Incomplete Structure",
-      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      description: "Minimal vs complete: more parameters = better optimization",
-      brokenPayload: {
+      name: "Complete vs Incomplete (POOR)",
+      icon: <CheckCircle2 className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
+      description: "Minimal data → poor optimization",
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         custom_data: {
           value: 49.99
           // Minimal data - poor optimization
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Complete vs Incomplete (OPTIMAL)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Values, IDs, content info → max optimization",
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

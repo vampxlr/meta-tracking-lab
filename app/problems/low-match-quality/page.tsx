@@ -11,10 +11,10 @@ export default function LowMatchQualityPage() {
   // 8 comprehensive examples demonstrating PII hashing and normalization
   const matchQualityExamples = [
     {
-      name: "Unhashed Email (CRITICAL)",
+      name: "Unhashed Email (BROKEN)",
       icon: <XCircle className="h-4 w-4 text-red-400 icon-spin-hover" />,
       description: "Plaintext email → GDPR violation + 0% match rate",
-      brokenPayload: {
+      payload: {
         event_name: "CompleteRegistration",
         event_time: Math.floor(Date.now() / 1000),
         user_data: {
@@ -22,12 +22,17 @@ export default function LowMatchQualityPage() {
         },
         custom_data: {
           source_page: "/problems/low-match-quality",
-          example_name: "Unhashed Email - CRITICAL",
+          example_name: "Unhashed Email - BROKEN",
           test_mode: "broken",
           note: "Plain text email - GDPR violation + 0% match"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Unhashed Email (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "SHA-256 hashed email → GDPR compliant + high match",
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -43,10 +48,10 @@ export default function LowMatchQualityPage() {
       }
     },
     {
-      name: "Not Lowercased Before Hash",
+      name: "Not Lowercased (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Email uppercase before hashing → wrong hash → 0% match",
-      brokenPayload: {
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -60,8 +65,13 @@ export default function LowMatchQualityPage() {
           test_mode: "broken",
           note: "Hash of uppercase email - wrong hash = 0% match"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Not Lowercased (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Lowercase before hash → correct hash → high match",
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -77,10 +87,10 @@ export default function LowMatchQualityPage() {
       }
     },
     {
-      name: "Spaces Not Trimmed",
+      name: "Spaces Not Trimmed (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Leading/trailing spaces → different hash → no match",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -96,8 +106,13 @@ export default function LowMatchQualityPage() {
           test_mode: "broken",
           note: "Hash of ' user@example.com ' with spaces - wrong hash"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Spaces Not Trimmed (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Trimmed before hash → correct match",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -115,10 +130,10 @@ export default function LowMatchQualityPage() {
       }
     },
     {
-      name: "Phone Format Issues",
+      name: "Phone Format Issues (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Phone with dashes/spaces → wrong hash → no match",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -134,8 +149,13 @@ export default function LowMatchQualityPage() {
           test_mode: "broken",
           note: "Hash of '555-123-4567' with dashes - wrong format"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Phone Format Issues (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Digits only before hash → correct match",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -153,10 +173,10 @@ export default function LowMatchQualityPage() {
       }
     },
     {
-      name: "Single Field Only (Poor)",
+      name: "Single Field Only (POOR)",
       icon: <Users className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
       description: "Only email → Match quality ~3/10",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -172,8 +192,13 @@ export default function LowMatchQualityPage() {
           test_mode: "broken",
           note: "Only email - match quality ~3/10"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Single Field Only (IMPROVED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "4 fields → Match quality ~7-8/10",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -198,22 +223,7 @@ export default function LowMatchQualityPage() {
       name: "Email + Phone (GOOD)",
       icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       description: "2 fields → Match quality ~7/10",
-      brokenPayload: {
-        event_name: "CompleteRegistration",
-        event_id: `lead_${Date.now()}`,
-        event_time: Math.floor(Date.now() / 1000),
-        user_data: {
-          em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514"
-          // Only email = 3-4/10 match
-        },
-        custom_data: {
-          source_page: "/problems/low-match-quality",
-          example_name: "Email Only - ~3/10 Match",
-          test_mode: "broken",
-          note: "Only 1 field - low match quality"
-        }
-      },
-      fixedPayload: {
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -234,25 +244,7 @@ export default function LowMatchQualityPage() {
       name: "Full User Data (BEST)",
       icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
       description: "All fields → Match quality 9-10/10 (optimal)",
-      brokenPayload: {
-        event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
-        event_time: Math.floor(Date.now() / 1000),
-        user_data: {
-          em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514",
-          ph: "254d69f6b8f6a6e9c2b1c573b0885c9b6f3f3f3c8c0f3f3f3f3f3f3f3f3f3f3"
-          // Only 2 fields = 7/10
-        },
-        custom_data: {
-          currency: "USD",
-          value: 199.99,
-          source_page: "/problems/low-match-quality",
-          example_name: "2 Fields Only - ~7/10 Match",
-          test_mode: "broken",
-          note: "em + ph only - decent but not optimal"
-        }
-      },
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -279,10 +271,10 @@ export default function LowMatchQualityPage() {
       }
     },
     {
-      name: "External ID (CRM Link)",
+      name: "External ID (CRM UNLINKED)",
       icon: <Lock className="h-4 w-4 text-[#00d9ff] icon-spin-hover" />,
-      description: "Links online + offline conversions via your user ID",
-      brokenPayload: {
+      description: "No external_id → can't link to offline conversions",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -298,8 +290,13 @@ export default function LowMatchQualityPage() {
           test_mode: "broken",
           note: "Can't link to offline/CRM data without external_id"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "External ID (CRM LINKED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Links online + offline conversions via user ID",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -798,154 +795,13 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
                 <tr className="bg-[#00ff41]/5">
                   <td className="p-3 text-sm text-[#e8f4f8]">Country</td>
                   <td className="p-3 text-sm font-mono text-[#00d9ff]">country</td>
-                  <td className="p-3 text-xs text-[#8b949e]">2-letter ISO, lowercase</td>
+                  <td className="p-3 text-xs text-[#8b949e]">lower case 2-letter ISO</td>
                   <td className="p-3 text-xs text-[#00ff41]">Yes (SHA-256)</td>
                   <td className="p-3 text-xs font-mono text-[#8b949e]">us</td>
-                </tr>
-                <tr>
-                  <td className="p-3 text-sm text-[#e8f4f8]">External ID</td>
-                  <td className="p-3 text-sm font-mono text-[#00d9ff]">external_id</td>
-                  <td className="p-3 text-xs text-[#8b949e]">none</td>
-                  <td className="p-3 text-xs text-red-400">NO</td>
-                  <td className="p-3 text-xs font-mono text-[#8b949e]">user_12345</td>
-                </tr>
-                <tr className="bg-[#00ff41]/5">
-                  <td className="p-3 text-sm text-[#e8f4f8]">Client IP</td>
-                  <td className="p-3 text-sm font-mono text-[#00d9ff]">client_ip_address</td>
-                  <td className="p-3 text-xs text-[#8b949e]">none</td>
-                  <td className="p-3 text-xs text-red-400">NO</td>
-                  <td className="p-3 text-xs font-mono text-[#8b949e]">1.2.3.4</td>
-                </tr>
-                <tr>
-                  <td className="p-3 text-sm text-[#e8f4f8]">User Agent</td>
-                  <td className="p-3 text-sm font-mono text-[#00d9ff]">client_user_agent</td>
-                  <td className="p-3 text-xs text-[#8b949e]">none</td>
-                  <td className="p-3 text-xs text-red-400">NO</td>
-                  <td className="p-3 text-xs font-mono text-[#8b949e]">Mozilla/5.0...</td>
                 </tr>
               </tbody>
             </table>
           </div>
-        </div>
-      </section>
-
-      {/* Best Practices */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
-          <span className="inline-block animate-pulse">▸</span> Best Practices for Maximum Match Quality
-        </h2>
-
-        <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Always Send Email + Phone Minimum</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  This combination gives you 7-8/10 match quality. Single field = 3-4/10 (unacceptable).
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Normalize BEFORE Hashing</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Hash(&quot;User@Example.com&quot;) ≠ Hash(&quot;user@example.com&quot;). Normalize first or get 0% matches.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Use SHA-256 Only</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Meta requires SHA-256. MD5, SHA-1, or other algorithms won&apos;t work.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Include Phone Country Code</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Use full international format: 15551234567 (not 5551234567). Include country code for better matching.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Add Full Address When Available</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  City, state, zip, country boost match quality to 9-10/10. Especially important for high-value purchases.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Use external_id for CRM Integration</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Links online events to offline conversions, in-store purchases, phone orders, etc. DO NOT hash external_id!
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Test in Meta Events Manager</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Send test events and check the &quot;Event Match Quality&quot; column. Aim for 8+ consistently.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Hash Server-Side When Possible</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Hashing on the server is more secure than client-side. Send plaintext to your server, hash there, then send to CAPI.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Related Topics */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
-          <span className="inline-block animate-pulse">▸</span> Related Topics
-        </h2>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <a href="/problems/duplicate-events" className="block">
-            <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
-              <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Duplicate Events</h3>
-              <p className="text-sm text-[#8b949e] mb-3">
-                Learn how to use event_id for deduplication when sending the same event to both Pixel and CAPI
-              </p>
-              <code className="text-xs text-[#00d9ff] font-mono">→ /problems/duplicate-events</code>
-            </div>
-          </a>
-
-          <a href="/problems/security-privacy" className="block">
-            <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
-              <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Security & Privacy</h3>
-              <p className="text-sm text-[#8b949e] mb-3">
-                Deep dive into GDPR compliance, data retention, and secure PII handling best practices
-              </p>
-              <code className="text-xs text-[#00d9ff] font-mono">→ /problems/security-privacy</code>
-            </div>
-          </a>
         </div>
       </section>
 

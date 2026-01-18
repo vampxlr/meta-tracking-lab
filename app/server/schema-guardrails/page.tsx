@@ -22,10 +22,10 @@ export default function SchemaGuardrailsPage() {
 
   const schemaExamples = [
     {
-      name: "No Validation (GARBAGE IN = GARBAGE OUT)",
+      name: "No Validation (BROKEN)",
       icon: <XCircle className="h-4 w-4 text-red-400" />,
       description: "Send malformed data to Meta → Meta rejects → Poor analytics",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: 12345,  // NUMBER instead of STRING!
         custom_data: {
@@ -33,8 +33,13 @@ export default function SchemaGuardrailsPage() {
           value: "999.99",  // STRING instead of NUMBER!
           content_ids: "prod_123"  // STRING instead of ARRAY!
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Schema Validated (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Correct types and formatting",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,  // STRING ✓
         event_time: Math.floor(Date.now() / 1000),
@@ -55,10 +60,10 @@ export default function SchemaGuardrailsPage() {
       }
     },
     {
-      name: "Missing Required Fields",
+      name: "Missing Required Fields (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Forget event_name or event_time → Meta rejects entire event",
-      brokenPayload: {
+      payload: {
         event_id: `purchase_${Date.now()}`,
         // Missing event_name! Critical error
         custom_data: {
@@ -69,8 +74,13 @@ export default function SchemaGuardrailsPage() {
           test_mode: "broken",
           note: "No event_name - caught by schema validation before sending"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "All Required Fields (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "All mandatory fields present",
+      payload: {
         event_name: "Purchase",  // REQUIRED ✓
         event_id: `purchase_${Date.now()}`,  // REQUIRED ✓
         event_time: Math.floor(Date.now() / 1000),  // REQUIRED ✓
@@ -90,10 +100,10 @@ export default function SchemaGuardrailsPage() {
       }
     },
     {
-      name: "Wrong Data Types",
+      name: "Wrong Data Types (BROKEN)",
       icon: <Code2 className="h-4 w-4 text-yellow-400" />,
       description: "Value as string, timestamp as string → Type errors cause silent failures",
-      brokenPayload: {
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         event_time: "1705334400000",  // STRING instead of NUMBER!
@@ -110,8 +120,13 @@ export default function SchemaGuardrailsPage() {
           test_mode: "broken",
           note: "Strings instead of numbers - schema catches type errors"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Correct Data Types (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Numbers are numbers, strings are strings",
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),  // NUMBER ✓
@@ -132,10 +147,10 @@ export default function SchemaGuardrailsPage() {
       }
     },
     {
-      name: "Invalid Enum Values",
+      name: "Invalid Enum Values (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Wrong event_name or currency → Meta silently ignores",
-      brokenPayload: {
+      payload: {
         event_name: "BuyNow",  // Invalid! Should be "Purchase"
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -151,8 +166,13 @@ export default function SchemaGuardrailsPage() {
           test_mode: "broken",
           note: "BuyNow, web, DOLLARS - invalid enum values caught"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Valid Enums (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Valid standard values used",
+      payload: {
         event_name: "Purchase",  // Valid standard event ✓
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -172,10 +192,10 @@ export default function SchemaGuardrailsPage() {
       }
     },
     {
-      name: "Email Hashing Validation",
-      icon: <Lock className="h-4 w-4 text-[#00ff41]" />,
+      name: "Email Hashing Validation (BROKEN)",
+      icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
       description: "Catch unhashed emails before sending → GDPR compliance",
-      brokenPayload: {
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -190,8 +210,13 @@ export default function SchemaGuardrailsPage() {
           test_mode: "broken",
           note: "Plain text email detected by schema - blocked before sending"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Email Hashing Validation (FIXED)",
+      icon: <Lock className="h-4 w-4 text-[#00ff41]" />,
+      description: "Hashed email is compliant",
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -209,10 +234,10 @@ export default function SchemaGuardrailsPage() {
       }
     },
     {
-      name: "Value Range Validation",
-      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      name: "Value Range Validation (BROKEN)",
+      icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Catch impossible values like negative prices or $1M purchases",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -228,8 +253,13 @@ export default function SchemaGuardrailsPage() {
           test_mode: "broken",
           note: "Negative purchase value caught by range validation"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Value Range Validation (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Valid positive value",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -249,11 +279,10 @@ export default function SchemaGuardrailsPage() {
       }
     },
     {
-      name: "Automatic Type Coercion",
+      name: "Automatic Type Coercion (SMART)",
       icon: <Zap className="h-4 w-4 text-[#00ff41]" />,
       description: "Schema can auto-fix common mistakes like string numbers",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "InitiateCheckout",
         event_id: `checkout_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -277,8 +306,7 @@ export default function SchemaGuardrailsPage() {
       name: "Complete Schema Validation (PRODUCTION READY)",
       icon: <FileCheck className="h-4 w-4 text-[#00ff41]" />,
       description: "Full validation: Types + Required fields + Enums + Ranges + Hashing",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_validated_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

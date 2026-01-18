@@ -24,7 +24,7 @@ export default function DedupMisconfiguredPage() {
       name: "Different event_ids Pixel vs CAPI (BOTH COUNTED)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
       description: "Generating separate IDs on client and server - Meta counts as 2 different events",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `pixel_${Date.now()}`,  // Different ID
         event_time: Math.floor(Date.now() / 1000),
@@ -40,14 +40,13 @@ export default function DedupMisconfiguredPage() {
           test_mode: "broken",
           note: "Pixel & CAPI have different IDs - counted as 2 separate events"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "Client vs Server Generated IDs (MISMATCH)",
       icon: <Link2Off className="h-4 w-4 text-red-400" />,
       description: "Timestamp generated separately on client and server with slight differences",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now() + Math.floor(Math.random() * 100)}`,  // Slightly different
         event_time: Math.floor(Date.now() / 1000),
@@ -64,14 +63,13 @@ export default function DedupMisconfiguredPage() {
           test_mode: "broken",
           note: "Timestamp generated separately - slight difference breaks dedup"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "Timestamp-Based ID with Millisecond Differences (NO DEDUP)",
       icon: <Clock className="h-4 w-4 text-yellow-400" />,
       description: "ID includes milliseconds - client and server generate at slightly different times",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `txn_${Date.now()}_${Math.floor(Math.random() * 1000)}`,  // Unique each time
         event_time: Math.floor(Date.now() / 1000),
@@ -88,8 +86,13 @@ export default function DedupMisconfiguredPage() {
           test_mode: "broken",
           note: "ID with milliseconds - client/server generate different times"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Timestamp-Based ID with Millisecond Differences (FIXED)",
+      icon: <Clock className="h-4 w-4 text-[#00ff41]" />,
+      description: "Second-precision timestamp works better for deduplication",
+      payload: {
         event_name: "Purchase",
         event_id: `order_${Math.floor(Date.now() / 1000)}`,  // Second-precision, same on both
         event_time: Math.floor(Date.now() / 1000),
@@ -113,7 +116,7 @@ export default function DedupMisconfiguredPage() {
       name: "event_id Sent to Pixel Only (PARTIAL TRACKING)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "ID used in Pixel but forgotten in CAPI call - deduplication fails",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         // Missing event_id entirely
         event_time: Math.floor(Date.now() / 1000),
@@ -130,8 +133,13 @@ export default function DedupMisconfiguredPage() {
           test_mode: "broken",
           note: "ID sent to Pixel but missing in CAPI - no deduplication"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "event_id Sent to Pixel Only (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Same ID sent to both Pixel and CAPI for proper deduplication",
+      payload: {
         event_name: "Purchase",
         event_id: `order_complete_${Date.now()}`,  // Same ID sent to both
         event_time: Math.floor(Date.now() / 1000),
@@ -155,8 +163,7 @@ export default function DedupMisconfiguredPage() {
       name: "Multiple Events Same ID (TESTING RESILIENCE)",
       icon: <Copy className="h-4 w-4 text-cyan-400" />,
       description: "Intentionally sending same event_id multiple times - Meta should deduplicate",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: "test_duplicate_123456",  // Intentionally static
         event_time: Math.floor(Date.now() / 1000),
@@ -180,8 +187,7 @@ export default function DedupMisconfiguredPage() {
       name: "event_time Mismatch (STILL WORKS!)",
       icon: <Clock className="h-4 w-4 text-[#00ff41]" />,
       description: "Different event_time but same event_id - Meta still deduplicates correctly",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `order_dedup_test_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000) - 60,  // 1 minute in the past
@@ -205,8 +211,7 @@ export default function DedupMisconfiguredPage() {
       name: "48-Hour Window Test (EXPIRES AFTER)",
       icon: <Clock className="h-4 w-4 text-yellow-400" />,
       description: "Events with same ID but >48 hours apart are counted separately",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: "order_48h_test_123",
         event_time: Math.floor(Date.now() / 1000) - (49 * 60 * 60),  // 49 hours ago
@@ -229,8 +234,7 @@ export default function DedupMisconfiguredPage() {
       name: "Perfect Dedup: Same ID Both Platforms (PERFECT)",
       icon: <Link2 className="h-4 w-4 text-[#00ff41]" />,
       description: "Identical event_id sent to Pixel and CAPI - Meta counts as single event",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `perfect_dedup_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

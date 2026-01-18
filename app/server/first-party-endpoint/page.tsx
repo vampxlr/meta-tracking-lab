@@ -25,7 +25,7 @@ export default function FirstPartyEndpointPage() {
       name: "Direct to Meta (BLOCKED BY AD BLOCKERS)",
       icon: <XCircle className="h-4 w-4 text-red-400" />,
       description: "Client sends directly to Meta → Ad blockers detect and block",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -42,8 +42,13 @@ export default function FirstPartyEndpointPage() {
           test_mode: "broken",
           note: "Client → graph.facebook.com - ad blockers detect and block"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Via First-Party Endpoint (BYPASSES BLOCKERS)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Client sends to your domain → Server forwards to Meta",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -63,10 +68,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Third-Party Domain Issues",
+      name: "Third-Party Domain Issues (BROKEN)",
       icon: <Globe className="h-4 w-4 text-yellow-400" />,
       description: "Cross-origin requests flagged by browsers and blockers",
-      brokenPayload: {
+      payload: {
         event_name: "ViewContent",
         event_id: `view_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -81,8 +86,13 @@ export default function FirstPartyEndpointPage() {
           test_mode: "broken",
           note: "Cross-origin to *.facebook.com - browsers restrict cookies/tracking"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Same-Origin Request (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Request to own domain avoids cross-origin issues",
+      payload: {
         event_name: "ViewContent",
         event_id: `view_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -101,10 +111,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Cookie Access via First-Party",
-      icon: <Lock className="h-4 w-4 text-[#00ff41]" />,
-      description: "First-party endpoint can read _fbp/_fbc cookies reliably",
-      brokenPayload: {
+      name: "Cookie Access via Third-Party (BROKEN)",
+      icon: <Lock className="h-4 w-4 text-yellow-400" />,
+      description: "Third-party context blocks access to _fbp/_fbc cookies",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -121,8 +131,13 @@ export default function FirstPartyEndpointPage() {
           test_mode: "broken",
           note: "Can't access _fbp/_fbc in third-party context"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Cookie Access via First-Party (FIXED)",
+      icon: <Lock className="h-4 w-4 text-[#00ff41]" />,
+      description: "First-party endpoint can read _fbp/_fbc cookies reliably",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -144,10 +159,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Better IP Address Forwarding",
-      icon: <Network className="h-4 w-4 text-[#00ff41]" />,
-      description: "Server can extract real client IP from headers",
-      brokenPayload: {
+      name: "Server IP Usage (BROKEN)",
+      icon: <Network className="h-4 w-4 text-yellow-400" />,
+      description: "Using server IP instead of client IP reduces match quality",
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -162,8 +177,13 @@ export default function FirstPartyEndpointPage() {
           test_mode: "broken",
           note: "Using server's IP instead of client's real IP"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Real Client IP Forwarding (FIXED)",
+      icon: <Network className="h-4 w-4 text-[#00ff41]" />,
+      description: "Server correctly extracts and forwards client IP",
+      payload: {
         event_name: "CompleteRegistration",
         event_id: `lead_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -182,11 +202,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Rate Limiting & Security",
+      name: "Rate Limiting & Security (SECURE)",
       icon: <Shield className="h-4 w-4 text-[#00ff41]" />,
       description: "First-party endpoint can add rate limiting and validation",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -206,11 +225,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Request Deduplication Server-Side",
+      name: "Request Deduplication Server-Side (EFFICIENT)",
       icon: <Zap className="h-4 w-4 text-[#00ff41]" />,
       description: "Server can deduplicate duplicate requests before sending to Meta",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "AddToCart",
         event_id: "cart_dedupe_test_123",  // Static for demo
         event_time: Math.floor(Date.now() / 1000),
@@ -230,11 +248,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Better Analytics & Logging",
+      name: "Better Analytics & Logging (OBSERVABLE)",
       icon: <TrendingUp className="h-4 w-4 text-[#00ff41]" />,
       description: "Log all events server-side before forwarding to Meta",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_logged_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -256,11 +273,10 @@ export default function FirstPartyEndpointPage() {
       }
     },
     {
-      name: "Complete First-Party Setup (BEST)",
+      name: "Complete First-Party Setup (BEST PRACTICE)",
       icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
       description: "Full implementation: bypasses ad blockers, better cookies, secure, logged",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_complete_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

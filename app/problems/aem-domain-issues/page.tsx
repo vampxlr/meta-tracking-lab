@@ -21,11 +21,36 @@ export default function AemDomainIssuesPage() {
 
   const examples = [
     {
-      name: "Subdomain Tracking (www vs app)",
+      name: "Subdomain Tracking (BROKEN)",
+      icon: <Globe className="h-4 w-4 text-yellow-400" />,
+      description: "Cookies not shared across subdomains - session breaks",
+      payload: {
+        event_name: "Purchase",
+        event_id: `subdomain_purchase_${Date.now()}`,
+        event_time: Math.floor(Date.now() / 1000),
+        event_source_url: "https://app.example.com/checkout",
+        action_source: "website",
+        user_data: {
+          em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
+          client_ip_address: "192.168.1.1",
+          client_user_agent: "Mozilla/5.0"
+          // Missing correct cookie domain config
+        },
+        custom_data: {
+          currency: "USD",
+          value: 99.99,
+          source_page: "/problems/aem-domain-issues",
+          example_name: "Subdomain Tracking - BROKEN",
+          test_mode: "broken",
+          note: "Cookies not shared - user looks like new visitor on subdomain"
+        }
+      }
+    },
+    {
+      name: "Subdomain Tracking (FIXED)",
       icon: <Globe className="h-4 w-4 text-[#00ff41]" />,
-      description: "Tracking across subdomains - cookie domain must allow sharing",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Cookie domain set to root allows sharing",
+      payload: {
         event_name: "Purchase",
         event_id: `subdomain_purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -48,10 +73,10 @@ export default function AemDomainIssuesPage() {
       }
     },
     {
-      name: "Cross-Domain Tracking (site1 → site2)",
+      name: "Cross-Domain Tracking (BROKEN)",
       icon: <Link2 className="h-4 w-4 text-yellow-400" />,
-      description: "User moves from one domain to another - event_source_url critical for attribution",
-      brokenPayload: {
+      description: "User moves from one domain to another - attribution lost",
+      payload: {
         event_name: "Purchase",
         event_id: `crossdomain_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -69,8 +94,13 @@ export default function AemDomainIssuesPage() {
           test_mode: "broken",
           note: "No event_source_url - can't attribute across domains"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Cross-Domain Tracking (FIXED)",
+      icon: <Link2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "event_source_url ensures proper attribution",
+      payload: {
         event_name: "Purchase",
         event_id: `crossdomain_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -92,11 +122,10 @@ export default function AemDomainIssuesPage() {
       }
     },
     {
-      name: "Cookie Domain Configuration",
+      name: "Cookie Domain Configuration (FIXED)",
       icon: <Settings className="h-4 w-4 text-[#00ff41]" />,
       description: "Setting cookie domain to .example.com allows all subdomains to access",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "ViewContent",
         event_id: `cookie_config_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -120,11 +149,10 @@ export default function AemDomainIssuesPage() {
       }
     },
     {
-      name: "Multi-Domain Attribution",
+      name: "Multi-Domain Attribution (FIXED)",
       icon: <Network className="h-4 w-4 text-[#00ff41]" />,
-      description: "Multiple domains sharing single Pixel - event_source_url enables proper attribution",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Multiple domains sharing single Pixel - event_source_url enables attribution",
+      payload: {
         event_name: "Purchase",
         event_id: `multidomain_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -148,11 +176,10 @@ export default function AemDomainIssuesPage() {
       }
     },
     {
-      name: "Aggregated Event Measurement Setup",
+      name: "Aggregated Event Measurement Setup (FIXED)",
       icon: <Settings className="h-4 w-4 text-cyan-400" />,
       description: "When tracking >8 domains, configure AEM in Events Manager settings",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `aem_purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -175,11 +202,10 @@ export default function AemDomainIssuesPage() {
       }
     },
     {
-      name: "Complete Multi-Domain Solution",
+      name: "Complete Multi-Domain Solution (PERFECT)",
       icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
-      description: "Perfect cross-domain setup with all attribution fields and proper cookie configuration",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Perfect cross-domain setup with all attribution fields",
+      payload: {
         event_name: "Purchase",
         event_id: `complete_multidomain_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

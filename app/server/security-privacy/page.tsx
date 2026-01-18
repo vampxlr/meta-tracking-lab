@@ -22,10 +22,10 @@ export default function SecurityPrivacyPage() {
 
   const examples = [
     {
-      name: "Sending Unhashed PII (GDPR VIOLATION)",
+      name: "Sending Unhashed PII (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
-      description: "Plain text email violates GDPR and Meta&apos;s terms - always hash PII before sending",
-      brokenPayload: {
+      description: "Plain text email violates GDPR and Meta&apos;s terms",
+      payload: {
         event_name: "Purchase",
         event_id: `unsafe_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -43,8 +43,13 @@ export default function SecurityPrivacyPage() {
           test_mode: "broken",
           note: "Plain text email & phone - NEVER send unhashed PII!"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Sending Unhashed PII (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "SHA-256 hashed PII - GDPR compliant",
+      payload: {
         event_name: "Purchase",
         event_id: `safe_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -65,11 +70,10 @@ export default function SecurityPrivacyPage() {
       }
     },
     {
-      name: "Logging Sensitive Data (SECURITY RISK)",
-      icon: <Eye className="h-4 w-4 text-red-400" />,
-      description: "Logging PII or tokens exposes sensitive data - never log user data or access tokens",
-      brokenPayload: null,
-      fixedPayload: {
+      name: "Logging Sensitive Data (SECURE)",
+      icon: <Eye className="h-4 w-4 text-[#00ff41]" />,
+      description: "Sensitive data redacted in logs",
+      payload: {
         event_name: "Purchase",
         event_id: `nolog_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -90,10 +94,10 @@ export default function SecurityPrivacyPage() {
       }
     },
     {
-      name: "Missing Consent Before Tracking (PRIVACY VIOLATION)",
+      name: "Missing Consent (BROKEN)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
-      description: "Tracking before user consent violates GDPR/CCPA - always check consent status first",
-      brokenPayload: {
+      description: "Tracking before user consent violates GDPR/CCPA",
+      payload: {
         event_name: "ViewContent",
         event_id: `noconsent_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -108,8 +112,13 @@ export default function SecurityPrivacyPage() {
           note: "Tracking before consent - violates GDPR/CCPA"
         }
         // Fired without checking user consent!
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Missing Consent (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Only tracks after user grants permission",
+      payload: {
         event_name: "ViewContent",
         event_id: `consent_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -130,9 +139,8 @@ export default function SecurityPrivacyPage() {
     {
       name: "Proper SHA-256 Hashing (REQUIRED)",
       icon: <Lock className="h-4 w-4 text-[#00ff41]" />,
-      description: "Correct SHA-256 hashing with normalization protects user privacy and improves matching",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Correct SHA-256 hashing with normalization",
+      payload: {
         event_name: "Purchase",
         event_id: `hashed_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -157,9 +165,8 @@ export default function SecurityPrivacyPage() {
     {
       name: "Secure Token Storage (BEST PRACTICE)",
       icon: <Key className="h-4 w-4 text-[#00ff41]" />,
-      description: "Access tokens in server-only environment variables - never expose in client code",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Access tokens in server-only environment variables",
+      payload: {
         event_name: "Purchase",
         event_id: `secure_token_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -181,10 +188,10 @@ export default function SecurityPrivacyPage() {
       }
     },
     {
-      name: "Data Minimization (GDPR PRINCIPLE)",
-      icon: <Shield className="h-4 w-4 text-[#00ff41]" />,
-      description: "Only send necessary PII fields - don&apos;t collect more data than needed",
-      brokenPayload: {
+      name: "Data Minimization (BROKEN)",
+      icon: <Shield className="h-4 w-4 text-yellow-400" />,
+      description: "Excessive PII for ViewContent - violates minimization",
+      payload: {
         event_name: "ViewContent",
         event_id: `toomuch_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -207,8 +214,13 @@ export default function SecurityPrivacyPage() {
           test_mode: "broken",
           note: "Excessive PII for ViewContent - violates data minimization"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Data Minimization (FIXED)",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Only essential fields for content view",
+      payload: {
         event_name: "ViewContent",
         event_id: `minimal_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -230,9 +242,8 @@ export default function SecurityPrivacyPage() {
     {
       name: "User Opt-Out Handling (REQUIRED)",
       icon: <EyeOff className="h-4 w-4 text-[#00ff41]" />,
-      description: "Respect user opt-out requests - stop tracking immediately when requested",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Respect user opt-out requests",
+      payload: {
         event_name: "Purchase",
         event_id: `optout_respected_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -255,9 +266,8 @@ export default function SecurityPrivacyPage() {
     {
       name: "Complete Privacy-Compliant Implementation (PERFECT)",
       icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
-      description: "Full GDPR/CCPA compliant setup with consent, hashing, minimal data, and secure storage",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Full GDPR/CCPA compliant setup",
+      payload: {
         event_name: "Purchase",
         event_id: `compliant_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

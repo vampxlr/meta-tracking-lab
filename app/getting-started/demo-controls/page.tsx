@@ -2,7 +2,7 @@
 
 import { PageContent } from "@/components/page-content"
 import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
-import { Eye, ShoppingCart, CreditCard, MousePointerClick, UserPlus, Search } from "lucide-react"
+import { Eye, ShoppingCart, CreditCard, MousePointerClick, UserPlus, Search, CheckCircle2 } from "lucide-react"
 
 export default function DemoControlsPage() {
   // Get site URL from environment
@@ -20,9 +20,10 @@ export default function DemoControlsPage() {
   // Custom events for this page
   const customEvents = [
     {
-      name: "ViewContent",
-      icon: <Eye className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      brokenPayload: {
+      name: "ViewContent (BROKEN)",
+      icon: <Eye className="h-4 w-4 text-red-400 icon-spin-hover" />,
+      description: "Missing critical fields like event_id and event_time",
+      payload: {
         event_name: "ViewContent",
         custom_data: {
           source_page: "/getting-started/demo-controls",
@@ -31,8 +32,13 @@ export default function DemoControlsPage() {
           note: "Missing: event_id, event_time, event_source_url, action_source, user_data"
         }
         // Missing: event_id, event_time, user_data
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "ViewContent (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Complete ViewContent event with all required fields",
+      payload: {
         event_name: "ViewContent",
         event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
@@ -55,9 +61,10 @@ export default function DemoControlsPage() {
       }
     },
     {
-      name: "Search",
-      icon: <Search className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      brokenPayload: {
+      name: "Search (BROKEN)",
+      icon: <Search className="h-4 w-4 text-red-400 icon-spin-hover" />,
+      description: "Missing search_string and other context",
+      payload: {
         event_name: "Search",
         custom_data: {
           source_page: "/getting-started/demo-controls",
@@ -66,8 +73,13 @@ export default function DemoControlsPage() {
           note: "Missing: event_id, event_time, event_source_url, action_source, user_data, search_string"
         }
         // Missing: search_string, event_id
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Search (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Complete Search event with query string",
+      payload: {
         event_name: "Search",
         event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
@@ -90,9 +102,10 @@ export default function DemoControlsPage() {
       }
     },
     {
-      name: "AddToCart",
-      icon: <ShoppingCart className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      brokenPayload: {
+      name: "AddToCart (BROKEN)",
+      icon: <ShoppingCart className="h-4 w-4 text-red-400 icon-spin-hover" />,
+      description: "Wrong value type (string) and missing currency",
+      payload: {
         event_name: "AddToCart",
         value: "29.99", // Wrong type: should be number
         custom_data: {
@@ -102,8 +115,13 @@ export default function DemoControlsPage() {
           note: "Wrong value type (string instead of number), Missing: currency, content_ids, event_id, event_time, user_data"
         }
         // Missing: currency, content_ids, event_id
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "AddToCart (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Correct numeric value, currency, and content_ids",
+      payload: {
         event_name: "AddToCart",
         event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
@@ -129,9 +147,10 @@ export default function DemoControlsPage() {
       }
     },
     {
-      name: "InitiateCheckout",
-      icon: <MousePointerClick className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      brokenPayload: {
+      name: "InitiateCheckout (BROKEN)",
+      icon: <MousePointerClick className="h-4 w-4 text-red-400 icon-spin-hover" />,
+      description: "Missing almost all required fields",
+      payload: {
         event_name: "InitiateCheckout",
         custom_data: {
           source_page: "/getting-started/demo-controls",
@@ -140,8 +159,13 @@ export default function DemoControlsPage() {
           note: "Missing: event_id, event_time, event_source_url, action_source, user_data, currency, value, content_ids"
         }
         // Missing: everything except event_name
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "InitiateCheckout (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Complete checkout event with items and value",
+      payload: {
         event_name: "InitiateCheckout",
         event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
@@ -166,9 +190,10 @@ export default function DemoControlsPage() {
       }
     },
     {
-      name: "Purchase",
-      icon: <CreditCard className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      brokenPayload: {
+      name: "Purchase (BROKEN)",
+      icon: <CreditCard className="h-4 w-4 text-red-400 icon-spin-hover" />,
+      description: "Missing value, event_id, and user_data",
+      payload: {
         event_name: "Purchase",
         currency: "USD",
         custom_data: {
@@ -178,8 +203,13 @@ export default function DemoControlsPage() {
           note: "Missing REQUIRED value field, event_id, event_time, user_data, order_id"
         }
         // Missing: value (REQUIRED!), event_id, order_id
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Purchase (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Valid purchase with unique order_id and value",
+      payload: {
         event_name: "Purchase",
         event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),
@@ -205,9 +235,10 @@ export default function DemoControlsPage() {
       }
     },
     {
-      name: "CompleteRegistration",
-      icon: <UserPlus className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      brokenPayload: {
+      name: "CompleteRegistration (BROKEN)",
+      icon: <UserPlus className="h-4 w-4 text-red-400 icon-spin-hover" />,
+      description: "Sending unhashed email (Privacy Risk!)",
+      payload: {
         event_name: "CompleteRegistration",
         email: "user@example.com", // NOT HASHED!
         custom_data: {
@@ -217,8 +248,13 @@ export default function DemoControlsPage() {
           note: "Security risk: PII not hashed, Missing: event_id, event_time, event_source_url, action_source, proper user_data"
         }
         // Security risk: PII should be hashed
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "CompleteRegistration (FIXED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
+      description: "Secure registration with hashed data",
+      payload: {
         event_name: "CompleteRegistration",
         event_id: generateUUID(),
         event_time: Math.floor(Date.now() / 1000),

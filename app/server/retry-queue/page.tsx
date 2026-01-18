@@ -25,7 +25,7 @@ export default function RetryQueuePage() {
       name: "No Retry (EVENTS LOST)",
       icon: <XCircle className="h-4 w-4 text-red-400" />,
       description: "Network failure → Event lost forever → Revenue not tracked",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -42,8 +42,13 @@ export default function RetryQueuePage() {
           test_mode: "broken",
           note: "Network fails → $999 purchase lost forever"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "With Retry Queue (RECOVERED)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Network failure → Queued → Retried → Tracking successful",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -66,7 +71,7 @@ export default function RetryQueuePage() {
       name: "Immediate Retry (TOO AGGRESSIVE)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Retry instantly on failure → Overwhelms Meta API → Gets rate limited",
-      brokenPayload: {
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -82,8 +87,13 @@ export default function RetryQueuePage() {
           test_mode: "broken",
           note: "Retry 0ms after failure → overwhelms API → rate limited"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Exponential Backoff (SMART)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Retry after 1s, 2s, 4s... → Respects API limits",
+      payload: {
         event_name: "AddToCart",
         event_id: `cart_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -106,7 +116,7 @@ export default function RetryQueuePage() {
       name: "In-Memory Queue (LOST ON RESTART)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Queue in RAM → Server restarts → All queued events lost",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -122,8 +132,13 @@ export default function RetryQueuePage() {
           test_mode: "broken",
           note: "Queued in RAM → server restarts → all queued events lost"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Persistent Queue (DURABLE)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Queue in Redis/DB → Survives server restarts",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -143,11 +158,10 @@ export default function RetryQueuePage() {
       }
     },
     {
-      name: "Max Retries with Exponential Backoff",
+      name: "Max Retries with Exponential Backoff (OPTIMAL)",
       icon: <Clock className="h-4 w-4 text-[#00ff41]" />,
       description: "Smart retry: 1s → 2s → 4s → 8s → 16s → Give up after 5 attempts",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "InitiateCheckout",
         event_id: `checkout_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -168,11 +182,10 @@ export default function RetryQueuePage() {
       }
     },
     {
-      name: "Priority Queue for High-Value Events",
+      name: "Priority Queue (HIGH VALUE)",
       icon: <TrendingUp className="h-4 w-4 text-[#00ff41]" />,
       description: "Purchases ($999) retry before AddToCart ($49) events",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_priority_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -194,11 +207,10 @@ export default function RetryQueuePage() {
       }
     },
     {
-      name: "Dead Letter Queue",
+      name: "Dead Letter Queue (MANUAL REVIEW)",
       icon: <Database className="h-4 w-4 text-[#00d9ff]" />,
       description: "After max retries failed → Move to dead letter queue for manual review",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_dlq_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000) - 3600, // 1 hour ago
@@ -218,11 +230,10 @@ export default function RetryQueuePage() {
       }
     },
     {
-      name: "Batch Retry for Efficiency",
+      name: "Batch Retry (EFFICIENT)",
       icon: <Zap className="h-4 w-4 text-[#00ff41]" />,
       description: "Send 50 failed events in one batch request instead of 50 individual retries",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "ViewContent",
         event_id: `view_batch_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -245,8 +256,7 @@ export default function RetryQueuePage() {
       name: "Complete Retry System (PRODUCTION READY)",
       icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
       description: "Full implementation: Persistent queue + exponential backoff + priority + DLQ + monitoring",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_complete_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

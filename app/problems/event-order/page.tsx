@@ -24,7 +24,7 @@ export default function EventOrderPage() {
       name: "Purchase Before ViewContent (ILLOGICAL)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
       description: "User purchases without viewing product - confuses Meta&apos;s AI and breaks funnel analysis",
-      brokenPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -42,14 +42,13 @@ export default function EventOrderPage() {
           test_mode: "broken",
           note: "Skipped funnel steps - confuses Meta's AI optimization"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "AddToCart Before ViewContent (BROKEN FUNNEL)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "User adds to cart without viewing - missing context for optimization",
-      brokenPayload: {
+      payload: {
         event_name: "AddToCart",
         event_id: `addtocart_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -67,14 +66,13 @@ export default function EventOrderPage() {
           test_mode: "broken",
           note: "Missing ViewContent - incomplete user journey"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "InitiateCheckout Before AddToCart (SKIP STEPS)",
       icon: <AlertTriangle className="h-4 w-4 text-yellow-400" />,
       description: "Checkout started without cart - Meta can&apos;t understand user journey",
-      brokenPayload: {
+      payload: {
         event_name: "InitiateCheckout",
         event_id: `checkout_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -92,15 +90,13 @@ export default function EventOrderPage() {
           test_mode: "broken",
           note: "Skipped AddToCart step - broken funnel sequence"
         }
-      },
-      fixedPayload: null
+      }
     },
     {
       name: "Correct E-Commerce Sequence (GOOD)",
       icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
       description: "Proper funnel: ViewContent → AddToCart → InitiateCheckout → Purchase",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "ViewContent",
         event_id: `view_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -127,8 +123,7 @@ export default function EventOrderPage() {
       name: "Multiple AddToCart Events (VALID PATTERN)",
       icon: <ShoppingCart className="h-4 w-4 text-[#00ff41]" />,
       description: "User adds multiple items - shows consideration and intent",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "AddToCart",
         event_id: `addtocart_multi_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -155,8 +150,7 @@ export default function EventOrderPage() {
       name: "Complete Funnel with Proper Timing (PERFECT)",
       icon: <TrendingUp className="h-4 w-4 text-[#00ff41]" />,
       description: "Full user journey with realistic timing between events",
-      brokenPayload: null,
-      fixedPayload: {
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_complete_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
