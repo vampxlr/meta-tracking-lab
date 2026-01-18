@@ -263,13 +263,13 @@ export default function WrongParametersPage() {
       description="Master Meta's event parameter structure with correct field names, data types, nesting, and naming conventions"
       status="Stable"
     >
-      
+
       {/* Problem Section */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> The Wrong Parameters Problem
         </h2>
-        
+
         <p className="leading-relaxed text-[#8b949e] text-sm md:text-base mb-4">
           Using incorrect parameter names, wrong data types, or improper nesting is one of the most common Meta tracking errors. Even a single character difference—like using <code className="text-red-400">price</code> instead of <code className="text-[#00ff41]">value</code>—causes Meta to completely ignore that field, breaking your revenue tracking and optimization.
         </p>
@@ -284,7 +284,7 @@ export default function WrongParametersPage() {
                   price vs value, items vs content_ids, eventName vs event_name
                 </p>
               </div>
-              
+
               <div className="glass hover-glow rounded-lg p-4 border border-yellow-500/20">
                 <AlertTriangle className="h-5 w-5 text-yellow-400 mb-2" />
                 <p className="font-mono font-semibold text-yellow-400 mb-2">Type Mismatches</p>
@@ -292,7 +292,7 @@ export default function WrongParametersPage() {
                   String instead of array, string instead of number, object instead of string
                 </p>
               </div>
-              
+
               <div className="glass hover-glow rounded-lg p-4 border border-yellow-500/20">
                 <Code2 className="h-5 w-5 text-yellow-400 mb-2" />
                 <p className="font-mono font-semibold text-yellow-400 mb-2">Nesting Errors</p>
@@ -300,7 +300,7 @@ export default function WrongParametersPage() {
                   Fields at wrong level, missing custom_data wrapper, flat structure instead of nested
                 </p>
               </div>
-              
+
               <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                 <FileQuestion className="h-5 w-5 text-red-400 mb-2" />
                 <p className="font-mono font-semibold text-red-400 mb-2">Case Sensitivity</p>
@@ -318,12 +318,12 @@ export default function WrongParametersPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Meta Event Parameter Reference
         </h2>
-        
+
         <div className="glass-strong rounded-xl border border-[#00ff41]/20 overflow-hidden">
           <div className="p-4 bg-[#00ff41]/10 border-b border-[#00ff41]/20">
             <h4 className="font-mono font-semibold text-[#00ff41]">Standard Event Parameters</h4>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-[#00ff41]/5 border-b border-[#00ff41]/20">
@@ -414,7 +414,7 @@ export default function WrongParametersPage() {
         {/* Common Mistakes */}
         <div className="mt-6 glass-strong hover-border-glow rounded-xl border border-red-500/20 p-6">
           <h4 className="font-mono font-semibold text-red-400 mb-4">❌ Common Wrong Parameter Names</h4>
-          
+
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <p className="text-xs font-mono text-[#8b949e] mb-2">Wrong:</p>
@@ -428,7 +428,7 @@ export default function WrongParametersPage() {
                 <code className="block text-sm text-red-400">eventId</code>
               </div>
             </div>
-            
+
             <div>
               <p className="text-xs font-mono text-[#8b949e] mb-2">Correct:</p>
               <div className="space-y-2">
@@ -450,14 +450,14 @@ export default function WrongParametersPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation Guide
         </h2>
-        
+
         <div className="space-y-6">
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
             <h4 className="font-mono font-semibold text-[#00ff41] mb-4">Correct Event Structure Template</h4>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <pre className="text-xs font-mono text-[#00ff41] overflow-x-auto">
-{`// Correct structure for all events
+                {`// Correct structure for all events
 const event = {
   // Root level (snake_case)
   event_name: "Purchase",           // PascalCase event name
@@ -491,10 +491,10 @@ const event = {
 
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
             <h4 className="font-mono font-semibold text-[#00ff41] mb-4">TypeScript Type Definitions (Recommended)</h4>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <pre className="text-xs font-mono text-[#00ff41] overflow-x-auto">
-{`interface MetaEvent {
+                {`interface MetaEvent {
   event_name: string
   event_id?: string
   event_time?: number
@@ -546,12 +546,11 @@ const purchaseEvent: MetaEvent = {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Parameter Testing
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Parameter Structure Test Suite - 8 Common Mistakes"
           description="Real events demonstrating parameter errors. View Network Inspector to see exactly what Meta receives."
           events={parameterExamples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -567,7 +566,7 @@ const purchaseEvent: MetaEvent = {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Best Practices
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">

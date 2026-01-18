@@ -296,13 +296,13 @@ export default function SecurityPrivacyPage() {
       description="Master GDPR/CCPA compliance with proper PII hashing, consent management, data minimization, and secure token storage for Meta tracking"
       status="Stable"
     >
-      
+
       {/* Privacy Regulations Overview */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Privacy Regulations You Must Follow
         </h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* GDPR */}
           <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
@@ -369,7 +369,7 @@ export default function SecurityPrivacyPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> PII Hashing Requirements
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
             <p className="text-sm text-red-400 flex items-start gap-2">
@@ -480,12 +480,12 @@ const hashedEmail = await hashPII('User@Example.com')`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Consent Management
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <p className="text-[#8b949e] text-sm">
             Under GDPR, you must obtain explicit user consent before tracking. CCPA requires opt-out capability. Implement a consent banner and only fire tracking events after consent is granted.
           </p>
-          
+
           <div>
             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-3">Implementation Example</h3>
             <pre className="overflow-x-auto rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-4 font-mono text-xs">
@@ -541,7 +541,7 @@ function revokeConsent() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Secure Access Token Storage
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/20">
             <p className="text-sm text-red-400 flex items-start gap-2">
@@ -600,12 +600,12 @@ NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Data Minimization Principle
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <p className="text-[#8b949e] text-sm">
             GDPR requires you to collect only the minimum data necessary for your specific purpose. Don&apos;t send all available PII fields just because you can - only include what you need for matching and attribution.
           </p>
-          
+
           <div className="grid gap-4">
             <div className="glass rounded-lg border border-yellow-500/20 p-5">
               <h3 className="font-mono font-semibold text-yellow-400 mb-3">Avoid Over-Collection</h3>
@@ -664,12 +664,11 @@ NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Privacy Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Security & Privacy Testing"
           description="Test 8 different privacy scenarios from violations to perfect compliance. Learn what NOT to do and how to implement proper security measures."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -682,11 +681,11 @@ NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`}</code>
       </section>
 
       {/* Compliance Checklist */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Privacy Compliance Checklist
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
@@ -742,18 +741,18 @@ NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`}</code>
       </section>
 
       {/* Additional Resources */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[700ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '700ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Additional Resources
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
               <FileText className="h-5 w-5 text-[#00ff41] shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-[#e8f4f8] mb-1">Meta Business Help Center - Data Protection</p>
-                <a 
+                <a
                   href="https://www.facebook.com/business/help/331612538028890"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -767,7 +766,7 @@ NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`}</code>
               <FileText className="h-5 w-5 text-[#00ff41] shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-[#e8f4f8] mb-1">GDPR Official Text</p>
-                <a 
+                <a
                   href="https://gdpr-info.eu/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -781,7 +780,7 @@ NEXT_PUBLIC_FB_PIXEL_ID=1234567890123456`}</code>
               <FileText className="h-5 w-5 text-[#00ff41] shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-[#e8f4f8] mb-1">CCPA Information</p>
-                <a 
+                <a
                   href="https://oag.ca.gov/privacy/ccpa"
                   target="_blank"
                   rel="noopener noreferrer"

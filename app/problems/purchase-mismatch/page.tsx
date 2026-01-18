@@ -757,7 +757,7 @@ const valueJPY = formatCurrencyValue(9999.5, 'JPY')  // Returns 10000 (no decima
             <h4 className="font-mono font-semibold text-[#00d9ff]">Live Revenue Tracking Demonstration</h4>
           </div>
           <p className="text-sm text-[#8b949e] mb-3">
-            Each example sends REAL purchase events to Meta. Select a scenario below to populate the JSON builder, then click "Send Event".
+            Each example sends REAL purchase events to Meta. Select a scenario below to populate the JSON builder, then click &quot;Send Event&quot;.
           </p>
           <ul className="space-y-2">
             <li className="flex items-start gap-2 text-xs text-[#8b949e]">

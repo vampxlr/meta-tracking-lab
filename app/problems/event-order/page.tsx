@@ -194,18 +194,18 @@ export default function EventOrderPage() {
       description="Master logical event sequencing and user journey tracking for accurate funnel analysis and Meta AI optimization"
       status="Stable"
     >
-      
+
       {/* Why Event Order Matters */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Why Event Order Matters
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <p className="text-[#8b949e] text-sm md:text-base leading-relaxed mb-6">
             Meta&apos;s AI uses event sequences to understand user behavior, predict conversion likelihood, and optimize campaign targeting. When events occur in illogical order, it confuses the AI and reduces campaign effectiveness.
           </p>
-          
+
           <div className="grid gap-6 md:grid-cols-2">
             <div className="glass rounded-lg border border-red-500/20 p-5">
               <h3 className="font-mono text-red-400 font-semibold mb-3 flex items-center gap-2">
@@ -265,12 +265,12 @@ export default function EventOrderPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Standard E-Commerce Event Sequence
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <p className="text-[#8b949e] text-sm mb-6">
             The recommended event sequence for e-commerce sites follows the natural user journey:
           </p>
-          
+
           <div className="space-y-4">
             {/* Step 1 */}
             <div className="flex items-start gap-4">
@@ -368,7 +368,7 @@ export default function EventOrderPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Event Timing Considerations
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div>
             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-3">Realistic Time Gaps</h3>
@@ -424,7 +424,7 @@ export default function EventOrderPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Event Order Mistakes
         </h2>
-        
+
         <div className="grid gap-4">
           <div className="glass hover-lift rounded-xl border border-red-500/20 p-5">
             <div className="flex items-start gap-4">
@@ -475,12 +475,11 @@ export default function EventOrderPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Event Order Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Event Sequence Testing"
           description="Test 6 different event order scenarios from broken funnels to perfect sequences. See how event order affects Meta&apos;s understanding of your user journey."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -497,7 +496,7 @@ export default function EventOrderPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation Best Practices
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-4">
           <div className="flex items-start gap-4">
             <div className="w-8 h-8 rounded-full bg-[#00ff41]/20 border border-[#00ff41]/30 flex items-center justify-center shrink-0">

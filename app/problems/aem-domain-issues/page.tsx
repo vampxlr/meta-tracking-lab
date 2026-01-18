@@ -218,18 +218,18 @@ export default function AemDomainIssuesPage() {
       description="Master cross-domain tracking, subdomain configuration, cookie sharing, and Aggregated Event Measurement for multi-site businesses"
       status="Stable"
     >
-      
+
       {/* Understanding Multi-Domain Tracking */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Understanding Multi-Domain Tracking
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <p className="text-[#8b949e] text-sm md:text-base leading-relaxed">
             Many businesses operate across multiple domains or subdomains (e.g., marketing site on www.brand.com, shop on shop.brand.com, checkout on secure.payments.com). Proper configuration ensures Meta can track the complete user journey and attribute conversions correctly.
           </p>
-          
+
           <div className="grid gap-6 md:grid-cols-2">
             <div className="glass rounded-lg border border-[#00ff41]/20 p-5">
               <div className="mb-3 flex items-center gap-2">
@@ -287,12 +287,12 @@ export default function AemDomainIssuesPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Subdomain Cookie Configuration
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <p className="text-[#8b949e] text-sm">
             For subdomains, configure cookies to be accessible across all subdomains by setting the domain attribute to the root domain with a leading dot.
           </p>
-          
+
           <div>
             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-3">Cookie Domain Setup</h3>
             <div className="grid gap-4 md:grid-cols-2">
@@ -332,7 +332,7 @@ export default function AemDomainIssuesPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> event_source_url for Attribution
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div className="p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
             <p className="text-sm text-cyan-400 flex items-start gap-2">
@@ -397,14 +397,14 @@ const eventSourceUrl = window.location.href;`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Aggregated Event Measurement (AEM)
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div>
             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-3">What is AEM?</h3>
             <p className="text-sm text-[#8b949e] mb-4">
               Aggregated Event Measurement is a protocol required when a single Pixel tracks events across more than 8 different domains. It&apos;s part of iOS 14.5+ privacy changes and applies to all tracking, not just iOS users.
             </p>
-            
+
             <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
               <p className="text-sm text-yellow-400 flex items-start gap-2">
                 <span className="shrink-0">⚠</span>
@@ -476,7 +476,7 @@ const eventSourceUrl = window.location.href;`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Multi-Domain Best Practices
         </h2>
-        
+
         <div className="grid gap-4">
           <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5">
             <div className="flex items-start gap-4">
@@ -541,12 +541,11 @@ const eventSourceUrl = window.location.href;`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Multi-Domain Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Multi-Domain Tracking Testing"
           description="Test 6 different multi-domain scenarios. See how event_source_url, cookie configuration, and AEM affect cross-domain attribution."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -559,11 +558,11 @@ const eventSourceUrl = window.location.href;`}</code>
       </section>
 
       {/* Troubleshooting */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Multi-Domain Troubleshooting
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">

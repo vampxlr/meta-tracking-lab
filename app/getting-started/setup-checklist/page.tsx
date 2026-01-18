@@ -11,18 +11,18 @@ export default function SetupChecklistPage() {
       status="Stable"
       rightPanel={<SetupStatusPanel />}
     >
-      
+
       {/* Prerequisites Section */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Prerequisites
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Before getting started, ensure you have Node.js 18+ installed on your machine. You&apos;ll also need npm, yarn, or pnpm as your package manager. Additionally, you should have access to your Meta Business Manager with a Pixel created and a System User Access Token with the necessary permissions (ads_management, ads_read).
           </p>
-          
+
           <div className="glass hover-glow rounded-xl border border-[#00d9ff]/20 p-4">
             <div className="mb-2 flex items-center gap-2">
               <span className="text-[#00d9ff] text-lg">ℹ</span>
@@ -51,17 +51,17 @@ export default function SetupChecklistPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Step 1: Clone the Repository
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Clone the Meta Tracking Lab repository from GitHub using the following command:
           </p>
-          
+
           <pre className="relative overflow-x-auto rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-4 font-mono text-xs md:text-sm">
             <code className="text-[#00ff41]">{`git clone https://github.com/vampxlr/meta-tracking-lab.git
 cd meta-tracking-lab`}</code>
           </pre>
-          
+
           <p className="leading-relaxed text-[#8b949e] text-sm">
             This will download the project files to your local machine and navigate into the project directory.
           </p>
@@ -73,12 +73,12 @@ cd meta-tracking-lab`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
           <span className="inline-block animate-pulse">▸</span> Step 2: Install Dependencies
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Install all required dependencies using your preferred package manager:
           </p>
-          
+
           <pre className="relative overflow-x-auto rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-4 font-mono text-xs md:text-sm">
             <code className="text-[#00ff41]">{`npm install
 # or
@@ -86,7 +86,7 @@ yarn install
 # or
 pnpm install`}</code>
           </pre>
-          
+
           <p className="leading-relaxed text-[#8b949e] text-sm">
             This will install Next.js, React, TypeScript, Tailwind CSS, and all other dependencies required for the project.
           </p>
@@ -98,12 +98,12 @@ pnpm install`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
           <span className="inline-block animate-pulse">▸</span> Step 3: Configure Environment Variables
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Create a <code className="px-2 py-1 rounded bg-[#0d1117] text-[#00ff41] text-xs font-mono">.env.local</code> file in the root directory of the project. This file will contain your Meta Pixel ID and Conversions API Access Token:
           </p>
-          
+
           <pre className="relative overflow-x-auto rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-4 font-mono text-xs md:text-sm">
             <code className="text-[#00ff41]">{`# Meta Pixel Configuration
 NEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here
@@ -112,12 +112,12 @@ NEXT_PUBLIC_FB_PIXEL_ID=your_pixel_id_here
 FB_ACCESS_TOKEN=your_access_token_here
 FB_PIXEL_ID=your_pixel_id_here`}</code>
           </pre>
-          
+
           <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-4">
             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-4">
               Where to find these values:
             </h3>
-            
+
             <div className="space-y-4">
               <div>
                 <p className="font-mono text-[#00ff41] mb-2">NEXT_PUBLIC_FB_PIXEL_ID</p>
@@ -125,14 +125,14 @@ FB_PIXEL_ID=your_pixel_id_here`}</code>
                   Found in Meta Business Manager &gt; Events Manager &gt; Data Sources &gt; Pixels. Look for your pixel and copy the Pixel ID (a numeric value).
                 </p>
               </div>
-              
+
               <div>
                 <p className="font-mono text-[#00ff41] mb-2">FB_ACCESS_TOKEN</p>
                 <p className="text-[#8b949e] text-sm">
                   Generate this in Meta Business Manager &gt; Business Settings &gt; System Users. Create a System User, assign it to your pixel, and generate an access token with the ads_management and ads_read permissions.
                 </p>
               </div>
-              
+
               <div>
                 <p className="font-mono text-[#00ff41] mb-2">FB_PIXEL_ID</p>
                 <p className="text-[#8b949e] text-sm">
@@ -141,7 +141,7 @@ FB_PIXEL_ID=your_pixel_id_here`}</code>
               </div>
             </div>
           </div>
-          
+
           <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/5 p-4">
             <div className="mb-2 flex items-center gap-2">
               <span className="text-yellow-400 text-lg">⚠</span>
@@ -159,12 +159,12 @@ FB_PIXEL_ID=your_pixel_id_here`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
           <span className="inline-block animate-pulse">▸</span> Step 4: Run the Development Server
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Start the development server to see the Meta Tracking Lab in action:
           </p>
-          
+
           <pre className="relative overflow-x-auto rounded-lg border border-[#00ff41]/20 bg-[#0d1117] p-4 font-mono text-xs md:text-sm">
             <code className="text-[#00ff41]">{`npm run dev
 # or
@@ -172,7 +172,7 @@ yarn dev
 # or
 pnpm dev`}</code>
           </pre>
-          
+
           <p className="leading-relaxed text-[#8b949e] text-sm">
             Open your browser and navigate to <span className="font-mono text-[#00d9ff]">http://localhost:3000</span>. You should see the Meta Tracking Lab homepage with the navigation sidebar on the left.
           </p>
@@ -184,12 +184,12 @@ pnpm dev`}</code>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
           <span className="inline-block animate-pulse">▸</span> Step 5: Verify Your Setup
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base mb-4">
             To verify that everything is configured correctly:
           </p>
-          
+
           <div className="space-y-4">
             <div className="flex gap-4">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center">
@@ -202,7 +202,7 @@ pnpm dev`}</code>
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center">
                 <span className="font-mono text-[#00ff41] font-bold">2</span>
@@ -214,7 +214,7 @@ pnpm dev`}</code>
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center">
                 <span className="font-mono text-[#00ff41] font-bold">3</span>
@@ -226,7 +226,7 @@ pnpm dev`}</code>
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-4">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#00ff41]/10 border border-[#00ff41]/30 flex items-center justify-center">
                 <span className="font-mono text-[#00ff41] font-bold">4</span>
@@ -239,7 +239,7 @@ pnpm dev`}</code>
               </div>
             </div>
           </div>
-          
+
           <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4 mt-6">
             <div className="mb-2 flex items-center gap-2">
               <span className="text-red-400 text-lg">⚡</span>
@@ -253,16 +253,16 @@ pnpm dev`}</code>
       </section>
 
       {/* Next Steps */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4">
           <span className="inline-block animate-pulse">▸</span> Next Steps
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Now that you have the Meta Tracking Lab running locally, explore the documentation pages to learn about common tracking issues and how to fix them.
           </p>
-          
+
           <div className="grid gap-4 md:grid-cols-2">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-4">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Demo Controls</h3>
@@ -271,7 +271,7 @@ pnpm dev`}</code>
               </p>
               <code className="text-xs text-[#00d9ff] font-mono">/getting-started/demo-controls</code>
             </div>
-            
+
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-4">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">CAPI Test</h3>
               <p className="text-[#8b949e] text-sm mb-3">

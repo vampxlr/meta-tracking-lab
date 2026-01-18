@@ -10,7 +10,7 @@ export default function DemoControlsPage() {
 
   // Helper function to generate proper UUID v4
   const generateUUID = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const r = Math.random() * 16 | 0
       const v = c === 'x' ? r : (r & 0x3 | 0x8)
       return v.toString(16)
@@ -252,18 +252,18 @@ export default function DemoControlsPage() {
       description="Learn how to use the interactive event playground to understand proper Meta Pixel and CAPI event tracking"
       status="Stable"
     >
-      
+
       {/* Introduction */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> What is the Event Playground?
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             The Event Playground is an interactive tool that helps you understand the difference between broken and properly configured Meta tracking events. You can test different event types and see exactly what data should be included for optimal tracking.
           </p>
-          
+
           <div className="glass hover-glow rounded-xl border border-[#00d9ff]/20 p-5">
             <div className="mb-3 flex items-center gap-3">
               <div className="p-2 rounded-lg bg-[#00d9ff]/10">
@@ -298,7 +298,7 @@ export default function DemoControlsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How to Use the Playground
         </h2>
-        
+
         <div className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             {/* Step 1 */}
@@ -361,7 +361,7 @@ export default function DemoControlsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Issues Demonstrated
         </h2>
-        
+
         <div className="grid gap-4 md:grid-cols-2">
           {/* Missing Event ID */}
           <div className="border-animated glass-strong rounded-xl p-5">
@@ -372,7 +372,7 @@ export default function DemoControlsPage() {
             <div className="bg-[#0d1117] rounded p-3">
               <p className="text-xs font-mono text-red-400">❌ Broken:</p>
               <pre className="text-xs font-mono text-[#8b949e] mt-1">
-{`{
+                {`{
   "event_name": "Purchase"
   // Missing event_id!
 }`}
@@ -389,7 +389,7 @@ export default function DemoControlsPage() {
             <div className="bg-[#0d1117] rounded p-3">
               <p className="text-xs font-mono text-red-400">❌ Broken:</p>
               <pre className="text-xs font-mono text-[#8b949e] mt-1">
-{`{
+                {`{
   "event_name": "Purchase",
   "value": "99.99"  // String!
   // Missing currency
@@ -407,7 +407,7 @@ export default function DemoControlsPage() {
             <div className="bg-[#0d1117] rounded p-3">
               <p className="text-xs font-mono text-red-400">❌ Broken:</p>
               <pre className="text-xs font-mono text-[#8b949e] mt-1">
-{`{
+                {`{
   "user_data": {
     "email": "user@example.com"
     // NOT HASHED!
@@ -426,7 +426,7 @@ export default function DemoControlsPage() {
             <div className="bg-[#0d1117] rounded p-3">
               <p className="text-xs font-mono text-red-400">❌ Broken:</p>
               <pre className="text-xs font-mono text-[#8b949e] mt-1">
-{`{
+                {`{
   "event_name": "Purchase"
   // Missing currency & value!
 }`}
@@ -441,7 +441,7 @@ export default function DemoControlsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Event Tracking Best Practices
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">
@@ -512,12 +512,11 @@ export default function DemoControlsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Try It Yourself
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Event Testing Playground"
           description="Toggle between Broken and Fixed modes, then click any event to see the payload difference"
           events={customEvents}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -533,7 +532,7 @@ export default function DemoControlsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Next Steps
         </h2>
-        
+
         <div className="grid gap-4 md:grid-cols-2">
           <a href="/problems/missing-events" className="block">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
@@ -544,7 +543,7 @@ export default function DemoControlsPage() {
               <code className="text-xs text-[#00d9ff] font-mono">→ /problems/missing-events</code>
             </div>
           </a>
-          
+
           <a href="/problems/duplicate-events" className="block">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Fix Duplicate Events</h3>

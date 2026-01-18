@@ -383,13 +383,13 @@ export default function CookieFbpIssuesPage() {
       description="Master first-party cookie configuration for Meta Pixel and CAPI - _fbp, _fbc, domain settings, and cross-session attribution"
       status="Stable"
     >
-      
+
       {/* Understanding Meta Cookies */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Understanding Meta First-Party Cookies
         </h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* _fbp Cookie */}
           <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
@@ -488,7 +488,7 @@ export default function CookieFbpIssuesPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Proper Cookie Configuration
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           {/* Domain Configuration */}
           <div>
@@ -547,7 +547,7 @@ export default function CookieFbpIssuesPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Cookie Problems
         </h2>
-        
+
         <div className="grid gap-4 md:grid-cols-2">
           <div className="glass hover-lift rounded-xl border border-red-500/20 p-5">
             <div className="mb-3 flex items-center gap-2">
@@ -608,7 +608,7 @@ export default function CookieFbpIssuesPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Reading Cookies for CAPI
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div>
             <h3 className="font-mono text-[#e8f4f8] font-semibold mb-3">Client-Side: Reading with JavaScript</h3>
@@ -676,12 +676,11 @@ export async function POST(request: Request) {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Cookie Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Cookie Configuration Testing"
           description="Test 8 different cookie scenarios - from missing cookies to perfect setup. See how cookies affect attribution and match quality."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -698,7 +697,7 @@ export async function POST(request: Request) {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Cookie Troubleshooting Checklist
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">

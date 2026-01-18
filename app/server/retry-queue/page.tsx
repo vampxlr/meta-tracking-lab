@@ -284,18 +284,18 @@ export default function RetryQueuePage() {
       description="Implement robust retry logic with exponential backoff, persistent storage, and dead letter queues to never lose a conversion event"
       status="Beta"
     >
-      
+
       {/* Why Retry Queue */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Why You Need a Retry Queue
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Network failures, API rate limits, and temporary outages mean some events will fail to reach Meta. Without retry logic, these events are lost forever—potentially costing you thousands in untracked conversions. A retry queue ensures every event eventually reaches Meta.
           </p>
-          
+
           <div className="border-gradient">
             <div className="border-gradient-content glass-strong p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -304,7 +304,7 @@ export default function RetryQueuePage() {
                 </div>
                 <h3 className="font-mono text-xl font-bold text-red-400">Real-World Failure Scenarios</h3>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Network Timeout</p>
@@ -312,21 +312,21 @@ export default function RetryQueuePage() {
                     User on slow mobile connection → Event times out → $299 purchase never tracked
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Meta API Down</p>
                   <p className="text-sm text-[#8b949e]">
                     Meta&apos;s API experiences temporary outage → All events lost during downtime
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Rate Limit Hit</p>
                   <p className="text-sm text-[#8b949e]">
                     Traffic spike → Hit Meta&apos;s rate limit → New events rejected until limit resets
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Server Restart</p>
                   <p className="text-sm text-[#8b949e]">
@@ -344,13 +344,13 @@ export default function RetryQueuePage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How Retry Queue Works
         </h2>
-        
+
         <div className="space-y-6">
           {/* Flow Diagram */}
           <div className="glass-strong rounded-xl p-6 border border-[#00ff41]/20">
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <pre className="text-xs font-mono text-[#00ff41] overflow-x-auto">
-{`┌─────────────────────────────────────────────────────────────┐
+                {`┌─────────────────────────────────────────────────────────────┐
 │ Event Lifecycle with Retry Queue                           │
 └─────────────────────────────────────────────────────────────┘
 
@@ -425,7 +425,7 @@ export default function RetryQueuePage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation Guide
         </h2>
-        
+
         <div className="space-y-6">
           {/* Database Schema */}
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
@@ -435,11 +435,11 @@ export default function RetryQueuePage() {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Create Queue Table</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">PostgreSQL Schema:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`CREATE TABLE event_queue (
+                {`CREATE TABLE event_queue (
   id SERIAL PRIMARY KEY,
   event_id VARCHAR(255) UNIQUE NOT NULL,
   payload JSONB NOT NULL,
@@ -467,11 +467,11 @@ CREATE INDEX idx_priority ON event_queue(priority DESC);`}
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Background Worker</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Retry Worker (runs every 5 seconds):</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`async function processQueue() {
+                {`async function processQueue() {
   // Get events ready for retry
   const events = await db.query(\`
     SELECT * FROM event_queue
@@ -538,11 +538,11 @@ setInterval(processQueue, 5000)`}
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Update API Route</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Add to your CAPI endpoint:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`export async function POST(request: NextRequest) {
+                {`export async function POST(request: NextRequest) {
   const payload = await request.json()
   
   try {
@@ -580,7 +580,7 @@ setInterval(processQueue, 5000)`}
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Examples
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20 mb-6">
           <div className="flex items-center gap-2 mb-3">
             <RefreshCw className="h-5 w-5 text-[#00d9ff]" />
@@ -590,12 +590,11 @@ setInterval(processQueue, 5000)`}
             These examples demonstrate different retry strategies and queue configurations for maximum reliability.
           </p>
         </div>
-        
+
         <EnhancedEventPlayground
           title="Retry Queue Examples"
           description="See how retry logic prevents lost conversions"
           events={retryExamples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={false}
@@ -611,7 +610,7 @@ setInterval(processQueue, 5000)`}
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Best Practices
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">

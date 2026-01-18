@@ -735,7 +735,6 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
           title="Test Events - 8 Real-World Scenarios"
           description="Each button demonstrates exactly what its name says. Click to send REAL events to Meta and see the results."
           events={dedupExamples}
-          showModeToggle={false}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}

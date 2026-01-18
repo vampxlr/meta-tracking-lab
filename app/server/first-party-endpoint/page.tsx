@@ -298,18 +298,18 @@ export default function FirstPartyEndpointPage() {
       description="Build a CAPI proxy on your domain to bypass ad blockers, improve cookie access, and add server-side validation and logging"
       status="Beta"
     >
-      
+
       {/* Why First-Party Endpoint */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Why First-Party CAPI Endpoint?
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Instead of sending events directly from the browser to Meta&apos;s servers (<code className="text-[#00ff41] bg-[#0d1117] px-2 py-1 rounded">graph.facebook.com</code>), route them through your own domain first. This first-party endpoint acts as a proxy that forwards events to Meta, but with significant advantages.
           </p>
-          
+
           <div className="border-gradient">
             <div className="border-gradient-content glass-strong p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -318,7 +318,7 @@ export default function FirstPartyEndpointPage() {
                 </div>
                 <h3 className="font-mono text-xl font-bold text-[#00ff41]">Key Benefits</h3>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">🚫 Bypass Ad Blockers</p>
@@ -326,21 +326,21 @@ export default function FirstPartyEndpointPage() {
                     Requests to yourdomain.com/api/events aren&apos;t blocked like graph.facebook.com
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">🍪 Better Cookie Access</p>
                   <p className="text-sm text-[#8b949e]">
                     First-party context allows reliable access to _fbp and _fbc cookies
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">🔒 Enhanced Security</p>
                   <p className="text-sm text-[#8b949e]">
                     Add rate limiting, validation, and sanitization before forwarding to Meta
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">📊 Server Logging</p>
                   <p className="text-sm text-[#8b949e]">
@@ -354,7 +354,7 @@ export default function FirstPartyEndpointPage() {
                     Extract actual user IP from headers for better match quality
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">⚡ Deduplication</p>
                   <p className="text-sm text-[#8b949e]">
@@ -372,7 +372,7 @@ export default function FirstPartyEndpointPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How First-Party Proxy Works
         </h2>
-        
+
         <div className="space-y-6">
           {/* Flow Comparison */}
           <div className="grid gap-6 md:grid-cols-2">
@@ -382,12 +382,12 @@ export default function FirstPartyEndpointPage() {
                 <XCircle className="h-5 w-5 text-red-400" />
                 <h3 className="font-mono font-semibold text-red-400">Without First-Party</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-red-500/20">
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Browser:</p>
                   <pre className="text-xs font-mono text-red-400">
-{`Client → graph.facebook.com/events
+                    {`Client → graph.facebook.com/events
 ❌ Blocked by ad blockers
 ❌ Third-party cookie restrictions  
 ❌ CORS issues
@@ -403,12 +403,12 @@ export default function FirstPartyEndpointPage() {
                 <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                 <h3 className="font-mono font-semibold text-[#00ff41]">With First-Party</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-[#00ff41]/20">
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Browser → Your Server → Meta:</p>
                   <pre className="text-xs font-mono text-[#00ff41]">
-{`Client → yourdomain.com/api/events
+                    {`Client → yourdomain.com/api/events
   ↓ (Your Server)
   • Validate & sanitize
   • Extract real client IP
@@ -433,7 +433,7 @@ Meta graph.facebook.com/events
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation Guide
         </h2>
-        
+
         <div className="space-y-6">
           {/* Step 1: API Route */}
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
@@ -443,11 +443,11 @@ Meta graph.facebook.com/events
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Create API Route</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">app/api/events/route.ts:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`import { NextRequest, NextResponse } from 'next/server'
+                {`import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
@@ -507,11 +507,11 @@ export async function POST(request: NextRequest) {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Update Client Code</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Change fetch URL to your domain:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`// Instead of directly to Meta:
+                {`// Instead of directly to Meta:
 // fetch('https://graph.facebook.com/...')
 
 // Send to your first-party endpoint:
@@ -548,7 +548,7 @@ await fetch('/api/events', {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Examples
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20 mb-6">
           <div className="flex items-center gap-2 mb-3">
             <Server className="h-5 w-5 text-[#00d9ff]" />
@@ -558,12 +558,11 @@ await fetch('/api/events', {
             These examples demonstrate different aspects of first-party CAPI endpoints. In production, all events would route through your server.
           </p>
         </div>
-        
+
         <EnhancedEventPlayground
           title="First-Party Endpoint Examples"
           description="See the benefits of routing CAPI through your own domain"
           events={endpointExamples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={false}
@@ -579,7 +578,7 @@ await fetch('/api/events', {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Best Practices
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">

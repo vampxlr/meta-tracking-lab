@@ -326,18 +326,18 @@ export default function LowMatchQualityPage() {
       description="Master PII hashing, normalization, and user data optimization for maximum event matching and attribution accuracy"
       status="Stable"
     >
-      
+
       {/* The Problem */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> The Match Quality Problem
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Match quality determines how well Meta can connect your events to real Facebook/Instagram users. Low match quality means Meta can&apos;t attribute conversions correctly, leading to wasted ad spend, poor optimization, and inaccurate reporting. The primary cause? <span className="text-red-400 font-semibold">Incorrect PII handling</span>.
           </p>
-          
+
           <div className="border-gradient">
             <div className="border-gradient-content glass-strong p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -346,7 +346,7 @@ export default function LowMatchQualityPage() {
                 </div>
                 <h3 className="font-mono text-xl font-bold text-red-400">Business Impact</h3>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
@@ -357,7 +357,7 @@ export default function LowMatchQualityPage() {
                     Match quality 2/10 → 80% of conversions can&apos;t be attributed to the right users
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
                     <XCircle className="h-5 w-5 text-red-400" />
@@ -367,7 +367,7 @@ export default function LowMatchQualityPage() {
                     Meta&apos;s AI can&apos;t optimize properly → shows ads to wrong audiences
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
                     <XCircle className="h-5 w-5 text-red-400" />
@@ -377,7 +377,7 @@ export default function LowMatchQualityPage() {
                     Can&apos;t measure true return on ad spend → bad business decisions
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
                     <XCircle className="h-5 w-5 text-red-400" />
@@ -394,7 +394,7 @@ export default function LowMatchQualityPage() {
           {/* Visual Match Quality Scale */}
           <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20">
             <h4 className="font-mono font-semibold text-[#00d9ff] mb-4">Match Quality Scale</h4>
-            
+
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">
@@ -405,7 +405,7 @@ export default function LowMatchQualityPage() {
                   <div className="bg-red-500 h-3 rounded-full" style={{ width: '30%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-mono text-[#8b949e]">Fair (4-6/10) - Email hashed, 1-2 fields</span>
@@ -415,7 +415,7 @@ export default function LowMatchQualityPage() {
                   <div className="bg-yellow-500 h-3 rounded-full" style={{ width: '60%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-mono text-[#8b949e]">Good (7-8/10) - Email + phone hashed</span>
@@ -425,7 +425,7 @@ export default function LowMatchQualityPage() {
                   <div className="bg-[#00ff41] h-3 rounded-full" style={{ width: '80%' }}></div>
                 </div>
               </div>
-              
+
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-mono text-[#8b949e]">Excellent (9-10/10) - All fields hashed</span>
@@ -445,7 +445,7 @@ export default function LowMatchQualityPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> PII Hashing & Normalization
         </h2>
-        
+
         <div className="space-y-6">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Meta requires all Personally Identifiable Information (PII) to be hashed using SHA-256 before sending. But hashing alone isn&apos;t enough—you must <span className="text-[#00ff41] font-semibold">normalize</span> the data first, or you&apos;ll generate different hashes than Meta&apos;s system, resulting in zero matches.
@@ -459,7 +459,7 @@ export default function LowMatchQualityPage() {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#00ff41]">Normalization Rules (CRITICAL)</h3>
             </div>
-            
+
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">1.</span>
@@ -468,7 +468,7 @@ export default function LowMatchQualityPage() {
                   <code className="text-xs text-[#8b949e]">email.trim()</code>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">2.</span>
                 <div>
@@ -476,7 +476,7 @@ export default function LowMatchQualityPage() {
                   <code className="text-xs text-[#8b949e]">email.toLowerCase()</code>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">3.</span>
                 <div>
@@ -484,7 +484,7 @@ export default function LowMatchQualityPage() {
                   <code className="text-xs text-[#8b949e]">phone.replace(/\D/g, &apos;&apos;)</code>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">4.</span>
                 <div>
@@ -503,20 +503,20 @@ export default function LowMatchQualityPage() {
                 <XCircle className="h-5 w-5 text-red-400" />
                 <h3 className="font-mono font-semibold text-red-400">Wrong Normalization</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div>
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Input:</p>
                   <code className="text-sm text-red-400">&quot; User@Example.com &quot;</code>
                 </div>
-                
+
                 <div>
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Hash directly (WRONG):</p>
                   <pre className="text-xs font-mono text-red-400 bg-[#0d1117] rounded p-2 overflow-x-auto">
-8d5e957f297893487bd98...
+                    8d5e957f297893487bd98...
                   </pre>
                 </div>
-                
+
                 <div className="bg-red-500/10 rounded p-2">
                   <p className="text-xs text-red-400">❌ Different hash = 0% match</p>
                 </div>
@@ -529,25 +529,25 @@ export default function LowMatchQualityPage() {
                 <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                 <h3 className="font-mono font-semibold text-[#00ff41]">Correct Normalization</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div>
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Input:</p>
                   <code className="text-sm text-[#00ff41]">&quot; User@Example.com &quot;</code>
                 </div>
-                
+
                 <div>
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Normalize then hash:</p>
                   <code className="text-xs text-[#8b949e]">trim() → toLowerCase() → hash()</code>
                 </div>
-                
+
                 <div>
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Result:</p>
                   <pre className="text-xs font-mono text-[#00ff41] bg-[#0d1117] rounded p-2 overflow-x-auto">
-b4c9a289323b21a01c3e...
+                    b4c9a289323b21a01c3e...
                   </pre>
                 </div>
-                
+
                 <div className="bg-[#00ff41]/10 rounded p-2">
                   <p className="text-xs text-[#00ff41]">✓ Same hash as Meta = 95% match</p>
                 </div>
@@ -562,7 +562,7 @@ b4c9a289323b21a01c3e...
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation Guide
         </h2>
-        
+
         <div className="space-y-6">
           {/* Step 1: Normalization Function */}
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
@@ -572,11 +572,11 @@ b4c9a289323b21a01c3e...
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Create Normalization Helpers</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">JavaScript/TypeScript:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`import crypto from 'crypto'
+                {`import crypto from 'crypto'
 
 // Normalize and hash email
 function hashEmail(email: string): string {
@@ -613,11 +613,11 @@ function hashField(value: string): string {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Build Properly Hashed user_data</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Example Usage:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`const userData = {
+                {`const userData = {
   em: hashEmail(userEmail),              // email
   ph: hashPhone(userPhone),              // phone
   fn: hashName(firstName),               // first name
@@ -649,26 +649,26 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Field Priority (Most → Least Important)</h3>
             </div>
-            
+
             <div className="space-y-2">
               <div className="flex items-center gap-3 p-3 bg-[#00ff41]/10 rounded border-l-4 border-[#00ff41]">
                 <span className="font-mono text-[#00ff41] font-bold">High</span>
                 <span className="text-sm text-[#e8f4f8]">Email (em) + Phone (ph)</span>
                 <span className="text-xs text-[#8b949e] ml-auto">→ 7-8/10 match</span>
               </div>
-              
+
               <div className="flex items-center gap-3 p-3 bg-[#00ff41]/5 rounded border-l-4 border-[#00ff41]/50">
                 <span className="font-mono text-[#00ff41] font-bold">Med</span>
                 <span className="text-sm text-[#e8f4f8]">First Name (fn) + Last Name (ln)</span>
                 <span className="text-xs text-[#8b949e] ml-auto">→ Boost to 8-9/10</span>
               </div>
-              
+
               <div className="flex items-center gap-3 p-3 bg-[#00ff41]/5 rounded border-l-4 border-[#00ff41]/30">
                 <span className="font-mono text-[#00ff41] font-bold">Low</span>
                 <span className="text-sm text-[#e8f4f8]">Address (ct, st, zp, country)</span>
                 <span className="text-xs text-[#8b949e] ml-auto">→ Boost to 9-10/10</span>
               </div>
-              
+
               <div className="flex items-center gap-3 p-3 bg-[#00d9ff]/10 rounded border-l-4 border-[#00d9ff]">
                 <span className="font-mono text-[#00d9ff] font-bold">Special</span>
                 <span className="text-sm text-[#e8f4f8]">External ID (external_id)</span>
@@ -684,7 +684,7 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Match Quality Testing
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20 mb-6">
           <div className="flex items-center gap-2 mb-3">
             <Hash className="h-5 w-5 text-[#00d9ff]" />
@@ -712,12 +712,11 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
             </li>
           </ul>
         </div>
-        
+
         <EnhancedEventPlayground
           title="PII Hashing & Match Quality Test Suite - 8 Scenarios"
           description="Each scenario demonstrates a different aspect of PII handling. Compare broken vs fixed implementations and see real match quality scores."
           events={matchQualityExamples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -733,7 +732,7 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Complete Field Reference
         </h2>
-        
+
         <div className="glass-strong rounded-xl border border-[#00ff41]/20 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -835,7 +834,7 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Best Practices for Maximum Match Quality
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">
@@ -922,11 +921,11 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
       </section>
 
       {/* Related Topics */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Related Topics
         </h2>
-        
+
         <div className="grid gap-4 md:grid-cols-2">
           <a href="/problems/duplicate-events" className="block">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
@@ -937,7 +936,7 @@ fbq('track', 'Purchase', { value: 99.99, currency: 'USD' }, {
               <code className="text-xs text-[#00d9ff] font-mono">→ /problems/duplicate-events</code>
             </div>
           </a>
-          
+
           <a href="/problems/security-privacy" className="block">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Security & Privacy</h3>

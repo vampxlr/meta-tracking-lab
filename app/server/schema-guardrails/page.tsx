@@ -318,18 +318,18 @@ export default function SchemaGuardrailsPage() {
       description="Implement runtime validation with Zod or similar to catch errors before sending to Meta - prevent bad data, GDPR violations, and silent failures"
       status="Beta"
     >
-      
+
       {/* Why Schema Validation */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Why Schema Validation is Critical
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             TypeScript provides compile-time type safety, but runtime data from forms, APIs, and user input can still be malformed. Schema validation catches these errors <span className="text-[#00ff41] font-mono">before</span> sending to Meta, preventing silent failures, GDPR violations, and wasted API calls.
           </p>
-          
+
           <div className="border-gradient">
             <div className="border-gradient-content glass-strong p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -338,7 +338,7 @@ export default function SchemaGuardrailsPage() {
                 </div>
                 <h3 className="font-mono text-xl font-bold text-[#00ff41]">What Schema Validation Catches</h3>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">Type Errors</p>
@@ -346,21 +346,21 @@ export default function SchemaGuardrailsPage() {
                     Value as &quot;99.99&quot; (string) instead of 99.99 (number) → Caught before sending
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">Missing Fields</p>
                   <p className="text-sm text-[#8b949e]">
                     Forgot event_name or event_time → Error thrown instead of silent failure
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">Invalid Enums</p>
                   <p className="text-sm text-[#8b949e]">
                     &quot;BuyNow&quot; instead of &quot;Purchase&quot; → Rejected with clear error message
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">GDPR Violations</p>
                   <p className="text-sm text-[#8b949e]">
@@ -374,7 +374,7 @@ export default function SchemaGuardrailsPage() {
                     Negative prices or $10M purchases → Flagged as suspicious
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-[#00ff41]/20">
                   <p className="font-mono font-semibold text-[#00ff41] mb-2">Format Errors</p>
                   <p className="text-sm text-[#8b949e]">
@@ -392,7 +392,7 @@ export default function SchemaGuardrailsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How Schema Validation Works
         </h2>
-        
+
         <div className="space-y-6">
           {/* Flow Comparison */}
           <div className="grid gap-6 md:grid-cols-2">
@@ -402,11 +402,11 @@ export default function SchemaGuardrailsPage() {
                 <XCircle className="h-5 w-5 text-red-400" />
                 <h3 className="font-mono font-semibold text-red-400">Without Validation</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-red-500/20">
                   <pre className="text-xs font-mono text-red-400">
-{`User Input → API Endpoint
+                    {`User Input → API Endpoint
   ↓
 Send to Meta (malformed)
   ↓
@@ -425,11 +425,11 @@ Send to Meta (malformed)
                 <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                 <h3 className="font-mono font-semibold text-[#00ff41]">With Schema Validation</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-[#00ff41]/20">
                   <pre className="text-xs font-mono text-[#00ff41]">
-{`User Input → API Endpoint
+                    {`User Input → API Endpoint
   ↓
 Zod Schema Validation
   ↓
@@ -458,7 +458,7 @@ Send to Meta (validated)
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation with Zod
         </h2>
-        
+
         <div className="space-y-6">
           {/* Install Zod */}
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
@@ -468,10 +468,10 @@ Send to Meta (validated)
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Install Zod</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`npm install zod`}
+                {`npm install zod`}
               </pre>
             </div>
           </div>
@@ -484,11 +484,11 @@ Send to Meta (validated)
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Define CAPI Schema</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">lib/schemas/capi.ts:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`import { z } from 'zod'
+                {`import { z } from 'zod'
 
 // Standard event names
 const StandardEvents = z.enum([
@@ -578,11 +578,11 @@ export type CAPIEvent = z.infer<typeof CAPIEventSchema>`}
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Validate in API Route</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">app/api/events/route.ts:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`import { CAPIEventSchema } from '@/lib/schemas/capi'
+                {`import { CAPIEventSchema } from '@/lib/schemas/capi'
 
 export async function POST(request: NextRequest) {
   try {
@@ -622,7 +622,7 @@ export async function POST(request: NextRequest) {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Examples
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20 mb-6">
           <div className="flex items-center gap-2 mb-3">
             <Shield className="h-5 w-5 text-[#00d9ff]" />
@@ -632,12 +632,11 @@ export async function POST(request: NextRequest) {
             These examples demonstrate different validation scenarios and how schema guardrails catch errors before sending to Meta.
           </p>
         </div>
-        
+
         <EnhancedEventPlayground
           title="Schema Guardrails Examples"
           description="See how runtime validation prevents bad data from reaching Meta"
           events={schemaExamples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={false}
@@ -653,7 +652,7 @@ export async function POST(request: NextRequest) {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Best Practices
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">

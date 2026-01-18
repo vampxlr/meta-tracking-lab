@@ -289,13 +289,13 @@ export default function MissingEventIdPage() {
       description="Master event_id implementation for proper tracking, debugging, deduplication, and business reconciliation"
       status="Stable"
     >
-      
+
       {/* Why Event ID Matters */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Why Event ID is Critical
         </h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* Critical Issues */}
           <div className="glass hover-glow rounded-xl border border-red-500/20 p-6">
@@ -364,7 +364,7 @@ export default function MissingEventIdPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Event ID Best Practices
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           {/* Uniqueness */}
           <div>
@@ -439,7 +439,7 @@ await fetch('/api/meta/capi', {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Mistakes to Avoid
         </h2>
-        
+
         <div className="grid gap-4 md:grid-cols-2">
           <div className="glass hover-lift rounded-xl border border-red-500/20 p-5">
             <div className="mb-3 flex items-center gap-2">
@@ -488,7 +488,7 @@ await fetch('/api/meta/capi', {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Business Impact
         </h2>
-        
+
         <div className="grid gap-6 md:grid-cols-3">
           <div className="glass hover-glow rounded-xl border border-red-500/20 p-6">
             <div className="text-center mb-4">
@@ -527,12 +527,11 @@ await fetch('/api/meta/capi', {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Event ID Implementation Testing"
           description="Test 8 different event_id scenarios - from completely missing to best practice implementations. Watch how Meta processes each one."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -549,7 +548,7 @@ await fetch('/api/meta/capi', {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Quick Implementation Guide
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-4">
           <div className="flex items-start gap-4">
             <div className="w-8 h-8 rounded-full bg-[#00ff41]/20 border border-[#00ff41]/30 flex items-center justify-center shrink-0">
@@ -605,11 +604,11 @@ await fetch('/api/meta/capi', {
       </section>
 
       {/* Testing Checklist */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Testing Checklist
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">

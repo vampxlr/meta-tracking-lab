@@ -341,18 +341,18 @@ export default function CapiSetupPage() {
       description="Master server-side tracking configuration with required fields, action sources, and user data for maximum attribution accuracy"
       status="Stable"
     >
-      
+
       {/* What is CAPI */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> What is Conversions API (CAPI)?
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-4">
           <p className="text-[#8b949e] text-sm md:text-base leading-relaxed">
             Conversions API (CAPI) is Meta&apos;s server-to-server tracking solution that sends events directly from your server to Meta&apos;s servers, bypassing browser limitations like ad blockers, cookie restrictions, and iOS tracking prevention.
           </p>
-          
+
           <div className="grid gap-4 md:grid-cols-2 mt-6">
             <div className="glass rounded-lg border border-[#00ff41]/20 p-4">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-3">Why Use CAPI?</h3>
@@ -394,7 +394,7 @@ export default function CapiSetupPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Required vs. Recommended Fields
         </h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* Required Fields */}
           <div className="glass hover-glow rounded-xl border border-red-500/20 p-6">
@@ -486,12 +486,12 @@ export default function CapiSetupPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Action Source Values
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <p className="text-[#8b949e] text-sm mb-6">
             The <code className="text-[#00ff41] bg-[#00ff41]/10 px-2 py-1 rounded">action_source</code> field tells Meta where the event originated. Choose the correct value:
           </p>
-          
+
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div className="glass rounded-lg border border-[#00ff41]/20 p-4">
               <code className="text-[#00ff41] font-mono text-sm font-semibold">website</code>
@@ -526,7 +526,7 @@ export default function CapiSetupPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common CAPI Mistakes
         </h2>
-        
+
         <div className="grid gap-4">
           <div className="glass hover-lift rounded-xl border border-red-500/20 p-5">
             <div className="flex items-start gap-4">
@@ -591,12 +591,11 @@ export default function CapiSetupPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive CAPI Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="CAPI Configuration Testing"
           description="Test 8 different CAPI setups from broken to perfect. See how missing fields affect event processing and match quality."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -613,7 +612,7 @@ export default function CapiSetupPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Server-Side Implementation
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div>
             <h3 className="font-mono text-[#e8f4f8] font-semibold mb-3">Node.js / Next.js API Route Example</h3>
@@ -708,11 +707,11 @@ await fetch('/api/meta/capi', {
       </section>
 
       {/* Verification Checklist */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> CAPI Setup Checklist
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">

@@ -9,12 +9,12 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Send, 
-  CheckCircle2, 
-  AlertCircle, 
-  ExternalLink, 
-  Server, 
+import {
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  Server,
   AlertTriangle,
   Copy,
   Code,
@@ -68,7 +68,7 @@ interface ResponseDetails {
 export default function CapiTestPage() {
   // Get site URL from environment
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
-  
+
   const [isConfigured, setIsConfigured] = React.useState(false)
   const [mode, setMode] = React.useState<'broken' | 'fixed' | 'test'>('broken')
   const [testEventCode, setTestEventCode] = React.useState('')
@@ -250,7 +250,7 @@ export default function CapiTestPage() {
 
     try {
       const requestBody = buildRequestBody()
-      
+
       const requestDetails: RequestDetails = {
         url: '/api/meta/capi',
         method: 'POST',
@@ -338,7 +338,7 @@ export default function CapiTestPage() {
   const generateRandomEventId = () => {
     if (mode === 'fixed' || mode === 'test') {
       // Generate valid UUID
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
         const r = Math.random() * 16 | 0
         const v = c === 'x' ? r : (r & 0x3 | 0x8)
         return v.toString(16)
@@ -365,10 +365,10 @@ export default function CapiTestPage() {
       const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Davis']
       const cities = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix']
       const countries = ['US', 'UK', 'CA', 'AU', 'DE']
-      
+
       const randomEmail = `${firstNames[Math.floor(Math.random() * firstNames.length)].toLowerCase()}.${lastNames[Math.floor(Math.random() * lastNames.length)].toLowerCase()}@example.com`
       const randomPhone = `+1${Math.floor(Math.random() * 9000000000 + 1000000000)}`
-      
+
       return {
         email: randomEmail,
         phone: randomPhone,
@@ -393,7 +393,7 @@ export default function CapiTestPage() {
         () => ({ ...brokenData }), // Empty object
         () => ({ ...brokenData, email: 'user@', phone: 'not-a-number' }), // Multiple issues
       ]
-      
+
       const randomIssue = issues[Math.floor(Math.random() * issues.length)]
       return randomIssue()
     }
@@ -405,7 +405,7 @@ export default function CapiTestPage() {
       const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD']
       const contentTypes = ['product', 'product_group', 'destination']
       const contentNames = ['Premium Widget', 'Basic Gadget', 'Advanced Tool', 'Standard Item']
-      
+
       return {
         currency: currencies[Math.floor(Math.random() * currencies.length)],
         value: parseFloat((Math.random() * 1000 + 10).toFixed(2)),
@@ -430,7 +430,7 @@ export default function CapiTestPage() {
         () => ({ ...brokenData, currency: '', value: '99.99' }), // Multiple issues
         () => ({ ...brokenData, value: -50 }), // Negative value (invalid)
       ]
-      
+
       const randomIssue = issues[Math.floor(Math.random() * issues.length)]
       return randomIssue()
     }
@@ -487,7 +487,7 @@ export default function CapiTestPage() {
 
   const updatePreview = useCallback(async () => {
     const requestBody = buildRequestBody()
-    
+
     // Transform to match what the backend actually sends to Meta&apos;s API
     const transformedPayload: any = {
       event_name: requestBody.event_name,
@@ -495,16 +495,16 @@ export default function CapiTestPage() {
       event_source_url: SITE_URL,
       action_source: 'website',
     }
-    
+
     if (requestBody.event_id) {
       transformedPayload.event_id = requestBody.event_id
     }
-    
+
     // Transform user data field names and hash values if in fixed mode
     if (requestBody.user_data) {
       const userData = requestBody.user_data
       const transformedUserData: any = {}
-      
+
       // Helper function to hash a string (client-side for preview)
       const hashString = async (str: string): Promise<string> => {
         const encoder = new TextEncoder()
@@ -514,48 +514,48 @@ export default function CapiTestPage() {
         const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
         return hashHex
       }
-      
+
       // Helper function to normalize and hash email
       const hashEmail = async (email: string): Promise<string> => {
         const normalized = email.trim().toLowerCase()
         return await hashString(normalized)
       }
-      
+
       // Helper function to normalize and hash phone
       const hashPhone = async (phone: string): Promise<string> => {
         const normalized = phone.replace(/\D/g, '')
         return await hashString(normalized)
       }
-      
+
       // Helper function to normalize and hash first name
       const hashFirstName = async (firstName: string): Promise<string> => {
         const normalized = firstName.trim().toLowerCase()
         return await hashString(normalized)
       }
-      
+
       // Helper function to normalize and hash last name
       const hashLastName = async (lastName: string): Promise<string> => {
         const normalized = lastName.trim().toLowerCase()
         return await hashString(normalized)
       }
-      
+
       // Helper function to hash external ID
       const hashExternalId = async (externalId: string): Promise<string> => {
         return await hashString(externalId)
       }
-      
+
       // Helper function to normalize and hash city
       const hashCity = async (city: string): Promise<string> => {
         const normalized = city.trim().toLowerCase()
         return await hashString(normalized)
       }
-      
+
       // Helper function to normalize and hash country
       const hashCountry = async (country: string): Promise<string> => {
         const normalized = country.trim().toLowerCase()
         return await hashString(normalized)
       }
-      
+
       if (mode === 'fixed' || mode === 'test') {
         // Fixed and test mode: hash PII and use abbreviated field names
         if (userData.email) transformedUserData.em = await hashEmail(userData.email)
@@ -575,33 +575,33 @@ export default function CapiTestPage() {
         if (userData.city) transformedUserData.ct = userData.city
         if (userData.country) transformedUserData.country = userData.country
       }
-      
+
       // Add client IP and user agent (these are added by backend)
       transformedUserData.client_ip_address = '127.0.0.1'
       transformedUserData.client_user_agent = 'Mozilla/5.0'
-      
+
       transformedPayload.user_data = transformedUserData
     }
-    
+
     // Add custom data if present
     if (requestBody.custom_data) {
       transformedPayload.custom_data = requestBody.custom_data
     }
-    
+
     // Build the final payload structure that matches Meta&apos;s API expectations
     // test_event_code should be at the top level, not inside the event object
     const finalPayload: any = {
       data: [transformedPayload],
       access_token: 'REDACTED',
     }
-    
+
     // Add test_event_code at the top level if in test mode
     if (requestBody.test_event_code) {
       finalPayload.test_event_code = requestBody.test_event_code
     }
-    
+
     setPreviewJson(JSON.stringify(finalPayload, null, 2))
-  }, [buildRequestBody, mode])
+  }, [buildRequestBody, mode, SITE_URL])
 
   // Check CAPI configuration on mount
   React.useEffect(() => {
@@ -621,7 +621,7 @@ export default function CapiTestPage() {
 
   return (
     <div className="container max-w-6xl py-8 px-4 md:px-6">
-      
+
       {/* Hero Header */}
       <div className="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <div className="flex items-center gap-3 mb-4">
@@ -636,7 +636,7 @@ export default function CapiTestPage() {
       </div>
 
       <div className="space-y-6">
-        
+
         {/* Configuration Status Card */}
         <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
           <div className="flex items-start justify-between">
@@ -657,7 +657,7 @@ export default function CapiTestPage() {
                 </p>
               </div>
             </div>
-            <Badge 
+            <Badge
               variant={isConfigured ? 'default' : 'destructive'}
               className="font-mono"
             >
@@ -727,13 +727,12 @@ export default function CapiTestPage() {
               TEST
             </Button>
           </div>
-          <div className={`mt-4 glass rounded-lg p-3 border ${
-            mode === 'broken'
-              ? 'border-red-500/20'
-              : mode === 'test'
+          <div className={`mt-4 glass rounded-lg p-3 border ${mode === 'broken'
+            ? 'border-red-500/20'
+            : mode === 'test'
               ? 'border-[#00d9ff]/20'
               : 'border-[#00ff41]/20'
-          }`}>
+            }`}>
             <div className="flex items-start gap-2">
               {mode === 'broken' ? (
                 <AlertTriangle className="h-4 w-4 text-red-400 mt-0.5" />
@@ -743,19 +742,18 @@ export default function CapiTestPage() {
                 <CheckCircle2 className="h-4 w-4 text-[#00ff41] mt-0.5" />
               )}
               <div className="text-sm">
-                <p className={`font-mono font-medium ${
-                  mode === 'broken' ? 'text-red-400'
+                <p className={`font-mono font-medium ${mode === 'broken' ? 'text-red-400'
                   : mode === 'test' ? 'text-[#00d9ff]'
-                  : 'text-[#00ff41]'
-                }`}>
+                    : 'text-[#00ff41]'
+                  }`}>
                   {mode === 'broken' ? 'Broken Mode Warning' : mode === 'test' ? 'Test Mode Active' : 'Fixed Mode Active'}
                 </p>
                 <p className="text-[#8b949e] mt-1">
                   {mode === 'broken'
                     ? 'This mode sends un-hashed PII and missing required fields to demonstrate what NOT to do. Random data will include common issues like wrong types, missing fields, and invalid formats for testing error handling. Use dummy data only!'
                     : mode === 'test'
-                    ? 'This mode sends events to Meta Events Manager Test Events tab. Requires a test event code. Random data will be valid and properly formatted.'
-                    : 'Random data will be valid and properly formatted for testing successful event tracking.'
+                      ? 'This mode sends events to Meta Events Manager Test Events tab. Requires a test event code. Random data will be valid and properly formatted.'
+                      : 'Random data will be valid and properly formatted for testing successful event tracking.'
                   }
                 </p>
               </div>
@@ -771,7 +769,7 @@ export default function CapiTestPage() {
               Configure the event details to send
             </p>
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <label className="text-sm font-mono font-medium mb-1.5 block text-[#e8f4f8]">
@@ -1057,7 +1055,7 @@ export default function CapiTestPage() {
         </div>
 
         {/* Real-time JSON Preview */}
-        <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+        <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Code className="h-4 w-4 text-[#00d9ff] icon-spin-hover" />
@@ -1114,11 +1112,10 @@ export default function CapiTestPage() {
                 {validationErrors.map((error, index) => (
                   <div
                     key={index}
-                    className={`glass rounded-lg p-3 border ${
-                      error.severity === 'error' ? 'border-red-500/20' :
+                    className={`glass rounded-lg p-3 border ${error.severity === 'error' ? 'border-red-500/20' :
                       error.severity === 'warning' ? 'border-yellow-500/20' :
-                      'border-[#00d9ff]/20'
-                    }`}
+                        'border-[#00d9ff]/20'
+                      }`}
                   >
                     <div className="flex items-start gap-2">
                       {error.severity === 'error' ? (
@@ -1187,13 +1184,13 @@ export default function CapiTestPage() {
                 Clear
               </Button>
             </div>
-            
+
             <Tabs defaultValue="request" className="w-full">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="request" className="font-mono">Request</TabsTrigger>
                 <TabsTrigger value="response" className="font-mono">Response</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="request" className="mt-4">
                 {requestDetails && (
                   <div className="space-y-4">
@@ -1248,7 +1245,7 @@ export default function CapiTestPage() {
                   </div>
                 )}
               </TabsContent>
-              
+
               <TabsContent value="response" className="mt-4">
                 {responseDetails && (
                   <div className="space-y-4">
@@ -1313,7 +1310,7 @@ export default function CapiTestPage() {
         )}
 
         {/* Instructions Card */}
-        <div className="glass hover-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[800ms]">
+        <div className="glass hover-glow rounded-xl p-6 border border-[#00d9ff]/20 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '800ms' }}>
           <h3 className="font-mono font-semibold mb-4 flex items-center gap-2 text-[#00d9ff] text-glow-hover">
             <ExternalLink className="h-4 w-4" />
             How to Verify

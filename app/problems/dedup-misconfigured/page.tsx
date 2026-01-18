@@ -268,18 +268,18 @@ export default function DedupMisconfiguredPage() {
       description="Master advanced deduplication scenarios: event_id generation strategies, timing windows, and cross-platform synchronization"
       status="Stable"
     >
-      
+
       {/* Understanding Deduplication */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How Meta Deduplication Works
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <p className="text-[#8b949e] text-sm md:text-base leading-relaxed">
             When you send the same event to both Meta Pixel (client-side) and Conversions API (server-side), Meta automatically deduplicates them using the <code className="text-[#00ff41] bg-[#00ff41]/10 px-2 py-1 rounded">event_id</code> field. This ensures events are counted only once, giving you the reliability of CAPI with the reach of Pixel.
           </p>
-          
+
           <div className="grid gap-6 md:grid-cols-3">
             <div className="glass rounded-lg border border-[#00ff41]/20 p-5 text-center">
               <div className="text-3xl font-bold text-[#00ff41] mb-2">48</div>
@@ -314,7 +314,7 @@ export default function DedupMisconfiguredPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> The Deduplication Process
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-6">
             {/* Step 1 */}
@@ -398,7 +398,7 @@ export default function DedupMisconfiguredPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Deduplication Failures
         </h2>
-        
+
         <div className="grid gap-4">
           <div className="glass hover-lift rounded-xl border border-red-500/20 p-5">
             <div className="flex items-start gap-4">
@@ -477,12 +477,12 @@ export default function DedupMisconfiguredPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> The 48-Hour Deduplication Window
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <p className="text-[#8b949e] text-sm leading-relaxed">
             Meta deduplicates events with matching event_id only if they arrive within 48 hours of each other. This window is based on <code className="text-[#00ff41] bg-[#00ff41]/10 px-2 py-1 rounded">event_time</code>, not when Meta receives the event.
           </p>
-          
+
           <div className="grid gap-4 md:grid-cols-2">
             <div className="glass rounded-lg border border-[#00ff41]/20 p-4">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-3">✓ Within Window (Deduplicated)</h3>
@@ -543,12 +543,11 @@ export default function DedupMisconfiguredPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Deduplication Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Deduplication Testing"
           description="Test 8 different deduplication scenarios from broken to perfect. See how event_id configuration affects duplicate counting in Events Manager."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -565,7 +564,7 @@ export default function DedupMisconfiguredPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Verifying Deduplication Works
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div>
             <h3 className="font-mono text-[#e8f4f8] font-semibold mb-3">Method 1: Test Events Tab</h3>
@@ -618,11 +617,11 @@ export default function DedupMisconfiguredPage() {
       </section>
 
       {/* Best Practices */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500" style={{ animationDelay: '600ms' }}>
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Deduplication Best Practices
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">

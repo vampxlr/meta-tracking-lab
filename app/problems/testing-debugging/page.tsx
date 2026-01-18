@@ -287,13 +287,13 @@ export default function TestingDebuggingPage() {
       description="Master Meta tracking troubleshooting with test event codes, browser tools, Events Manager diagnostics, and systematic debugging workflows"
       status="Stable"
     >
-      
+
       {/* Essential Testing Tools */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Essential Testing Tools
         </h2>
-        
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* Meta Pixel Helper */}
           <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
@@ -322,7 +322,7 @@ export default function TestingDebuggingPage() {
                 <span>Verify Pixel ID is correct</span>
               </li>
             </ul>
-            <a 
+            <a
               href="https://chrome.google.com/webstore/detail/meta-pixel-helper/fdgfkebogiimcoedlicjlajpkdmockpc"
               target="_blank"
               rel="noopener noreferrer"
@@ -432,7 +432,7 @@ export default function TestingDebuggingPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Using test_event_code
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
           <div className="p-4 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
             <p className="text-sm text-cyan-400 flex items-start gap-2">
@@ -511,7 +511,7 @@ const event = {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Systematic Debugging Workflow
         </h2>
-        
+
         <div className="space-y-4">
           {/* Step 1 */}
           <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5">
@@ -633,7 +633,7 @@ const event = {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Common Issues & Solutions
         </h2>
-        
+
         <div className="grid gap-4">
           <div className="glass hover-lift rounded-xl border border-red-500/20 p-5">
             <h3 className="font-mono font-semibold text-red-400 mb-2">Events Not Appearing</h3>
@@ -708,12 +708,11 @@ const event = {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Testing Examples
         </h2>
-        
+
         <EnhancedEventPlayground
           title="Testing & Debugging Practice"
           description="Test 8 different debugging scenarios. Send test events and practice using browser tools, test_event_code, and Events Manager to diagnose issues."
           events={examples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -730,7 +729,7 @@ const event = {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Pre-Launch Testing Checklist
         </h2>
-        
+
         <div className="glass hover-glow rounded-xl border border-[#00ff41]/20 p-6">
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
