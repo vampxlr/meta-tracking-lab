@@ -44,8 +44,8 @@ export type CustomData = z.infer<typeof CustomDataSchema>
 // CAPI event request schema
 export const CapiEventRequestSchema = z.object({
   event_name: z.enum(SUPPORTED_EVENTS),
-  mode: z.enum(['broken', 'fixed', 'test']),
-  event_id: z.string().uuid().optional(),
+  mode: z.enum(['broken', 'fixed', 'test']).default('test'),
+  event_id: z.string().optional(),
   test_event_code: z.string().optional(),
   user_data: UserDataSchema.optional(),
   custom_data: CustomDataSchema.optional(),

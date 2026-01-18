@@ -2,266 +2,261 @@
 
 import { PageContent } from "@/components/page-content"
 import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
-import { DollarSign, AlertCircle, CheckCircle2, XCircle, TrendingDown, Calculator, Globe } from "lucide-react"
+import { DollarSign, AlertCircle, CheckCircle2, XCircle, TrendingDown, Calculator, Globe, Zap, Ban } from "lucide-react"
 
 export default function PurchaseMismatchPage() {
   // Get site URL from environment
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
 
-  // 8 comprehensive examples demonstrating purchase value and currency issues
+  // Refactored: Flattened list of broken and fixed scenarios
   const purchaseExamples = [
+    // 1. Value as String
     {
-      name: "Value as String (CRITICAL)",
-      icon: <XCircle className="h-4 w-4 text-red-400 icon-spin-hover" />,
-      description: "String instead of number → Meta rejects → $0 revenue tracked",
-      brokenPayload: {
+      name: "Value as String (Broken)",
+      icon: <XCircle className="h-4 w-4 text-red-500" />,
+      description: "Sends '99.99' as string • Meta rejects",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: "99.99",  // STRING! Meta expects NUMBER
+          value: "99.99",
           source_page: "/problems/purchase-mismatch",
-          example_name: "Value as String - CRITICAL",
-          test_mode: "broken",
-          note: "String '99.99' instead of number - Meta may reject"
-        }
-      },
-      fixedPayload: {
-        event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
-        event_time: Math.floor(Date.now() / 1000),
-        custom_data: {
-          currency: "USD",
-          value: 99.99,  // NUMBER - correct!
-          source_page: "/problems/purchase-mismatch",
-          example_name: "Value as String - FIXED",
-          test_mode: "fixed",
-          note: "Number 99.99 - correct type"
+          example_name: "Value as String - BROKEN",
+          note: "String '99.99' instead of number - Meta may reject",
+          test_mode: "broken"
         }
       }
     },
     {
-      name: "Missing Currency (BROKEN)",
-      icon: <XCircle className="h-4 w-4 text-red-400 icon-spin-hover" />,
-      description: "Value without currency → Meta can&apos;t calculate ROAS",
-      brokenPayload: {
+      name: "Value as String (Fixed)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Sends 99.99 as number • Correct",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
-          value: 149.99,  // No currency specified!
+          currency: "USD",
+          value: 99.99,
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Value as String - FIXED",
+          note: "Number 99.99 - correct type",
+          test_mode: "fixed"
+        }
+      }
+    },
+
+    // 2. Missing Currency
+    {
+      name: "Missing Currency (Broken)",
+      icon: <XCircle className="h-4 w-4 text-red-500" />,
+      description: "Value without currency • No ROAS",
+      payload: {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        custom_data: {
+          value: 149.99,
           source_page: "/problems/purchase-mismatch",
           example_name: "Missing Currency - BROKEN",
-          test_mode: "broken",
-          note: "No currency - Meta can't calculate ROAS"
+          note: "No currency - Meta can't calculate ROAS",
+          test_mode: "broken"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Missing Currency (Fixed)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Currency USD added • Correct",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
-          currency: "USD",  // Required!
+          currency: "USD",
           value: 149.99,
           source_page: "/problems/purchase-mismatch",
           example_name: "Missing Currency - FIXED",
-          test_mode: "fixed",
-          note: "Currency added - proper ROAS calculation"
+          note: "Currency added - proper ROAS calculation",
+          test_mode: "fixed"
         }
       }
     },
+
+    // 3. Wrong Currency Code
     {
-      name: "Wrong Currency Code",
-      icon: <AlertCircle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
-      description: "Invalid ISO code → Meta rejects or misinterprets",
-      brokenPayload: {
+      name: "Wrong Currency Code (Broken)",
+      icon: <AlertCircle className="h-4 w-4 text-yellow-500" />,
+      description: "Sends 'US' instead of 'USD' • Invalid",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
-          currency: "US",  // Wrong! Should be "USD"
+          currency: "US",
           value: 199.99,
           source_page: "/problems/purchase-mismatch",
           example_name: "Wrong Currency Code - BROKEN",
-          test_mode: "broken",
-          note: "'US' instead of 'USD' - invalid ISO 4217 code"
+          note: "'US' instead of 'USD' - invalid ISO 4217 code",
+          test_mode: "broken"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Wrong Currency Code (Fixed)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Sends 'USD' • Correct ISO code",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
-          currency: "USD",  // ISO 4217 standard
+          currency: "USD",
           value: 199.99,
           source_page: "/problems/purchase-mismatch",
           example_name: "Wrong Currency Code - FIXED",
-          test_mode: "fixed",
-          note: "'USD' - correct ISO 4217 standard"
+          note: "'USD' - correct ISO 4217 standard",
+          test_mode: "fixed"
         }
       }
     },
+
+    // 4. Negative Value
     {
-      name: "Negative Value (INVALID)",
-      icon: <XCircle className="h-4 w-4 text-red-400 icon-spin-hover" />,
-      description: "Negative number → Meta rejects as invalid",
-      brokenPayload: {
+      name: "Negative Value (Broken)",
+      icon: <XCircle className="h-4 w-4 text-red-500" />,
+      description: "Negative number -50.00 • Invalid",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: -50.00,  // Negative values not allowed!
+          value: -50.00,
           source_page: "/problems/purchase-mismatch",
           example_name: "Negative Value - INVALID",
-          test_mode: "broken",
-          note: "Negative value - Meta rejects"
+          note: "Negative value - Meta rejects",
+          test_mode: "broken"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Negative Value (Fixed)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Positive number 50.00 • Correct",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 50.00,  // Always positive
+          value: 50.00,
           source_page: "/problems/purchase-mismatch",
           example_name: "Negative Value - FIXED",
-          test_mode: "fixed",
-          note: "Positive value - valid purchase"
+          note: "Positive value - valid purchase",
+          test_mode: "fixed"
         }
       }
     },
+
+    // 5. Excessive Precision
     {
-      name: "Excessive Decimal Precision",
-      icon: <AlertCircle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
-      description: "Too many decimals → rounding errors in reporting",
-      brokenPayload: {
+      name: "Excessive Precision (Broken)",
+      icon: <AlertCircle className="h-4 w-4 text-yellow-500" />,
+      description: "8 decimal places • Rounding errors",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 99.999999,  // Too many decimals!
+          value: 99.999999,
           source_page: "/problems/purchase-mismatch",
           example_name: "Excessive Decimals - SUBOPTIMAL",
-          test_mode: "broken",
-          note: "Too many decimals - rounding errors"
-        }
-      },
-      fixedPayload: {
-        event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
-        event_time: Math.floor(Date.now() / 1000),
-        custom_data: {
-          currency: "USD",
-          value: 99.99,  // 2 decimals for most currencies
-          source_page: "/problems/purchase-mismatch",
-          example_name: "Excessive Decimals - FIXED",
-          test_mode: "fixed",
-          note: "2 decimals - standard formatting"
+          note: "Too many decimals - rounding errors",
+          test_mode: "broken"
         }
       }
     },
     {
-      name: "Zero Value Purchase",
-      icon: <AlertCircle className="h-4 w-4 text-yellow-400 icon-spin-hover" />,
-      description: "Free trials/samples → Meta ignores for optimization",
-      brokenPayload: {
+      name: "Excessive Precision (Fixed)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "2 decimal places • Standard",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "USD",
-          value: 0.00,  // $0 purchase → not used for ROAS optimization
+          value: 99.99,
+          source_page: "/problems/purchase-mismatch",
+          example_name: "Excessive Decimals - FIXED",
+          note: "2 decimals - standard formatting",
+          test_mode: "fixed"
+        }
+      }
+    },
+
+    // 6. Zero Value
+    {
+      name: "Zero Value (Broken)",
+      icon: <AlertCircle className="h-4 w-4 text-yellow-500" />,
+      description: "$0.00 Purchase • Not optimized",
+      payload: {
+        event_name: "Purchase",
+        event_time: Math.floor(Date.now() / 1000),
+        custom_data: {
+          currency: "USD",
+          value: 0.00,
           source_page: "/problems/purchase-mismatch",
           example_name: "Zero Value - SUBOPTIMAL",
-          test_mode: "broken",
-          note: "$0 Purchase event - not used for ROAS"
+          note: "$0 Purchase event - not used for ROAS",
+          test_mode: "broken"
         }
-      },
-      fixedPayload: {
-        event_name: "CompleteRegistration",  // Use Lead event instead!
-        event_id: `lead_${Date.now()}`,
+      }
+    },
+    {
+      name: "Free Trial (Fixed)",
+      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
+      description: "Using 'CompleteRegistration' instead",
+      payload: {
+        event_name: "CompleteRegistration",
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           content_name: "Free Trial Signup",
           content_category: "Trial",
           source_page: "/problems/purchase-mismatch",
           example_name: "Zero Value - FIXED",
-          test_mode: "fixed",
-          note: "Use CompleteRegistration for $0 conversions, not Purchase"
+          note: "Use CompleteRegistration for $0 conversions, not Purchase",
+          test_mode: "fixed"
         }
       }
     },
+
+    // 7. EUR Consistency
     {
-      name: "Multi-Currency Example (EUR)",
-      icon: <Globe className="h-4 w-4 text-[#00d9ff] icon-spin-hover" />,
-      description: "Proper EUR formatting with 2 decimal places",
-      brokenPayload: {
+      name: "EUR Inconsistent (Broken)",
+      icon: <Globe className="h-4 w-4 text-yellow-500" />,
+      description: "85.5 (1 decimal) • Inconsistent",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
           currency: "EUR",
-          value: 85.5,  // Inconsistent decimals
+          value: 85.5,
           source_page: "/problems/purchase-mismatch",
           example_name: "EUR Inconsistent Decimals",
-          test_mode: "broken",
-          note: "85.5 - inconsistent decimal formatting"
-        }
-      },
-      fixedPayload: {
-        event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
-        event_time: Math.floor(Date.now() / 1000),
-        custom_data: {
-          currency: "EUR",
-          value: 85.50,  // Consistent 2 decimals
-          source_page: "/problems/purchase-mismatch",
-          example_name: "EUR Consistent Decimals - GOOD",
-          test_mode: "fixed",
-          note: "85.50 - proper 2 decimal formatting"
+          note: "85.5 - inconsistent decimal formatting",
+          test_mode: "broken"
         }
       }
     },
     {
-      name: "High-Value Purchase (Complete)",
-      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41] icon-spin-hover" />,
-      description: "Premium purchase with all required fields",
-      brokenPayload: {
+      name: "EUR Consistent (Fixed)",
+      icon: <Globe className="h-4 w-4 text-[#00ff41]" />,
+      description: "85.50 (2 decimals) • Correct",
+      payload: {
         event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
         custom_data: {
-          currency: "USD",
-          value: 999.99,
-          // Missing product details = less optimization data
+          currency: "EUR",
+          value: 85.50,
           source_page: "/problems/purchase-mismatch",
-          example_name: "High-Value Minimal Data",
-          test_mode: "broken",
-          note: "$999 but missing product details - limited optimization"
-        }
-      },
-      fixedPayload: {
-        event_name: "Purchase",
-        event_id: `purchase_${Date.now()}`,
-        event_time: Math.floor(Date.now() / 1000),
-        custom_data: {
-          currency: "USD",
-          value: 999.99,
-          content_name: "Premium Product Bundle",
-          content_category: "Electronics",
-          content_ids: ["prod_123", "prod_456"],
-          content_type: "product",
-          num_items: 2,
-          order_id: "ORD_789",
-          // Complete data = better optimization
-          source_page: "/problems/purchase-mismatch",
-          example_name: "High-Value Complete - PERFECT",
-          test_mode: "fixed",
-          note: "All product details included - maximum optimization"
+          example_name: "EUR Consistent Decimals - GOOD",
+          note: "85.50 - proper 2 decimal formatting",
+          test_mode: "fixed"
         }
       }
     }
@@ -273,18 +268,18 @@ export default function PurchaseMismatchPage() {
       description="Master purchase event tracking with proper value types, currency codes, and revenue reporting for accurate ROAS calculation"
       status="Stable"
     >
-      
+
       {/* The Problem */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> The Purchase Value Problem
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Purchase value and currency tracking is <span className="text-red-400 font-semibold">the foundation of ROAS calculation</span>. Get it wrong and Meta can&apos;t optimize your campaigns, can&apos;t calculate return on ad spend, and will show your ads to the wrong audiences. The most common mistake? Sending value as a <span className="text-red-400 font-semibold">string instead of a number</span>.
           </p>
-          
+
           <div className="border-gradient">
             <div className="border-gradient-content glass-strong p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -293,7 +288,7 @@ export default function PurchaseMismatchPage() {
                 </div>
                 <h3 className="font-mono text-xl font-bold text-red-400">Revenue Impact</h3>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
@@ -304,7 +299,7 @@ export default function PurchaseMismatchPage() {
                     String value &quot;99.99&quot; → Meta sees $0 → No ROAS calculation → Bad optimization
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
                     <Calculator className="h-5 w-5 text-red-400" />
@@ -314,7 +309,7 @@ export default function PurchaseMismatchPage() {
                     Missing currency → Can&apos;t calculate return on ad spend → Inaccurate dashboard metrics
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
                     <AlertCircle className="h-5 w-5 text-red-400" />
@@ -324,7 +319,7 @@ export default function PurchaseMismatchPage() {
                     Meta&apos;s AI uses purchase values to find high-value customers → Wrong data = wrong targeting
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <div className="flex items-center gap-2 mb-2">
                     <XCircle className="h-5 w-5 text-red-400" />
@@ -370,7 +365,7 @@ export default function PurchaseMismatchPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Data Type Requirements
         </h2>
-        
+
         <div className="space-y-6">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Meta&apos;s API requires <span className="text-[#00ff41] font-semibold">strict data types</span>. JavaScript developers often make the mistake of sending numeric values as strings, especially when pulling from form inputs or databases.
@@ -384,10 +379,10 @@ export default function PurchaseMismatchPage() {
                 <XCircle className="h-5 w-5 text-red-400" />
                 <h3 className="font-mono font-semibold text-red-400">Wrong: String Value</h3>
               </div>
-              
+
               <div className="bg-[#0d1117] rounded-lg p-4 border border-red-500/20 mb-3">
                 <pre className="text-xs font-mono text-red-400 overflow-x-auto">
-{`{
+                  {`{
   "event_name": "Purchase",
   "custom_data": {
     "currency": "USD",
@@ -396,7 +391,7 @@ export default function PurchaseMismatchPage() {
 }`}
                 </pre>
               </div>
-              
+
               <div className="space-y-2 text-xs text-[#8b949e]">
                 <p className="flex items-start gap-2">
                   <span className="text-red-400">❌</span>
@@ -423,10 +418,10 @@ export default function PurchaseMismatchPage() {
                 <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                 <h3 className="font-mono font-semibold text-[#00ff41]">Correct: Number Value</h3>
               </div>
-              
+
               <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20 mb-3">
                 <pre className="text-xs font-mono text-[#00ff41] overflow-x-auto">
-{`{
+                  {`{
   "event_name": "Purchase",
   "custom_data": {
     "currency": "USD",
@@ -435,7 +430,7 @@ export default function PurchaseMismatchPage() {
 }`}
                 </pre>
               </div>
-              
+
               <div className="space-y-2 text-xs text-[#8b949e]">
                 <p className="flex items-start gap-2">
                   <span className="text-[#00ff41]">✓</span>
@@ -460,7 +455,7 @@ export default function PurchaseMismatchPage() {
           {/* Common Sources of String Values */}
           <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
             <h4 className="font-mono font-semibold text-[#00ff41] mb-4">Common Sources of String Values (Watch Out!)</h4>
-            
+
             <div className="space-y-3">
               <div className="flex items-start gap-3 p-3 bg-red-500/10 rounded">
                 <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
@@ -470,7 +465,7 @@ export default function PurchaseMismatchPage() {
                   <p className="text-xs text-[#8b949e] mt-1">Fix: <code className="text-[#00ff41]">parseFloat(input.value)</code></p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 p-3 bg-red-500/10 rounded">
                 <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
                 <div>
@@ -479,7 +474,7 @@ export default function PurchaseMismatchPage() {
                   <p className="text-xs text-[#8b949e] mt-1">Fix: <code className="text-[#00ff41]">Number(row.total)</code> or <code className="text-[#00ff41]">+row.total</code></p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 p-3 bg-red-500/10 rounded">
                 <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
                 <div>
@@ -488,7 +483,7 @@ export default function PurchaseMismatchPage() {
                   <p className="text-xs text-[#8b949e] mt-1">Fix: Validate and convert after parsing</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3 p-3 bg-red-500/10 rounded">
                 <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
                 <div>
@@ -507,7 +502,7 @@ export default function PurchaseMismatchPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Currency Codes & Formatting
         </h2>
-        
+
         <div className="space-y-6">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Meta requires <span className="text-[#00ff41] font-semibold">ISO 4217 currency codes</span> (3-letter codes like USD, EUR, GBP). Using incorrect codes like &quot;US&quot;, &quot;$&quot;, or &quot;Dollar&quot; will cause Meta to reject your events or misinterpret the currency.
@@ -518,7 +513,7 @@ export default function PurchaseMismatchPage() {
             <div className="p-4 bg-[#00ff41]/10 border-b border-[#00ff41]/20">
               <h4 className="font-mono font-semibold text-[#00ff41]">Common ISO 4217 Currency Codes</h4>
             </div>
-            
+
             <div className="grid md:grid-cols-3 divide-x divide-y divide-[#00ff41]/10">
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
@@ -528,7 +523,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">US Dollar</p>
                 <code className="text-xs text-[#00ff41]">99.99</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">EUR</span>
@@ -537,7 +532,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">Euro</p>
                 <code className="text-xs text-[#00ff41]">85.50</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">GBP</span>
@@ -546,7 +541,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">British Pound</p>
                 <code className="text-xs text-[#00ff41]">75.99</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">JPY</span>
@@ -555,7 +550,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">Japanese Yen</p>
                 <code className="text-xs text-[#00ff41]">9999</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">CAD</span>
@@ -564,7 +559,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">Canadian Dollar</p>
                 <code className="text-xs text-[#00ff41]">129.99</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">AUD</span>
@@ -573,7 +568,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">Australian Dollar</p>
                 <code className="text-xs text-[#00ff41]">149.99</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">CHF</span>
@@ -582,7 +577,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">Swiss Franc</p>
                 <code className="text-xs text-[#00ff41]">89.50</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">SEK</span>
@@ -591,7 +586,7 @@ export default function PurchaseMismatchPage() {
                 <p className="text-sm text-[#e8f4f8]">Swedish Krona</p>
                 <code className="text-xs text-[#00ff41]">999.00</code>
               </div>
-              
+
               <div className="p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[#00d9ff] font-bold">INR</span>
@@ -606,7 +601,7 @@ export default function PurchaseMismatchPage() {
           {/* Decimal Place Rules */}
           <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
             <h4 className="font-mono font-semibold text-[#00ff41] mb-4">Decimal Place Rules</h4>
-            
+
             <div className="space-y-3">
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">•</span>
@@ -615,7 +610,7 @@ export default function PurchaseMismatchPage() {
                   <p className="text-xs text-[#8b949e]">USD, EUR, GBP, CAD, AUD, etc. → 99.99</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">•</span>
                 <div>
@@ -623,7 +618,7 @@ export default function PurchaseMismatchPage() {
                   <p className="text-xs text-[#8b949e]">JPY (Yen), KRW (Won), VND (Dong) → 9999 (no .00)</p>
                 </div>
               </div>
-              
+
               <div className="flex items-start gap-3">
                 <span className="text-[#00ff41] font-mono mt-1">•</span>
                 <div>
@@ -641,7 +636,7 @@ export default function PurchaseMismatchPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Implementation Guide
         </h2>
-        
+
         <div className="space-y-6">
           {/* Step 1: Type Validation */}
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
@@ -651,11 +646,11 @@ export default function PurchaseMismatchPage() {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Always Validate & Convert Types</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">TypeScript Helper:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`function formatPurchaseValue(rawValue: any): number {
+                {`function formatPurchaseValue(rawValue: any): number {
   // Convert to number
   const numValue = typeof rawValue === 'string' 
     ? parseFloat(rawValue) 
@@ -685,11 +680,11 @@ const purchaseValue = formatPurchaseValue(orderTotal)  // Ensures it's a valid n
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Build Complete Purchase Event</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Example:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`const purchaseEvent = {
+                {`const purchaseEvent = {
   event_name: 'Purchase',
   event_id: orderId,  // Use your order ID
   event_time: Math.floor(Date.now() / 1000),
@@ -723,11 +718,11 @@ await sendToMeta(purchaseEvent)`}
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Handle Multiple Currencies</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Currency Configuration:</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`const CURRENCY_CONFIG = {
+                {`const CURRENCY_CONFIG = {
   USD: { decimals: 2, symbol: '$' },
   EUR: { decimals: 2, symbol: '€' },
   GBP: { decimals: 2, symbol: '£' },
@@ -755,40 +750,31 @@ const valueJPY = formatCurrencyValue(9999.5, 'JPY')  // Returns 10000 (no decima
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Purchase Value Testing
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20 mb-6">
           <div className="flex items-center gap-2 mb-3">
             <DollarSign className="h-5 w-5 text-[#00d9ff]" />
             <h4 className="font-mono font-semibold text-[#00d9ff]">Live Revenue Tracking Demonstration</h4>
           </div>
           <p className="text-sm text-[#8b949e] mb-3">
-            Each example sends REAL purchase events to Meta. Watch how different value formats and currency codes affect tracking!
+            Each example sends REAL purchase events to Meta. Select a scenario below to populate the JSON builder, then click "Send Event".
           </p>
           <ul className="space-y-2">
             <li className="flex items-start gap-2 text-xs text-[#8b949e]">
-              <span className="text-[#00ff41] font-mono mt-0.5">›</span>
-              <span><span className="text-red-400 font-semibold">Broken:</span> String values, missing currency, wrong codes</span>
+              <span className="text-red-400 font-mono mt-0.5">›</span>
+              <span><span className="text-red-400 font-semibold">Broken Examples:</span> Demonstrate common mistakes like String values or missing currencies</span>
             </li>
             <li className="flex items-start gap-2 text-xs text-[#8b949e]">
               <span className="text-[#00ff41] font-mono mt-0.5">›</span>
-              <span><span className="text-[#00ff41] font-semibold">Fixed:</span> Proper number types and ISO currency codes</span>
-            </li>
-            <li className="flex items-start gap-2 text-xs text-[#8b949e]">
-              <span className="text-[#00ff41] font-mono mt-0.5">›</span>
-              <span>Check Network Inspector to see exact values sent</span>
-            </li>
-            <li className="flex items-start gap-2 text-xs text-[#8b949e]">
-              <span className="text-[#00ff41] font-mono mt-0.5">›</span>
-              <span>Verify in Meta Events Manager that revenue is tracked correctly</span>
+              <span><span className="text-[#00ff41] font-semibold">Fixed Examples:</span> Show the correct implementation</span>
             </li>
           </ul>
         </div>
-        
+
         <EnhancedEventPlayground
-          title="Purchase Value & Currency Test Suite - 8 Scenarios"
-          description="Real purchase events demonstrating value types, currency codes, and revenue tracking. Compare broken vs fixed to see the impact."
+          title="Purchase Value & Currency Test Suite"
+          description="Select a scenario to test validation rules."
           events={purchaseExamples}
-          showModeToggle={true}
           showLogs={true}
           sendToMeta={true}
           sendToBoth={true}
@@ -798,127 +784,6 @@ const valueJPY = formatCurrencyValue(9999.5, 'JPY')  // Returns 10000 (no decima
           pixelId={process.env.NEXT_PUBLIC_FB_PIXEL_ID}
         />
       </section>
-
-      {/* Best Practices */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
-          <span className="inline-block animate-pulse">▸</span> Purchase Tracking Best Practices
-        </h2>
-        
-        <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
-          <div className="space-y-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Always Validate Data Types</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Use <code className="text-[#00ff41]">typeof value === &apos;number&apos;</code> checks before sending. Convert strings with <code className="text-[#00ff41]">parseFloat()</code>.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Use 3-Letter ISO 4217 Currency Codes</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  USD, EUR, GBP, not &quot;$&quot;, &quot;dollars&quot;, or &quot;US&quot;. Meta requires exact ISO codes.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Match Decimal Places to Currency</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  2 decimals for USD/EUR (99.99), 0 for JPY (9999), 3 for KWD (99.999).
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Test with Real Orders First</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Use test event codes and verify in Meta Events Manager before going live. Check that revenue appears correctly.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Include Order ID and Product Details</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Send <code className="text-[#00ff41]">order_id</code>, <code className="text-[#00ff41]">content_ids</code>, <code className="text-[#00ff41]">content_name</code> for better optimization and reporting.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Handle Failed Orders Separately</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Don&apos;t send Purchase events for failed/cancelled orders. Use InitiateCheckout for abandoned carts instead.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Monitor ROAS in Meta Ads Manager</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  Regularly check that your ROAS calculations match your actual revenue. Discrepancies indicate tracking issues.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <CheckCircle2 className="h-5 w-5 text-[#00ff41] mt-1 shrink-0" />
-              <div>
-                <p className="font-mono font-semibold text-[#e8f4f8] text-sm">Use Server-Side for High-Value Purchases</p>
-                <p className="text-xs text-[#8b949e] mt-1">
-                  CAPI is more reliable than Pixel for high-value transactions. Send from your server after payment confirmation.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Related Topics */}
-      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[600ms]">
-        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
-          <span className="inline-block animate-pulse">▸</span> Related Topics
-        </h2>
-        
-        <div className="grid gap-4 md:grid-cols-2">
-          <a href="/problems/wrong-parameters" className="block">
-            <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
-              <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Wrong Parameters</h3>
-              <p className="text-sm text-[#8b949e] mb-3">
-                Learn about other common parameter mistakes like wrong field names, incorrect nesting, and type mismatches
-              </p>
-              <code className="text-xs text-[#00d9ff] font-mono">→ /problems/wrong-parameters</code>
-            </div>
-          </a>
-          
-          <a href="/problems/duplicate-events" className="block">
-            <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
-              <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Duplicate Events</h3>
-              <p className="text-sm text-[#8b949e] mb-3">
-                Prevent double-counting of purchase revenue when sending to both Pixel and CAPI
-              </p>
-              <code className="text-xs text-[#00d9ff] font-mono">→ /problems/duplicate-events</code>
-            </div>
-          </a>
-        </div>
-      </section>
-
     </PageContent>
   )
 }

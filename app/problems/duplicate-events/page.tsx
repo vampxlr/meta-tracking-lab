@@ -48,8 +48,8 @@ export default function DuplicateEventsPage() {
         event_name: "Purchase",
         event_id: "550e8400-e29b-41d4-a716-446655440000", // Static UUID - same on both!
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { 
-          currency: "USD", 
+        custom_data: {
+          currency: "USD",
           value: 99.99,
           source_page: "/problems/duplicate-events",
           example_name: "Same event_id - FIXED",
@@ -64,8 +64,8 @@ export default function DuplicateEventsPage() {
       payload: {
         event_name: "AddToCart",
         // NO event_id here - let component generate different ones for Pixel & CAPI!
-        custom_data: { 
-          currency: "USD", 
+        custom_data: {
+          currency: "USD",
           value: 29.99,
           source_page: "/problems/duplicate-events",
           example_name: "Different event_ids - BROKEN",
@@ -82,8 +82,8 @@ export default function DuplicateEventsPage() {
         event_name: "Purchase",
         event_id: "550e8400-e29b-41d4-a716-446655440123", // Order UUID used as event_id!
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { 
-          currency: "USD", 
+        custom_data: {
+          currency: "USD",
           value: 149.99,
           order_id: "550e8400-e29b-41d4-a716-446655440123",  // Same UUID in order_id
           source_page: "/problems/duplicate-events",
@@ -116,8 +116,8 @@ export default function DuplicateEventsPage() {
         event_name: "InitiateCheckout",
         event_id: "f1e2d3c4-b5a6-4978-8abc-def123456789",  // Static UUID
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { 
-          currency: "USD", 
+        custom_data: {
+          currency: "USD",
           value: 79.99,
           source_page: "/problems/duplicate-events",
           example_name: "Delayed CAPI Send - WORKS",
@@ -134,7 +134,7 @@ export default function DuplicateEventsPage() {
         event_name: "ViewContent",
         event_id: "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",  // Static UUID
         event_time: Math.floor(Date.now() / 1000) - 300, // 5 minutes ago for CAPI
-        custom_data: { 
+        custom_data: {
           content_ids: ["prod_123"],
           source_page: "/problems/duplicate-events",
           example_name: "Timestamp Mismatch - STILL WORKS",
@@ -151,8 +151,8 @@ export default function DuplicateEventsPage() {
         event_name: "Purchase",
         event_id: "a1b2c3d4-5678-4e9f-a0b1-c2d3e4f56789",  // Valid UUID (fixed invalid hex)
         event_time: Math.floor(Date.now() / 1000),
-        custom_data: { 
-          currency: "USD", 
+        custom_data: {
+          currency: "USD",
           value: 999.99,
           content_ids: ["premium_prod"],
           order_id: "HIGH_VALUE_001",
@@ -170,18 +170,18 @@ export default function DuplicateEventsPage() {
       description="Learn how to prevent duplicate event counting when using both Meta Pixel and Conversions API"
       status="Stable"
     >
-      
+
       {/* The Problem */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> The Duplicate Event Problem
         </h2>
-        
+
         <div className="space-y-4">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             When you implement both Meta Pixel (client-side) and Conversions API (server-side), the same user action can be tracked twice—once from the browser and once from your server. Without proper deduplication, Meta counts these as two separate events, inflating your metrics and wasting your ad budget.
           </p>
-          
+
           <div className="border-gradient">
             <div className="border-gradient-content glass-strong p-6">
               <div className="flex items-center gap-3 mb-4">
@@ -190,7 +190,7 @@ export default function DuplicateEventsPage() {
                 </div>
                 <h3 className="font-mono text-xl font-bold text-red-400">Real-World Impact</h3>
               </div>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Inflated Conversion Counts</p>
@@ -198,21 +198,21 @@ export default function DuplicateEventsPage() {
                     1 purchase shows as 2 conversions, making your campaign appear 2x more successful than it actually is
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Incorrect ROAS</p>
                   <p className="text-sm text-[#8b949e]">
                     Doubled conversion values lead to inflated ROAS, causing Meta to over-bid on ads
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Poor Optimization</p>
                   <p className="text-sm text-[#8b949e]">
                     Meta&apos;s AI makes decisions based on false data, leading to inefficient ad delivery
                   </p>
                 </div>
-                
+
                 <div className="glass hover-glow rounded-lg p-4 border border-red-500/20">
                   <p className="font-mono font-semibold text-red-400 mb-2">Wasted Budget</p>
                   <p className="text-sm text-[#8b949e]">
@@ -250,7 +250,7 @@ export default function DuplicateEventsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How Event Deduplication Works
         </h2>
-        
+
         <div className="space-y-6">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             Meta uses the <span className="text-[#00ff41] font-mono">event_id</span> parameter to identify duplicate events. When both Pixel and CAPI send events with the same <span className="text-[#00ff41] font-mono">event_id</span>, Meta recognizes them as the same event and counts it only once.
@@ -264,32 +264,32 @@ export default function DuplicateEventsPage() {
                 <XCircle className="h-5 w-5 text-red-400" />
                 <h3 className="font-mono font-semibold text-red-400">Without event_id</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-red-500/20">
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Meta Pixel Sends:</p>
                   <pre className="text-xs font-mono text-red-400">
-{`{
+                    {`{
   "event_name": "Purchase",
   "value": 99.99
   // No event_id
 }`}
                   </pre>
                 </div>
-                
+
                 <div className="text-center text-[#8b949e] font-mono text-sm">+</div>
-                
+
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-red-500/20">
                   <p className="text-xs font-mono text-[#8b949e] mb-1">CAPI Sends:</p>
                   <pre className="text-xs font-mono text-red-400">
-{`{
+                    {`{
   "event_name": "Purchase",
   "value": 99.99
   // No event_id
 }`}
                   </pre>
                 </div>
-                
+
                 <div className="text-center font-mono text-sm text-red-400 bg-red-500/10 rounded p-2">
                   = <span className="font-bold">2 Purchases</span> counted 🚫
                 </div>
@@ -302,32 +302,32 @@ export default function DuplicateEventsPage() {
                 <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                 <h3 className="font-mono font-semibold text-[#00ff41]">With event_id</h3>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-[#00ff41]/20">
                   <p className="text-xs font-mono text-[#8b949e] mb-1">Meta Pixel Sends:</p>
                   <pre className="text-xs font-mono text-[#00ff41]">
-{`{
+                    {`{
   "event_name": "Purchase",
   "event_id": "ord_123",
   "value": 99.99
 }`}
                   </pre>
                 </div>
-                
+
                 <div className="text-center text-[#8b949e] font-mono text-sm">+</div>
-                
+
                 <div className="bg-[#0d1117] rounded-lg p-3 border border-[#00ff41]/20">
                   <p className="text-xs font-mono text-[#8b949e] mb-1">CAPI Sends:</p>
                   <pre className="text-xs font-mono text-[#00ff41]">
-{`{
+                    {`{
   "event_name": "Purchase",
   "event_id": "ord_123",
   "value": 99.99
 }`}
                   </pre>
                 </div>
-                
+
                 <div className="text-center font-mono text-sm text-[#00ff41] bg-[#00ff41]/10 rounded p-2">
                   = <span className="font-bold">1 Purchase</span> counted ✓
                 </div>
@@ -342,14 +342,14 @@ export default function DuplicateEventsPage() {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-red-400 border-l-4 border-red-400 pl-4">
           <span className="inline-block animate-pulse">⚠</span> CRITICAL: event_id MUST Be Valid UUID Format
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-red-500/30 bg-red-500/5">
           <div className="flex items-start gap-3 mb-4">
             <AlertTriangle className="h-6 w-6 text-red-400 flex-shrink-0 mt-1" />
             <div>
               <h3 className="font-mono text-lg font-bold text-red-400 mb-2">Meta Requires UUID v4 Format</h3>
               <p className="text-sm text-[#8b949e] mb-4">
-                As of 2024, Meta&apos;s Conversions API <span className="text-red-400 font-mono">REQUIRES</span> event_id to be in UUID format. Simple strings like <code className="text-red-400 bg-[#0d1117] px-2 py-1 rounded">&quot;purchase_123&quot;</code> or <code className="text-red-400 bg-[#0d1117] px-2 py-1 rounded">&quot;order_${Date.now()}&quot;</code> will be <span className="text-red-400 font-bold">REJECTED with 400 error</span>.
+                As of 2024, Meta&apos;s Conversions API <span className="text-red-400 font-mono">REQUIRES</span> event_id to be in UUID format. Simple strings like <code className="text-red-400 bg-[#0d1117] px-2 py-1 rounded">&quot;purchase_123&quot;</code> or <code className="text-red-400 bg-[#0d1117] px-2 py-1 rounded">&quot;order_1705334400&quot;</code> will be <span className="text-red-400 font-bold">REJECTED with 400 error</span>.
               </p>
             </div>
           </div>
@@ -358,7 +358,7 @@ export default function DuplicateEventsPage() {
             <div className="bg-[#0d1117] rounded-lg p-4 border border-red-500/30">
               <p className="text-xs font-mono text-red-400 mb-2">❌ INVALID (Returns 400 Error):</p>
               <pre className="text-xs font-mono text-red-400">
-{`"purchase_1705334400"
+                {`"purchase_1705334400"
 "order_123"
 "evt_12345"
 "lead_abc"`}
@@ -371,7 +371,7 @@ export default function DuplicateEventsPage() {
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/30">
               <p className="text-xs font-mono text-[#00ff41] mb-2">✓ VALID (UUID v4 Format):</p>
               <pre className="text-xs font-mono text-[#00ff41]">
-{`"550e8400-e29b-41d4-a716-446655440000"
+                {`"550e8400-e29b-41d4-a716-446655440000"
 "7c9e6679-7425-40de-944b-e07fc1f90ae7"
 "a1b2c3d4-5678-4e9f-a0b1-c2d3e4f5g6h7"
 "9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d"`}
@@ -385,7 +385,7 @@ export default function DuplicateEventsPage() {
           <div className="mt-4 bg-[#00ff41]/10 rounded-lg p-4 border border-[#00ff41]/30">
             <p className="font-mono font-semibold text-[#00ff41] mb-2">✓ Generate Valid UUIDs:</p>
             <pre className="text-xs font-mono text-[#8b949e]">
-{`// Browser (modern)
+              {`// Browser (modern)
 const eventId = crypto.randomUUID()
 
 // Browser (fallback)
@@ -404,7 +404,7 @@ const eventId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> How Deduplication Works in Production
         </h2>
-        
+
         <div className="space-y-6">
           <p className="leading-relaxed text-[#8b949e] text-sm md:text-base">
             The key challenge: <span className="text-[#00ff41] font-mono">How does your server know what event_id the client sent to Pixel?</span> The answer determines your entire deduplication strategy.
@@ -413,7 +413,7 @@ const eventId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
           {/* Pattern Comparison */}
           <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20">
             <h3 className="font-mono text-lg font-bold text-[#00d9ff] mb-4">3 Production Patterns</h3>
-            
+
             <div className="space-y-6">
               {/* Pattern 1 */}
               <div className="glass hover-border-glow rounded-lg p-5 border border-[#00ff41]/20">
@@ -421,10 +421,10 @@ const eventId = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
                   <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                   <h4 className="font-mono font-semibold text-[#00ff41]">Pattern 1: Client Generates → Server Receives (MOST COMMON)</h4>
                 </div>
-                
+
                 <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
                   <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`// CLIENT SIDE (Browser)
+                    {`// CLIENT SIDE (Browser)
 const eventId = crypto.randomUUID()  // Generate ONCE
 // e.g., "550e8400-e29b-41d4-a716-446655440000"
 
@@ -479,10 +479,10 @@ export async function POST(request) {
                   <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                   <h4 className="font-mono font-semibold text-[#00ff41]">Pattern 2: Use Existing Order ID (BEST FOR E-COMMERCE)</h4>
                 </div>
-                
+
                 <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
                   <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`// When checkout completes, you already have an order UUID
+                    {`// When checkout completes, you already have an order UUID
 const orderId = order.id  
 // e.g., "order_7c9e6679-7425-40de-944b-e07fc1f90ae7"
 
@@ -530,10 +530,10 @@ export async function POST(request) {
                   <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
                   <h4 className="font-mono font-semibold text-[#00ff41]">Pattern 3: Server-First (FOR BACKEND EVENTS)</h4>
                 </div>
-                
+
                 <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
                   <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`// SERVER generates event (e.g., subscription renewal, webhook)
+                    {`// SERVER generates event (e.g., subscription renewal, webhook)
 const eventId = crypto.randomUUID()
 
 // Send to CAPI first
@@ -575,10 +575,10 @@ fbq('track', 'Subscribe', {...}, { eventID: eventId })`}
                 </p>
               </div>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-red-500/30">
               <pre className="text-xs font-mono text-red-400">
-{`// CLIENT
+                {`// CLIENT
 const eventId = \`event_\${Date.now()}\`  // "event_1768567985422"
 fbq('track', 'Purchase', {...}, { eventID: eventId })
 
@@ -598,7 +598,7 @@ sendToCAPI({ event_id: eventId })
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Step-by-Step Implementation
         </h2>
-        
+
         <div className="space-y-6">
           {/* Step 1: Generate Event ID */}
           <div className="glass-strong hover-border-glow rounded-xl p-6 border border-[#00ff41]/20">
@@ -608,15 +608,15 @@ sendToCAPI({ event_id: eventId })
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Generate a Valid UUID</h3>
             </div>
-            
+
             <p className="text-sm text-[#8b949e] mb-4">
               <span className="text-red-400 font-bold">IMPORTANT:</span> Meta requires UUID v4 format. Use <code className="text-[#00ff41] bg-[#0d1117] px-2 py-1 rounded">crypto.randomUUID()</code> or ensure your order IDs are UUIDs.
             </p>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">JavaScript (Client-Side):</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`// ✓ CORRECT: Generate UUID v4
+                {`// ✓ CORRECT: Generate UUID v4
 const eventId = crypto.randomUUID()
 // Result: "550e8400-e29b-41d4-a716-446655440000"
 
@@ -639,11 +639,11 @@ const eventId = \`purchase_\${Date.now()}\`
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Send Event with ID from Pixel</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Meta Pixel (Browser):</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`const eventId = crypto.randomUUID()
+                {`const eventId = crypto.randomUUID()
 
 fbq('track', 'Purchase', {
   currency: 'USD',
@@ -669,11 +669,11 @@ await fetch('/api/track', {
               </div>
               <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">Send Same ID from CAPI</h3>
             </div>
-            
+
             <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
               <p className="text-xs font-mono text-[#00ff41] mb-2">Conversions API (Server):</p>
               <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
-{`// Server receives the same event_id from client
+                {`// Server receives the same event_id from client
 const eventPayload = {
   data: [{
     event_name: 'Purchase',
@@ -702,7 +702,7 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Interactive Deduplication Testing
         </h2>
-        
+
         <div className="glass-strong rounded-xl p-6 border border-[#00d9ff]/20 mb-6">
           <div className="flex items-center gap-2 mb-3">
             <AlertTriangle className="h-5 w-5 text-[#00d9ff]" />
@@ -730,7 +730,7 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
             </li>
           </ul>
         </div>
-        
+
         <EnhancedEventPlayground
           title="Test Events - 8 Real-World Scenarios"
           description="Each button demonstrates exactly what its name says. Click to send REAL events to Meta and see the results."
@@ -751,7 +751,7 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Deduplication Best Practices
         </h2>
-        
+
         <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6">
           <div className="space-y-4">
             <div className="flex items-start gap-3">
@@ -822,7 +822,7 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
           <span className="inline-block animate-pulse">▸</span> Related Topics
         </h2>
-        
+
         <div className="grid gap-4 md:grid-cols-2">
           <a href="/problems/missing-event-id" className="block">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
@@ -833,7 +833,7 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
               <code className="text-xs text-[#00d9ff] font-mono">→ /problems/missing-event-id</code>
             </div>
           </a>
-          
+
           <a href="/problems/dedup-misconfigured" className="block">
             <div className="glass hover-lift rounded-xl border border-[#00ff41]/20 p-5 h-full">
               <h3 className="font-mono text-[#00ff41] font-semibold mb-2">Dedup Misconfigured</h3>

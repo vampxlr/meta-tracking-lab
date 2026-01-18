@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { 
-  Play, 
-  Trash2, 
+import {
+  Play,
+  Trash2,
   Copy,
   CheckCircle2,
+  XCircle,
   AlertCircle,
   Activity,
   Code,
@@ -20,14 +21,15 @@ import {
   RefreshCw,
   Network,
   Server,
-  Globe
+  Globe,
+  Edit,
+  Send
 } from "lucide-react"
 
 interface LogEntry {
   id: string
   timestamp: string
   event: string
-  mode: "Broken" | "Fixed"
   pixelPayload?: any
   capiPayload?: any
   pixelSent: boolean
@@ -67,11 +69,8 @@ interface EventPlaygroundProps {
     name: string
     icon?: React.ReactNode
     payload?: any  // Single payload mode
-    brokenPayload?: any  // Legacy: broken mode payload
-    fixedPayload?: any  // Legacy: fixed mode payload
     description?: string
   }>
-  showModeToggle?: boolean
   showLogs?: boolean
   sendToMeta?: boolean
   sendToBoth?: boolean
@@ -86,7 +85,6 @@ export function EnhancedEventPlayground({
   title = "Interactive Event Playground",
   description = "Test different event scenarios and see real-time results from Meta",
   events = [],
-  showModeToggle = true,
   showLogs = true,
   sendToMeta = true,
   sendToBoth = true,
@@ -96,11 +94,16 @@ export function EnhancedEventPlayground({
   testEventCode = "",
   pixelId,
 }: EventPlaygroundProps) {
-  const [mode, setMode] = React.useState<"Broken" | "Fixed">("Broken")
   const [logs, setLogs] = React.useState<LogEntry[]>([])
   const [currentNetwork, setCurrentNetwork] = React.useState<NetworkLog | null>(null)
   const [isSending, setIsSending] = React.useState(false)
   const [autoRefreshMeta, setAutoRefreshMeta] = React.useState(false)
+
+  // New State for Live JSON Builder
+  const [selectedEventName, setSelectedEventName] = React.useState<string>("")
+  const [editableJson, setEditableJson] = React.useState<string>("")
+  const [jsonError, setJsonError] = React.useState<string>("")
+
   const scrollAreaRef = React.useRef<HTMLDivElement>(null)
 
   // Auto-scroll to bottom when new log is added
@@ -113,22 +116,42 @@ export function EnhancedEventPlayground({
     }
   }, [logs])
 
+  // Handle Scenario Click - Populates JSON Builder
+  const handleEventSelect = (event: typeof events[0]) => {
+    const payload = event.payload
+    setSelectedEventName(event.name)
+    setEditableJson(JSON.stringify(payload, null, 2))
+    setJsonError("")
+    setCurrentNetwork(null)
+  }
+
+  // Validate JSON
+  const validateJson = (): any | null => {
+    try {
+      const parsed = JSON.parse(editableJson)
+      setJsonError("")
+      return parsed
+    } catch (error) {
+      setJsonError(error instanceof Error ? error.message : "Invalid JSON")
+      return null
+    }
+  }
+
   const sendToMetaPixel = async (eventName: string, payload: any, eventId: string) => {
     const startTime = performance.now()
-    
+
     try {
       // Check if fbq is available
       if (typeof window !== 'undefined' && (window as any).fbq) {
         const customData = payload.custom_data || {}
-        const userData = payload.user_data || {}
-        
-        // Send to Meta Pixel
-        ;(window as any).fbq('track', eventName, customData, {
-          eventID: eventId
-        })
-        
+
+          // Send to Meta Pixel
+          ; (window as any).fbq('track', eventName, customData, {
+            eventID: eventId
+          })
+
         const duration = performance.now() - startTime
-        
+
         return {
           success: true,
           duration,
@@ -157,7 +180,7 @@ export function EnhancedEventPlayground({
 
   const sendToCAPI = async (eventName: string, payload: any) => {
     const startTime = performance.now()
-    
+
     try {
       const response = await fetch('/api/meta/capi', {
         method: 'POST',
@@ -166,7 +189,6 @@ export function EnhancedEventPlayground({
         },
         body: JSON.stringify({
           event_name: eventName,
-          mode: mode.toLowerCase(),
           test_event_code: testEventCode || undefined,
           ...payload
         }),
@@ -191,21 +213,35 @@ export function EnhancedEventPlayground({
     }
   }
 
-  const sendEvent = async (event: typeof events[0]) => {
+  // Send the events using the current JSON State
+  const handleSendRequest = async () => {
+    const payload = validateJson()
+    if (!payload) {
+      toast.error('Invalid JSON', {
+        description: jsonError,
+      })
+      return
+    }
+
+    if (!selectedEventName) {
+      toast.error('No event selected', {
+        description: 'Please select an event first',
+      })
+      return
+    }
+
     setIsSending(true)
+    console.log("Starting event send sequence...", { selectedEventName, payload })
     const timestamp = new Date().toLocaleTimeString()
-    
-    // Support both single-payload and dual-payload modes
-    const payload = event.payload || (mode === "Broken" ? event.brokenPayload : event.fixedPayload)
-    
+
     // Check for special flags
     const forceDifferentIds = payload?.custom_data?._force_different_ids
     const delayCapiMs = payload?.custom_data?._delay_capi
-    
+
     // Generate event IDs
     let pixelEventId: string
     let capiEventId: string
-    
+
     if (forceDifferentIds) {
       // Generate different IDs for Pixel and CAPI to simulate the problem
       pixelEventId = crypto.randomUUID()
@@ -216,35 +252,35 @@ export function EnhancedEventPlayground({
       pixelEventId = sharedId
       capiEventId = sharedId
     }
-    
+
     // Initialize network log
     const networkLog: NetworkLog = {}
-    
+
     try {
       let pixelResult: any = null
       let capiResult: any = null
-      
+
       // Send to Pixel if enabled
       if (sendToMeta && sendToBoth) {
-        pixelResult = await sendToMetaPixel(event.name, payload, pixelEventId)
+        pixelResult = await sendToMetaPixel(selectedEventName, payload, pixelEventId)
         networkLog.pixelRequest = {
           url: pixelResult.url,
           params: pixelResult.params,
           timestamp: Date.now(),
           duration: pixelResult.duration
         }
-        
+
         // Show Pixel toast immediately
         toast.info(`Pixel Event Sent`, {
-          description: `${event.name} • ${Math.round(pixelResult.duration)}ms`,
+          description: `${selectedEventName} • ${Math.round(pixelResult.duration)}ms`,
         })
       }
-      
+
       // Delay CAPI if requested
       if (delayCapiMs) {
         await new Promise(resolve => setTimeout(resolve, delayCapiMs))
       }
-      
+
       // Send to CAPI if enabled
       if (sendToMeta && sendToBoth) {
         // Create CAPI payload with correct event_id
@@ -252,8 +288,8 @@ export function EnhancedEventPlayground({
           ...payload,
           event_id: capiEventId
         }
-        
-        capiResult = await sendToCAPI(event.name, capiPayload)
+
+        capiResult = await sendToCAPI(selectedEventName, capiPayload)
         networkLog.capiRequest = {
           url: capiResult.url,
           body: capiPayload,
@@ -266,11 +302,11 @@ export function EnhancedEventPlayground({
           timestamp: Date.now(),
           duration: capiResult.duration
         }
-        
+
         // Show CAPI toast
         if (capiResult?.success) {
           toast.success(`CAPI Event Sent${delayCapiMs ? ' (delayed)' : ''}`, {
-            description: `${event.name} • ${Math.round(capiResult.duration)}ms`,
+            description: `${selectedEventName} • ${Math.round(capiResult.duration)}ms`,
           })
         } else {
           toast.error(`CAPI Event Failed`, {
@@ -278,13 +314,12 @@ export function EnhancedEventPlayground({
           })
         }
       }
-      
+
       // Create log entry
       const newLog: LogEntry = {
         id: pixelEventId,
         timestamp,
-        event: event.name,
-        mode,
+        event: selectedEventName,
         pixelPayload: { ...payload, event_id: pixelEventId },
         capiPayload: { ...payload, event_id: capiEventId },
         pixelSent: !!pixelResult?.success,
@@ -295,10 +330,10 @@ export function EnhancedEventPlayground({
         success: capiResult?.success,
         matchQuality: capiResult?.body?.match_quality || 7.5
       }
-      
+
       setLogs(prev => [...prev, newLog])
       setCurrentNetwork(networkLog)
-      
+
     } catch (error) {
       toast.error('Failed to send event', {
         description: error instanceof Error ? error.message : 'Unknown error',
@@ -314,9 +349,21 @@ export function EnhancedEventPlayground({
     toast.info('Logs cleared')
   }
 
+  const clearEditor = () => {
+    setEditableJson("")
+    setSelectedEventName("")
+    setJsonError("")
+    setCurrentNetwork(null)
+  }
+
   const copyPayload = (payload: any) => {
     navigator.clipboard.writeText(JSON.stringify(payload, null, 2))
     toast.success('Payload copied to clipboard')
+  }
+
+  const copyToClipboard = (content: any) => {
+    navigator.clipboard.writeText(JSON.stringify(content, null, 2))
+    toast.success('Copied to clipboard')
   }
 
   const openEventsManager = () => {
@@ -326,10 +373,10 @@ export function EnhancedEventPlayground({
 
   return (
     <div className="space-y-6">
-      
+
       {/* Main Playground Card */}
       <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
-        
+
         {/* Header */}
         <div>
           <div className="flex items-center gap-3 mb-2">
@@ -347,66 +394,31 @@ export function EnhancedEventPlayground({
           <p className="text-sm text-[#8b949e]">{description}</p>
         </div>
 
-        {/* Mode Toggle & Meta Link */}
-        <div className="grid gap-4 md:grid-cols-2">
-          {showModeToggle && (
-            <div className="glass rounded-lg p-4 border border-[#00ff41]/20">
-              <div className="flex items-center justify-between mb-3">
-                <span className="font-mono text-sm font-medium text-[#e8f4f8]">Event Mode</span>
-                <Badge 
-                  variant={mode === "Fixed" ? "default" : "destructive"}
-                  className="font-mono"
-                >
-                  {mode}
-                </Badge>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <Button
-                  variant={mode === "Broken" ? "destructive" : "outline"}
-                  onClick={() => setMode("Broken")}
-                  className="w-full font-mono text-xs"
-                  size="sm"
-                  disabled={isSending}
-                >
-                  Broken
-                </Button>
-                <Button
-                  variant={mode === "Fixed" ? "default" : "outline"}
-                  onClick={() => setMode("Fixed")}
-                  className="w-full font-mono text-xs"
-                  size="sm"
-                  disabled={isSending}
-                >
-                  Fixed
-                </Button>
-              </div>
-              <p className="text-xs text-[#8b949e] mt-2">
-                {mode === "Broken" 
-                  ? "Events sent with missing or incorrect data" 
-                  : "Events sent with proper structure and required fields"}
-              </p>
-            </div>
-          )}
-
+        {/* Meta Link (Mode toggle removed) */}
+        <div className="grid gap-4 md:grid-cols-1">
           {/* Meta Events Manager Link */}
           {sendToMeta && pixelId && (
             <div className="glass rounded-lg p-4 border border-[#00d9ff]/20">
-              <div className="flex items-center gap-2 mb-2">
-                <ExternalLink className="h-4 w-4 text-[#00d9ff]" />
-                <span className="font-mono text-sm font-medium text-[#00d9ff]">View in Meta</span>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 mb-1">
+                    <ExternalLink className="h-4 w-4 text-[#00d9ff]" />
+                    <span className="font-mono text-sm font-medium text-[#00d9ff]">View in Meta Events Manager</span>
+                  </div>
+                  <p className="text-xs text-[#8b949e]">
+                    Real-time events appear within 5-10 seconds
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={openEventsManager}
+                  className="font-mono text-xs"
+                >
+                  <Globe className="h-3 w-3 mr-1" />
+                  Open Manager
+                </Button>
               </div>
-              <p className="text-xs text-[#8b949e] mb-3">
-                Events appear within 5-10 seconds
-              </p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={openEventsManager}
-                className="w-full font-mono text-xs"
-              >
-                <Globe className="h-3 w-3 mr-1" />
-                Open Events Manager
-              </Button>
             </div>
           )}
         </div>
@@ -414,7 +426,7 @@ export function EnhancedEventPlayground({
         {/* Event Buttons */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-mono text-sm font-medium text-[#e8f4f8]">Test Events</h4>
+            <h4 className="font-mono text-sm font-medium text-[#e8f4f8]">Select Scenario</h4>
             <Badge variant="outline" className="font-mono text-xs">
               {events.length} scenarios
             </Badge>
@@ -423,9 +435,12 @@ export function EnhancedEventPlayground({
             {events.map((event, index) => (
               <button
                 key={index}
-                onClick={() => sendEvent(event)}
+                onClick={() => handleEventSelect(event)}
                 disabled={isSending}
-                className="glass hover-lift rounded-lg p-4 border border-[#00ff41]/20 text-left group transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`glass hover-lift rounded-lg p-4 border text-left group transition-all disabled:opacity-50 disabled:cursor-not-allowed ${selectedEventName === event.name
+                    ? 'border-[#00ff41] bg-[#00ff41]/10'
+                    : 'border-[#00ff41]/20'
+                  }`}
               >
                 <div className="flex items-center gap-2 mb-2">
                   {event.icon || <Zap className="h-4 w-4 text-[#00ff41] icon-spin-hover" />}
@@ -438,16 +453,90 @@ export function EnhancedEventPlayground({
                     {event.description}
                   </p>
                 )}
-                {!event.description && (
-                  <p className="text-xs text-[#8b949e]">
-                    Click to send {mode.toLowerCase()} event
-                  </p>
-                )}
               </button>
             ))}
           </div>
         </div>
       </div>
+
+      {/* Live JSON Builder (Editable) */}
+      {selectedEventName && (
+        <div className="glass-strong rounded-xl border border-[#00d9ff]/20 bg-gray-900/50">
+          <div className="border-b border-gray-800 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Edit className="h-4 w-4 text-[#00d9ff]" />
+                <h4 className="font-mono text-sm font-medium text-[#00d9ff]">Live JSON Builder</h4>
+                <Badge variant="outline" className="font-mono text-xs border-[#00ff41]/30 text-[#00ff41]">
+                  {selectedEventName}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => copyToClipboard(JSON.parse(editableJson || "{}"))}
+                  className="h-7 gap-1 font-mono text-xs"
+                  disabled={!!jsonError || !editableJson}
+                >
+                  <Copy className="h-3 w-3" />
+                  Copy
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearEditor}
+                  className="h-7 gap-1 font-mono text-xs"
+                >
+                  <Trash2 className="h-3 w-3" />
+                  Clear
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="p-4 space-y-3">
+            <p className="text-xs text-[#8b949e]">
+              Review and edit the event payload below. This is exactly what will be sent to Meta.
+            </p>
+
+            <div className="relative">
+              <textarea
+                value={editableJson}
+                onChange={(e) => {
+                  setEditableJson(e.target.value)
+                  setJsonError("")
+                }}
+                onBlur={validateJson}
+                className={`w-full font-mono text-xs bg-gray-950 rounded-lg p-4 border resize-y min-h-[200px] ${jsonError
+                    ? 'border-red-500/50 text-red-500 focus:border-red-500 focus:ring-red-500/20'
+                    : 'border-[#00ff41]/20 text-[#00ff41] focus:border-[#00ff41] focus:ring-[#00ff41]/20'
+                  } focus:outline-none focus:ring-2`}
+                placeholder='{\n  "key": "value"\n}'
+                spellCheck={false}
+              />
+              {jsonError && (
+                <div className="mt-2 flex items-start gap-2 text-xs text-red-500">
+                  <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
+                  <span>{jsonError}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-end gap-3">
+              <Button
+                onClick={handleSendRequest}
+                disabled={isSending || !!jsonError || !editableJson}
+                size="lg"
+                className="bg-[#00ff41] text-black hover:bg-[#00ff41]/80 font-mono font-bold"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                {isSending ? 'Sending to Meta...' : 'SEND EVENT'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Network Inspector */}
       {showNetworkInspector && currentNetwork && (
@@ -456,7 +545,7 @@ export function EnhancedEventPlayground({
             <Network className="h-5 w-5 text-[#00d9ff]" />
             <h4 className="font-mono text-lg font-semibold text-[#00d9ff]">Network Inspector</h4>
           </div>
-          
+
           <Tabs defaultValue="pixel" className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="pixel" className="font-mono text-xs">
@@ -472,7 +561,7 @@ export function EnhancedEventPlayground({
                 Meta Response
               </TabsTrigger>
             </TabsList>
-            
+
             <TabsContent value="pixel" className="mt-4">
               {currentNetwork.pixelRequest ? (
                 <div className="space-y-3">
@@ -482,7 +571,7 @@ export function EnhancedEventPlayground({
                       {currentNetwork.pixelRequest.url}
                     </code>
                   </div>
-                  
+
                   <div className="glass rounded-lg p-3">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-mono text-[#8b949e]">Parameters:</p>
@@ -499,7 +588,7 @@ export function EnhancedEventPlayground({
                       {JSON.stringify(currentNetwork.pixelRequest.params, null, 2)}
                     </pre>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <Badge variant="outline" className="font-mono text-xs">
                       <Clock className="h-3 w-3 mr-1" />
@@ -509,13 +598,22 @@ export function EnhancedEventPlayground({
                       <CheckCircle2 className="h-3 w-3 mr-1 text-[#00ff41]" />
                       Sent
                     </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => copyToClipboard(currentNetwork.pixelRequest)}
+                      className="ml-auto h-6 text-xs font-mono"
+                    >
+                      <Copy className="h-3 w-3 mr-1" />
+                      Copy Full Log
+                    </Button>
                   </div>
                 </div>
               ) : (
                 <p className="text-sm text-[#8b949e]">No Pixel request sent</p>
               )}
             </TabsContent>
-            
+
             <TabsContent value="capi" className="mt-4">
               {currentNetwork.capiRequest ? (
                 <div className="space-y-3">
@@ -525,7 +623,7 @@ export function EnhancedEventPlayground({
                       POST {currentNetwork.capiRequest.url}
                     </code>
                   </div>
-                  
+
                   <div className="glass rounded-lg p-3">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-mono text-[#8b949e]">Request Body:</p>
@@ -542,7 +640,7 @@ export function EnhancedEventPlayground({
                       {JSON.stringify(currentNetwork.capiRequest.body, null, 2)}
                     </pre>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <Badge variant="outline" className="font-mono text-xs">
                       <Clock className="h-3 w-3 mr-1" />
@@ -552,19 +650,28 @@ export function EnhancedEventPlayground({
                       <Zap className="h-3 w-3 mr-1 text-yellow-400" />
                       Server-Side
                     </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => copyToClipboard(currentNetwork.capiRequest)}
+                      className="ml-auto h-6 text-xs font-mono"
+                    >
+                      <Copy className="h-3 w-3 mr-1" />
+                      Copy Full Log
+                    </Button>
                   </div>
                 </div>
               ) : (
                 <p className="text-sm text-[#8b949e]">No CAPI request sent</p>
               )}
             </TabsContent>
-            
+
             <TabsContent value="response" className="mt-4">
               {currentNetwork.capiResponse ? (
                 <div className="space-y-3">
                   <div className="glass rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-2">
-                      <Badge 
+                      <Badge
                         variant={currentNetwork.capiResponse.status === 200 ? "default" : "destructive"}
                         className="font-mono"
                       >
@@ -574,7 +681,7 @@ export function EnhancedEventPlayground({
                         {currentNetwork.capiResponse.status === 200 ? 'Success' : 'Error'}
                       </span>
                     </div>
-                    
+
                     <div className="space-y-2">
                       {currentNetwork.capiResponse.body?.data?.events_received !== undefined && (
                         <div className="flex items-center gap-2">
@@ -584,7 +691,7 @@ export function EnhancedEventPlayground({
                           </span>
                         </div>
                       )}
-                      
+
                       {currentNetwork.capiResponse.body?.data?.fbtrace_id && (
                         <div className="flex items-center gap-2">
                           <Code className="h-4 w-4 text-[#00d9ff]" />
@@ -595,7 +702,7 @@ export function EnhancedEventPlayground({
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="glass rounded-lg p-3">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-mono text-[#8b949e]">Full Response:</p>
@@ -612,12 +719,21 @@ export function EnhancedEventPlayground({
                       {JSON.stringify(currentNetwork.capiResponse.body, null, 2)}
                     </pre>
                   </div>
-                  
+
                   <div className="flex gap-2">
                     <Badge variant="outline" className="font-mono text-xs">
                       <Clock className="h-3 w-3 mr-1" />
                       {currentNetwork.capiResponse.duration?.toFixed(0)}ms
                     </Badge>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => copyToClipboard(currentNetwork.capiResponse)}
+                      className="ml-auto h-6 text-xs font-mono"
+                    >
+                      <Copy className="h-3 w-3 mr-1" />
+                      Copy Full Log
+                    </Button>
                   </div>
                 </div>
               ) : (
@@ -649,17 +765,16 @@ export function EnhancedEventPlayground({
               Clear
             </Button>
           </div>
-          
+
           <ScrollArea className="h-96 p-4" ref={scrollAreaRef}>
             <div className="space-y-3">
               {logs.map((log) => (
-                <div 
+                <div
                   key={log.id}
-                  className={`glass rounded-lg p-4 border ${
-                    log.success 
-                      ? 'border-[#00ff41]/20' 
+                  className={`glass rounded-lg p-4 border ${log.success
+                      ? 'border-[#00ff41]/20'
                       : 'border-red-500/20'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-2">
@@ -671,19 +786,13 @@ export function EnhancedEventPlayground({
                       <span className="font-mono text-sm font-semibold text-[#e8f4f8]">
                         {log.event}
                       </span>
-                      <Badge 
-                        variant={log.mode === "Fixed" ? "default" : "destructive"}
-                        className="font-mono text-xs"
-                      >
-                        {log.mode}
-                      </Badge>
                     </div>
                     <div className="flex items-center gap-1 text-xs text-[#8b949e] font-mono">
                       <Clock className="h-3 w-3" />
                       {log.timestamp}
                     </div>
                   </div>
-                  
+
                   <div className="grid gap-2 md:grid-cols-2 mb-3">
                     {log.pixelSent && (
                       <div className="glass rounded p-2">
@@ -696,7 +805,7 @@ export function EnhancedEventPlayground({
                         </div>
                       </div>
                     )}
-                    
+
                     {log.capiSent && (
                       <div className="glass rounded p-2">
                         <div className="flex items-center gap-1 mb-1">
@@ -709,7 +818,7 @@ export function EnhancedEventPlayground({
                       </div>
                     )}
                   </div>
-                  
+
                   {showMetaResponse && log.capiResponse && (
                     <div className="glass rounded p-2 mb-2">
                       <p className="text-xs font-mono text-[#8b949e] mb-1">Meta Response:</p>
@@ -725,10 +834,10 @@ export function EnhancedEventPlayground({
                       </div>
                     </div>
                   )}
-                  
+
                   <details className="group">
                     <summary className="cursor-pointer text-xs font-mono text-[#00d9ff] hover:text-[#00ff41] transition-colors">
-                      View Payload ▼
+                      View Request Payload ▼
                     </summary>
                     <div className="mt-2 relative">
                       <button
@@ -742,6 +851,26 @@ export function EnhancedEventPlayground({
                       </pre>
                     </div>
                   </details>
+
+                  {/* New Response Details */}
+                  {log.capiResponse && (
+                    <details className="group mt-2">
+                      <summary className="cursor-pointer text-xs font-mono text-[#00d9ff] hover:text-[#00ff41] transition-colors">
+                        View Meta Response ▼
+                      </summary>
+                      <div className="mt-2 relative">
+                        <button
+                          onClick={() => copyPayload(log.capiResponse)}
+                          className="absolute top-2 right-2 p-1 rounded bg-[#0d1117] hover:bg-[#151b26] transition-colors z-10"
+                        >
+                          <Copy className="h-3 w-3 text-[#8b949e]" />
+                        </button>
+                        <pre className="text-xs font-mono text-[#00ff41] bg-[#0d1117] rounded p-3 pr-10 overflow-x-auto max-h-48">
+                          {JSON.stringify(log.capiResponse, null, 2)}
+                        </pre>
+                      </div>
+                    </details>
+                  )}
                 </div>
               ))}
             </div>
