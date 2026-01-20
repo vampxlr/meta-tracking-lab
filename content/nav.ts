@@ -1,9 +1,9 @@
-import { 
-  BookOpen, 
-  Settings, 
-  AlertTriangle, 
-  AlertCircle, 
-  ShoppingCart, 
+import {
+  BookOpen,
+  Settings,
+  AlertTriangle,
+  AlertCircle,
+  ShoppingCart,
   Activity,
   Lock,
   Search,
@@ -19,7 +19,8 @@ import {
   CheckCircle,
   Layout,
   Server,
-  TrendingUp
+  TrendingUp,
+  Zap
 } from "lucide-react"
 
 export interface NavItem {
@@ -109,6 +110,12 @@ export const navItems: NavItem[] = [
     title: "AEM Domain Issues",
     href: "/problems/aem-domain-issues",
     icon: Globe,
+    group: "Core Problems",
+  },
+  {
+    title: "Automatic Events",
+    href: "/problems/automatic-events",
+    icon: Zap,
     group: "Core Problems",
   },
   {
