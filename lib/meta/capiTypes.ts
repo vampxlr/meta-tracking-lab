@@ -23,8 +23,7 @@ export const SUPPORTED_EVENTS = [
 
 export type SupportedEventType = typeof SUPPORTED_EVENTS[number]
 
-// Event mode
-export type EventMode = 'broken' | 'fixed' | 'test'
+
 
 // User data schema
 export const UserDataSchema = z.object({
@@ -86,7 +85,6 @@ export type CustomData = z.infer<typeof CustomDataSchema>
 // CAPI event request schema
 export const CapiEventRequestSchema = z.object({
   event_name: z.enum(SUPPORTED_EVENTS),
-  mode: z.enum(['broken', 'fixed', 'test']).default('test'),
   event_id: z.string().optional(),
   test_event_code: z.string().optional(),
   user_data: UserDataSchema.optional(),

@@ -37,8 +37,20 @@ export async function POST(request: NextRequest) {
 
     const validatedRequest = validationResult.data
 
+    // Get referer to use as default event_source_url
+    const referer = request.headers.get('referer') || undefined
+    const origin = request.headers.get('origin') || undefined
+
+    console.log('[CAPI Debug] Incoming Request:', {
+      referer,
+      origin,
+      bodyUrl: validatedRequest.event_source_url
+    })
+
     // Send event to Meta's CAPI
-    const result = await sendCapiEvent(validatedRequest)
+    const result = await sendCapiEvent(validatedRequest, {
+      defaultEventSourceUrl: referer || origin
+    })
 
     if (!result.success) {
       return NextResponse.json(

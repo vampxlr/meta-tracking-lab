@@ -23,7 +23,8 @@ import {
   Server,
   Globe,
   Edit,
-  Send
+  Send,
+  Shuffle
 } from "lucide-react"
 
 interface LogEntry {
@@ -81,6 +82,16 @@ interface EventPlaygroundProps {
   pixelId?: string
 }
 
+function getCookie(name: string): string | null {
+  if (typeof document === 'undefined') return null
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null
+  return null
+}
+
+import { useTestMode } from "@/components/test-mode-provider"
+
 export function EnhancedEventPlayground({
   title = "Interactive Event Playground",
   description = "Test different event scenarios and see real-time results from Meta",
@@ -94,6 +105,10 @@ export function EnhancedEventPlayground({
   testEventCode = "",
   pixelId,
 }: EventPlaygroundProps) {
+  const { isEnabled: isGlobalTestEnabled, testCode: globalTestCode } = useTestMode()
+  // Use global code if enabled, otherwise prop, otherwise undefined
+  const activeTestCode = isGlobalTestEnabled && globalTestCode ? globalTestCode : testEventCode || undefined
+
   const [logs, setLogs] = React.useState<LogEntry[]>([])
   const [currentNetwork, setCurrentNetwork] = React.useState<NetworkLog | null>(null)
   const [isSending, setIsSending] = React.useState(false)
@@ -116,11 +131,25 @@ export function EnhancedEventPlayground({
     }
   }, [logs])
 
+  // Check for cookies on mount to reassure user (matches capi-test behavior)
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const fbp = getCookie('_fbp')
+      const fbc = getCookie('_fbc')
+
+      // Only toast if we found something, to confirm site-wide fix is active
+      if (fbp) toast.success('Loaded _fbp from cookie', { description: fbp })
+      if (fbc) toast.success('Loaded _fbc from cookie', { description: fbc })
+    }
+  }, [])
+
   // Handle Scenario Click - Populates JSON Builder
   const handleEventSelect = (event: typeof events[0]) => {
     const payload = event.payload
     setSelectedEventName(event.name)
-    setEditableJson(JSON.stringify(payload, null, 2))
+    // Auto-randomize on selection so we always start with fresh IDs
+    const randomized = randomizePayload(payload)
+    setEditableJson(JSON.stringify(randomized, null, 2))
     setJsonError("")
     setCurrentNetwork(null)
   }
@@ -189,7 +218,7 @@ export function EnhancedEventPlayground({
         },
         body: JSON.stringify({
           event_name: eventName,
-          test_event_code: testEventCode || undefined,
+          test_event_code: activeTestCode,
           ...payload
         }),
       })
@@ -262,7 +291,10 @@ export function EnhancedEventPlayground({
 
       // Send to Pixel if enabled
       if (sendToMeta && sendToBoth) {
-        pixelResult = await sendToMetaPixel(selectedEventName, payload, pixelEventId)
+        // use payload.event_name (e.g. "Purchase") instead of selectedEventName (e.g. "High-Value Purchase (FIXED)")
+        // This ensures Pixel and CAPI event names match for deduplication
+        const finalPixelEventName = payload.event_name || selectedEventName
+        pixelResult = await sendToMetaPixel(finalPixelEventName, payload, pixelEventId)
         networkLog.pixelRequest = {
           url: pixelResult.url,
           params: pixelResult.params,
@@ -287,6 +319,34 @@ export function EnhancedEventPlayground({
         const capiPayload = {
           ...payload,
           event_id: capiEventId
+        }
+
+        // AUTO-FIX: Inject real browser data if not explicitly in "broken" mode
+        // This ensures "Fixed" examples actually match the real browser session for proper deduplication
+        const testMode = payload.custom_data?.test_mode
+        if (testMode !== 'broken' && typeof window !== 'undefined') {
+          if (!capiPayload.user_data) capiPayload.user_data = {}
+
+          // Inject Real User Agent
+          if (!capiPayload.user_data.client_user_agent || capiPayload.user_data.client_user_agent === 'Mozilla/5.0') {
+            capiPayload.user_data.client_user_agent = navigator.userAgent
+          }
+
+          // Inject Real Cookies
+          const fbp = getCookie('_fbp')
+          const fbc = getCookie('_fbc')
+
+          if (fbp && (!capiPayload.user_data.fbp || capiPayload.user_data.fbp.startsWith('fb.1.1705334567890'))) {
+            capiPayload.user_data.fbp = fbp
+          }
+          if (fbc && (!capiPayload.user_data.fbc || capiPayload.user_data.fbc.startsWith('fb.1.1705334567890'))) {
+            capiPayload.user_data.fbc = fbc
+          }
+
+          // Clear hardcoded IP if present (let server/Meta handle it)
+          if (capiPayload.user_data.client_ip_address === '192.168.1.1') {
+            capiPayload.user_data.client_ip_address = ''
+          }
         }
 
         capiResult = await sendToCAPI(selectedEventName, capiPayload)
@@ -366,6 +426,117 @@ export function EnhancedEventPlayground({
     toast.success('Copied to clipboard')
   }
 
+  const randomizePayload = (payload: any): any => {
+    if (!payload || typeof payload !== 'object') return payload
+
+    const newPayload = { ...payload }
+
+    // 1. Randomize event_id if present
+    if (newPayload.event_id) {
+      newPayload.event_id = crypto.randomUUID()
+    }
+
+    // 2. Update event_time to now
+    if (newPayload.event_time) {
+      newPayload.event_time = Math.floor(Date.now() / 1000)
+    }
+
+    // 3. Randomize specific custom_data fields
+    if (newPayload.custom_data) {
+      newPayload.custom_data = { ...newPayload.custom_data }
+
+      // Randomize order_id if present
+      if (newPayload.custom_data.order_id) {
+        // Check if it looks like a UUID or just a string
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newPayload.custom_data.order_id)
+        if (isUuid) {
+          const newUuid = crypto.randomUUID()
+          newPayload.custom_data.order_id = newUuid
+          // If event_id was also this UUID, keep them in sync (common pattern)
+          if (payload.event_id === payload.custom_data.order_id) {
+            newPayload.event_id = newUuid
+          }
+        } else {
+          // Simple random suffix
+          const prefix = newPayload.custom_data.order_id.split('_')[0] || 'order'
+          newPayload.custom_data.order_id = `${prefix}_${Math.floor(Math.random() * 100000)}`
+        }
+      }
+
+      // Randomize external_id if present
+      if (newPayload.custom_data.external_id) {
+        newPayload.custom_data.external_id = `user_${Math.floor(Math.random() * 100000)}`
+      }
+    }
+
+    // 4. Randomize user_data but preserve (and INJECT) browser constants
+    if (!newPayload.user_data) {
+      newPayload.user_data = {}
+    }
+
+    newPayload.user_data = { ...newPayload.user_data }
+
+    // Randomize email if present (but keep format)
+    if (newPayload.user_data.em) {
+      // Just hashing a new random email simulation
+      newPayload.user_data.em = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
+    }
+
+    // Randomize phone if present
+    if (newPayload.user_data.ph) {
+      newPayload.user_data.ph = Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('')
+    }
+
+    // INJECT: Real Browser Data (Critical for Deduplication)
+    if (typeof window !== 'undefined') {
+      // 1. User Agent
+      if (!newPayload.user_data.client_user_agent) {
+        newPayload.user_data.client_user_agent = navigator.userAgent
+      }
+
+      // 2. FBP (Browser ID)
+      const fbp = getCookie('_fbp')
+      if (fbp && !newPayload.user_data.fbp) {
+        newPayload.user_data.fbp = fbp
+      }
+
+      // 3. FBC (Click ID)
+      const fbc = getCookie('_fbc')
+      if (fbc && !newPayload.user_data.fbc) {
+        newPayload.user_data.fbc = fbc
+      }
+
+      // 4. Client IP (Placeholder - Server will fill this, but user wants to see it's accounted for)
+      if (!newPayload.user_data.client_ip_address) {
+        newPayload.user_data.client_ip_address = "auto"
+      }
+
+      // 5. Event Source URL (Must match Pixel URL)
+      // Pixel automatically uses current URL, so CAPI must match it for best results
+      if (!newPayload.event_source_url) {
+        newPayload.event_source_url = window.location.href
+      }
+    }
+
+    return newPayload
+  }
+
+  const handleRandomize = () => {
+    try {
+      const currentPayload = JSON.parse(editableJson || "{}")
+      const randomized = randomizePayload(currentPayload)
+      setEditableJson(JSON.stringify(randomized, null, 2))
+      setJsonError("")
+      toast.success('Values Randomized', {
+        description: 'Generated new event_id and timestamps while preserving browser constants.'
+      })
+    } catch (error) {
+      toast.error('Cannot randomize', {
+        description: 'Invalid JSON currently in editor'
+      })
+    }
+  }
+
   const openEventsManager = () => {
     const url = `https://business.facebook.com/events_manager2/list/pixel/${pixelId || 'YOUR_PIXEL_ID'}/test_events`
     window.open(url, '_blank')
@@ -385,9 +556,9 @@ export function EnhancedEventPlayground({
             </div>
             <h3 className="font-mono text-lg font-bold text-[#e8f4f8] text-glow-hover">{title}</h3>
             {sendToMeta && (
-              <Badge variant="outline" className="font-mono text-xs">
+              <Badge variant="outline" className={`font-mono text-xs ${isGlobalTestEnabled ? 'border-[#00ff41] text-[#00ff41] animate-pulse' : ''}`}>
                 <Zap className="h-3 w-3 mr-1" />
-                LIVE
+                {isGlobalTestEnabled ? `TEST MODE: ${activeTestCode}` : 'LIVE'}
               </Badge>
             )}
           </div>
@@ -438,8 +609,8 @@ export function EnhancedEventPlayground({
                 onClick={() => handleEventSelect(event)}
                 disabled={isSending}
                 className={`glass hover-lift rounded-lg p-4 border text-left group transition-all disabled:opacity-50 disabled:cursor-not-allowed ${selectedEventName === event.name
-                    ? 'border-[#00ff41] bg-[#00ff41]/10'
-                    : 'border-[#00ff41]/20'
+                  ? 'border-[#00ff41] bg-[#00ff41]/10'
+                  : 'border-[#00ff41]/20'
                   }`}
               >
                 <div className="flex items-center gap-2 mb-2">
@@ -485,6 +656,16 @@ export function EnhancedEventPlayground({
                 <Button
                   variant="ghost"
                   size="sm"
+                  onClick={handleRandomize}
+                  className="h-7 gap-1 font-mono text-xs hover:text-[#00ff41] hover:bg-[#00ff41]/10"
+                  disabled={!!jsonError || !editableJson}
+                >
+                  <Shuffle className="h-3 w-3" />
+                  Random
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={clearEditor}
                   className="h-7 gap-1 font-mono text-xs"
                 >
@@ -509,8 +690,8 @@ export function EnhancedEventPlayground({
                 }}
                 onBlur={validateJson}
                 className={`w-full font-mono text-xs bg-gray-950 rounded-lg p-4 border resize-y min-h-[200px] ${jsonError
-                    ? 'border-red-500/50 text-red-500 focus:border-red-500 focus:ring-red-500/20'
-                    : 'border-[#00ff41]/20 text-[#00ff41] focus:border-[#00ff41] focus:ring-[#00ff41]/20'
+                  ? 'border-red-500/50 text-red-500 focus:border-red-500 focus:ring-red-500/20'
+                  : 'border-[#00ff41]/20 text-[#00ff41] focus:border-[#00ff41] focus:ring-[#00ff41]/20'
                   } focus:outline-none focus:ring-2`}
                 placeholder='{\n  "key": "value"\n}'
                 spellCheck={false}
@@ -772,8 +953,8 @@ export function EnhancedEventPlayground({
                 <div
                   key={log.id}
                   className={`glass rounded-lg p-4 border ${log.success
-                      ? 'border-[#00ff41]/20'
-                      : 'border-red-500/20'
+                    ? 'border-[#00ff41]/20'
+                    : 'border-red-500/20'
                     }`}
                 >
                   <div className="flex items-start justify-between mb-3">

@@ -5,8 +5,10 @@ import { AppShell } from "@/components/app-shell"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/toaster"
 import { FacebookPixel } from "@/components/facebook-pixel"
+import { TestModeProvider } from "@/components/test-mode-provider"
+import { FloatingTestControls } from "@/components/floating-test-controls"
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
 })
@@ -31,13 +33,17 @@ export default function RootLayout({
       <body className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
         <FacebookPixel />
         <ThemeProvider
-          attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <AppShell>{children}</AppShell>
-          <Toaster />
+          <TestModeProvider>
+            <AppShell>
+              {children}
+              <FloatingTestControls />
+            </AppShell>
+            <Toaster />
+          </TestModeProvider>
         </ThemeProvider>
       </body>
     </html>

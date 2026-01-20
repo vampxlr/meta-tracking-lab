@@ -231,6 +231,30 @@ export default function DedupMisconfiguredPage() {
       }
     },
     {
+      name: "FBP Mismatch (DIFFERENT USERS)",
+      icon: <AlertTriangle className="h-4 w-4 text-orange-400" />,
+      description: "Matching event_id, but different fbp cookies. Meta sees 2 different users -> No Dedup.",
+      payload: {
+        event_name: "Purchase",
+        event_id: `mismatch_fbp_${Date.now()}`,
+        event_time: Math.floor(Date.now() / 1000),
+        action_source: "website",
+        user_data: {
+          em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
+          // Server sends random FBP, while Pixel sends real Browser FBP
+          fbp: "fb.1.1705334567890.9999999999"
+        },
+        custom_data: {
+          currency: "USD",
+          value: 199.99,
+          source_page: "/problems/dedup-misconfigured",
+          example_name: "FBP Mismatch - DIFFERENT USERS",
+          test_mode: "broken",
+          note: "Pixel sends real cookie, Server sends random -> Treated as different users"
+        }
+      }
+    },
+    {
       name: "Perfect Dedup: Same ID Both Platforms (PERFECT)",
       icon: <Link2 className="h-4 w-4 text-[#00ff41]" />,
       description: "Identical event_id sent to Pixel and CAPI - Meta counts as single event",
@@ -397,6 +421,64 @@ export default function DedupMisconfiguredPage() {
         </div>
       </section>
 
+      {/* Real-World Case Study */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-150">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-orange-400 border-l-4 border-orange-400 pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Real-World Debugging: The Localhost Cookie Trap
+        </h2>
+
+        <div className="glass hover-glow rounded-xl border border-orange-500/20 p-6 space-y-6">
+          <div className="flex items-start gap-4">
+            <AlertTriangle className="h-8 w-8 text-orange-400 shrink-0" />
+            <div className="space-y-4">
+              <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">The Testing Environment Trap</h3>
+              <p className="text-[#8b949e] text-sm leading-relaxed">
+                <strong>The Scenario:</strong> You implement matching <code className="text-orange-400">event_id</code> on both Pixel and CAPI. Timestamps are close. Yet, Meta lists them as separate events.
+              </p>
+
+              <div className="bg-orange-500/10 rounded-lg p-4 border border-orange-500/20">
+                <p className="font-mono text-sm font-bold text-orange-400 mb-2">The Hidden Culprit: &quot;Fake&quot; Test User Data</p>
+                <p className="text-sm text-[#e8f4f8] mb-2">
+                  Meta treats Pixel and CAPI events as the same user only if their User Data matches.
+                </p>
+                <ul className="list-disc ml-5 space-y-1 text-sm text-[#8b949e]">
+                  <li><strong>Pixel:</strong> Automatically scrapes your <strong className="text-white">real</strong> IP, User Agent, and Cookies.</li>
+                  <li><strong>Testing Tools:</strong> Often generate <strong className="text-orange-400">fake</strong> data (e.g., IP: <code>192.168.1.1</code>, UA: <code>Mozilla/5.0...</code>).</li>
+                </ul>
+                <p className="text-sm text-[#e8f4f8] mt-3">
+                  <strong>Result:</strong> Matching <code className="text-cyan-400">event_id</code> + Mismatched IP/UA = <strong>Two Different Users</strong> (No Deduplication).
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="glass rounded-lg border border-red-500/20 p-4">
+                  <p className="font-mono text-xs font-bold text-red-400 mb-2">❌ BAD: Generating Fake Context</p>
+                  <code className="text-xs bg-[#0d1117] text-red-300 px-3 py-2 rounded block overflow-x-auto">
+                    {`const userData = {
+  // Mismatch with real Pixel data
+  client_ip_address: '192.168.1.1',
+  client_user_agent: 'Generic/5.0...' 
+}`}
+                  </code>
+                </div>
+
+                <div className="glass rounded-lg border border-[#00ff41]/20 p-4">
+                  <p className="font-mono text-xs font-bold text-[#00ff41] mb-2">✅ GOOD: Synced Environment</p>
+                  <code className="text-xs bg-[#0d1117] text-[#00ff41] px-3 py-2 rounded block overflow-x-auto">
+                    {`const userData = {
+  // Syncs with real Pixel data
+  client_ip_address: '', // Let Server fill it
+  client_user_agent: navigator.userAgent,
+  fbp: getCookie('_fbp')
+}`}
+                  </code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Common Dedup Failures */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-200">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
@@ -538,6 +620,103 @@ export default function DedupMisconfiguredPage() {
                 <strong>Pro Tip:</strong> For real-time events, deduplication works perfectly since Pixel and CAPI fire within seconds of each other. The 48-hour window is generous for delayed CAPI sends or offline event imports.
               </span>
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Checklist for Successful Deduplication */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[350ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Checklist: Ensuring Deduplication Works
+        </h2>
+
+        <div className="glass-strong hover-glow rounded-xl border border-[#00ff41]/30 p-6">
+          <div className="space-y-4">
+            <p className="text-[#8b949e] text-sm mb-4">
+              To guarantee that Meta correctly ignores the duplicate event, <span className="text-[#00ff41] font-bold">ALL</span> of the following must be true:
+            </p>
+
+            {/* Application Layer Checklist */}
+            <div className="space-y-3">
+              <h3 className="font-mono text-[#e8f4f8] font-semibold text-sm uppercase tracking-wider border-b border-[#00ff41]/20 pb-2 mb-3">
+                1. Application Layer (Must Match)
+              </h3>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_id</p>
+                  <p className="text-xs text-[#8b949e]">Both Pixel and CAPI events must have the exact same string for <code>event_id</code>.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_name</p>
+                  <p className="text-xs text-[#8b949e]">The names must match exactly (e.g. "Purchase" vs "Purchase"). "High-Value Purchase" vs "Purchase" will <strong>fail</strong> dedup.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_source_url</p>
+                  <p className="text-xs text-[#8b949e]">The URL where the event happened must match. Pixel sends this automatically; CAPI must include <code>event_source_url</code> with the exact same value.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Timing Layer Checklist */}
+            <div className="space-y-3 mt-6">
+              <h3 className="font-mono text-[#e8f4f8] font-semibold text-sm uppercase tracking-wider border-b border-[#00ff41]/20 pb-2 mb-3">
+                2. Timing (48-Hour Window)
+              </h3>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Sent within 48 Hours</p>
+                  <p className="text-xs text-[#8b949e]">The CAPI event must be received by Meta within 48 hours of the Pixel event (based on <code>event_time</code>).</p>
+                </div>
+              </div>
+            </div>
+
+            {/* User Identity Layer Checklist */}
+            <div className="space-y-3 mt-6">
+              <h3 className="font-mono text-[#e8f4f8] font-semibold text-sm uppercase tracking-wider border-b border-[#00ff41]/20 pb-2 mb-3">
+                3. User Identity (Must Overlap)
+              </h3>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Browser Identifiers Included</p>
+                  <p className="text-xs text-[#8b949e]">CAPI payload should include <code>fbp</code> (Browser ID) and <code>fbc</code> (Click ID) if available.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Consistent User Data</p>
+                  <p className="text-xs text-[#8b949e]">Ensure <code>client_user_agent</code> and other keys like email/phone (hashed) match so Meta sees it as the same user.</p>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </section>

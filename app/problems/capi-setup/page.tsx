@@ -125,7 +125,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c"
@@ -148,7 +147,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         custom_data: {
           currency: "USD",
@@ -163,7 +161,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
@@ -189,7 +186,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c"
@@ -207,7 +203,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
@@ -232,7 +227,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
@@ -251,7 +245,6 @@ export default function CapiSetupPage() {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
-        event_source_url: SITE_URL,
         action_source: "website",
         user_data: {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",

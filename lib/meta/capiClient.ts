@@ -13,6 +13,7 @@ interface SendCapiEventOptions {
   accessToken: string
   apiVersion: string
   testEventCode?: string
+  defaultEventSourceUrl?: string
 }
 
 interface SendCapiEventResult {
@@ -40,7 +41,7 @@ export async function sendCapiEvent(
     const eventId = request.event_id || crypto.randomUUID()
 
     // Build the payload based on mode
-    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode)
+    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode, options?.defaultEventSourceUrl)
 
     // Send to Meta's Graph API
     const url = `https://graph.facebook.com/${apiVersion}/${pixelId}/events`
@@ -76,21 +77,22 @@ export async function sendCapiEvent(
 }
 
 /**
- * Build CAPI payload based on request and mode
+ * Build CAPI payload based on request
  */
 async function buildCapiPayload(
   request: CapiEventRequest,
   eventId: string,
   accessToken: string,
-  testEventCode?: string
+  testEventCode?: string,
+  defaultEventSourceUrl?: string
 ): Promise<any> {
-  const { event_name, mode, test_event_code, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
+  const { event_name, test_event_code, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
 
   // Base event object
   const event: any = {
     event_name,
     event_time: Math.floor(Date.now() / 1000),
-    event_source_url: event_source_url || process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app',
+    event_source_url: event_source_url || defaultEventSourceUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app',
     action_source: 'website',
     event_id: eventId,
   }
@@ -100,44 +102,13 @@ async function buildCapiPayload(
     event.custom_data = custom_data
   }
 
-  // Build user_data based on mode
+  // Build user_data
   if (user_data) {
-    if (mode === 'fixed' || mode === 'test') {
-      // Fixed and test mode: hash PII
-      event.user_data = {
-        ...await hashUserData(user_data),
-        client_ip_address: client_ip_address || '127.0.0.1',
-        client_user_agent: client_user_agent || 'Mozilla/5.0',
-      }
-    } else {
-      // Broken mode: send un-hashed PII (demonstrating what NOT to do)
-      // Still use abbreviated field names but don't hash the values
-      const brokenUserData: any = {
-        client_ip_address: client_ip_address || '127.0.0.1',
-        client_user_agent: client_user_agent || 'Mozilla/5.0',
-      }
-
-      // Map to abbreviated field names without hashing
-      if (user_data.email) brokenUserData.em = user_data.email
-      if (user_data.phone) brokenUserData.ph = user_data.phone
-      if (user_data.first_name) brokenUserData.fn = user_data.first_name
-      if (user_data.last_name) brokenUserData.ln = user_data.last_name
-      if (user_data.gender) brokenUserData.ge = user_data.gender
-      if (user_data.date_of_birth) brokenUserData.db = user_data.date_of_birth
-      if (user_data.city) brokenUserData.ct = user_data.city
-      if (user_data.state) brokenUserData.st = user_data.state
-      if (user_data.zip) brokenUserData.zp = user_data.zip
-      if (user_data.country) brokenUserData.country = user_data.country
-      if (user_data.external_id) brokenUserData.external_id = user_data.external_id
-
-      // Pass through new IDs
-      if (user_data.fbc) brokenUserData.fbc = user_data.fbc
-      if (user_data.fbp) brokenUserData.fbp = user_data.fbp
-      if (user_data.subscription_id) brokenUserData.subscription_id = user_data.subscription_id
-      if (user_data.fb_login_id) brokenUserData.fb_login_id = user_data.fb_login_id
-      if (user_data.lead_id) brokenUserData.lead_id = user_data.lead_id
-
-      event.user_data = brokenUserData
+    // Hash PII
+    event.user_data = {
+      ...await hashUserData(user_data),
+      client_ip_address: client_ip_address || user_data.client_ip_address || '127.0.0.1',
+      client_user_agent: client_user_agent || user_data.client_user_agent || 'Mozilla/5.0',
     }
   } else {
     // No user data provided

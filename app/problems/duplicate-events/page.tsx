@@ -2,7 +2,7 @@
 
 import { PageContent } from "@/components/page-content"
 import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
-import { Layers, Copy, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Clock, Zap } from "lucide-react"
+import { Layers, Copy, CheckCircle2, CheckCircle, XCircle, AlertTriangle, RefreshCw, Clock, Zap } from "lucide-react"
 
 export default function DuplicateEventsPage() {
   // Get site URL from environment
@@ -697,6 +697,102 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
         </div>
       </section>
 
+      {/* Checklist for Successful Deduplication */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[250ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Checklist: Ensuring Deduplication Works
+        </h2>
+
+        <div className="glass-strong hover-glow rounded-xl border border-[#00ff41]/30 p-6">
+          <div className="space-y-4">
+            <p className="text-[#8b949e] text-sm mb-4">
+              To guarantee that Meta correctly ignores the duplicate event, <span className="text-[#00ff41] font-bold">ALL</span> of the following must be true:
+            </p>
+
+            {/* Application Layer Checklist */}
+            <div className="space-y-3">
+              <h3 className="font-mono text-[#e8f4f8] font-semibold text-sm uppercase tracking-wider border-b border-[#00ff41]/20 pb-2 mb-3">
+                1. Application Layer (Must Match)
+              </h3>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_id</p>
+                  <p className="text-xs text-[#8b949e]">Both Pixel and CAPI events must have the exact same string for <code>event_id</code>.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_name</p>
+                  <p className="text-xs text-[#8b949e]">The names must match exactly (e.g. "Purchase" vs "Purchase"). "High-Value Purchase" vs "Purchase" will <strong>fail</strong> dedup.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_source_url</p>
+                  <p className="text-xs text-[#8b949e]">The URL where the event happened must match. Pixel sends this automatically; CAPI must include <code>event_source_url</code> with the exact same value.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Timing Layer Checklist */}
+            <div className="space-y-3 mt-6">
+              <h3 className="font-mono text-[#e8f4f8] font-semibold text-sm uppercase tracking-wider border-b border-[#00ff41]/20 pb-2 mb-3">
+                2. Timing (48-Hour Window)
+              </h3>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Sent within 48 Hours</p>
+                  <p className="text-xs text-[#8b949e]">The CAPI event must be received by Meta within 48 hours of the Pixel event (based on <code>event_time</code>).</p>
+                </div>
+              </div>
+            </div>
+
+            {/* User Identity Layer Checklist */}
+            <div className="space-y-3 mt-6">
+              <h3 className="font-mono text-[#e8f4f8] font-semibold text-sm uppercase tracking-wider border-b border-[#00ff41]/20 pb-2 mb-3">
+                3. User Identity (Must Overlap)
+              </h3>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Browser Identifiers Included</p>
+                  <p className="text-xs text-[#8b949e]">CAPI payload should include <code>fbp</code> (Browser ID) and <code>fbc</code> (Click ID) if available.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="mt-1 bg-[#00ff41]/20 p-1 rounded-full">
+                  <CheckCircle className="h-3 w-3 text-[#00ff41]" />
+                </div>
+                <div>
+                  <p className="font-mono text-sm font-bold text-[#e8f4f8]">Consistent User Data</p>
+                  <p className="text-xs text-[#8b949e]">Ensure <code>client_user_agent</code> and other keys like email/phone (hashed) match so Meta sees it as the same user.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
       {/* Interactive Testing Playground */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-300">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
@@ -845,6 +941,6 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
         </div>
       </section>
 
-    </PageContent>
+    </PageContent >
   )
 }
