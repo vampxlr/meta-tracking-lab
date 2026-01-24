@@ -13,7 +13,6 @@ interface SendCapiEventOptions {
   accessToken: string
   apiVersion: string
   testEventCode?: string
-  testEventCode?: string
   defaultEventSourceUrl?: string
   clientIp?: string // Allow overriding client IP from request headers
 }
