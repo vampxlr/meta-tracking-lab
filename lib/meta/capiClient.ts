@@ -116,8 +116,8 @@ async function buildCapiPayload(
       client_user_agent: client_user_agent || user_data.client_user_agent || 'Mozilla/5.0',
     }
 
-    // Only add IP if valid (don't send 127.0.0.1 as it breaks dedup on localhost)
-    if (finalClientIp && finalClientIp !== '127.0.0.1') {
+    // Only add IP if valid (don't send 127.0.0.1 or ::1 as it breaks dedup on localhost)
+    if (finalClientIp && finalClientIp !== '127.0.0.1' && finalClientIp !== '::1') {
       event.user_data.client_ip_address = finalClientIp
     }
   } else {
@@ -125,7 +125,7 @@ async function buildCapiPayload(
     event.user_data = {
       client_user_agent: client_user_agent || 'Mozilla/5.0',
     }
-    if (finalClientIp && finalClientIp !== '127.0.0.1') {
+    if (finalClientIp && finalClientIp !== '127.0.0.1' && finalClientIp !== '::1') {
       event.user_data.client_ip_address = finalClientIp
     }
   }
