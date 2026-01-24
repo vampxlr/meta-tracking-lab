@@ -841,6 +841,166 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
         />
       </section>
 
+      {/* Architectural Deep Dive */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[350ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-cyan-400 border-l-4 border-cyan-400 pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Architectural Deep Dive: Strategy &amp; FAQ
+        </h2>
+
+        <div className="space-y-8">
+          {/* iOS Misconception */}
+          <div className="glass-strong rounded-xl p-6 border border-cyan-500/20">
+            <h3 className="text-lg font-bold text-[#e8f4f8] mb-4 flex items-center gap-2">
+              <span className="text-cyan-400">1.</span>
+              Does iOS or AdBlock stop Client-Side ID generation?
+            </h3>
+            <div className="bg-[#0d1117]/50 rounded-lg p-4 border border-cyan-500/10 mb-4">
+              <p className="text-sm text-[#e8f4f8] font-bold mb-2">
+                <span className="text-[#00ff41]">NO.</span> JavaScript execution is NOT blocked.
+              </p>
+              <p className="text-sm text-[#8b949e]">
+                iOS and AdBlockers block the <strong>network request</strong> (the signal sent to Facebook), not the local JavaScript code.
+                Your <code className="text-cyan-400">crypto.randomUUID()</code> runs perfectly fine.
+              </p>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="glass rounded-lg p-4 border border-red-500/20 opacity-75">
+                <p className="font-mono text-xs text-red-400 mb-1">Pixel Path (Blocked):</p>
+                <div className="flex items-center gap-2 text-xs text-[#8b949e]">
+                  <span>Browser Generated ID</span>
+                  <span className="text-red-400">→</span>
+                  <span className="text-red-400 line-through">Facebook Pixel</span>
+                  <span className="text-red-400">❌</span>
+                </div>
+              </div>
+              <div className="glass rounded-lg p-4 border border-[#00ff41]/20">
+                <p className="font-mono text-xs text-[#00ff41] mb-1">CAPI Path (Success):</p>
+                <div className="flex items-center gap-2 text-xs text-[#8b949e]">
+                  <span>Browser Generated ID</span>
+                  <span className="text-[#00ff41]">→</span>
+                  <span>Your Server</span>
+                  <span className="text-[#00ff41]">→</span>
+                  <span>CAPI</span>
+                  <span className="text-[#00ff41]">✅</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Strategy: Purchase & Leads */}
+          <div className="glass-strong rounded-xl p-6 border border-cyan-500/20">
+            <h3 className="text-lg font-bold text-[#e8f4f8] mb-4 flex items-center gap-2">
+              <span className="text-cyan-400">2.</span>
+              When to use Server-First IDs? (Purchases &amp; Leads)
+            </h3>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h4 className="font-mono text-sm text-[#00ff41] mb-2 border-b border-[#00ff41]/20 pb-1">Purchases: Use Order ID</h4>
+                <p className="text-sm text-[#8b949e] mb-3">
+                  Never use random IDs for purchases. Use your database&apos;s immutable <strong>Order ID</strong>.
+                </p>
+                <ul className="space-y-2 text-xs text-[#8b949e]">
+                  <li className="flex gap-2">
+                    <span className="text-[#00ff41]">✓</span>
+                    <span>Persistent across page reloads (Thank You page)</span>
+                  </li>
+                  <li className="flex gap-2">
+                    <span className="text-[#00ff41]">✓</span>
+                    <span>Easy to verify with your backend data</span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-mono text-sm text-[#00ff41] mb-2 border-b border-[#00ff41]/20 pb-1">Leads: Use Hidden Fields</h4>
+                <p className="text-sm text-[#8b949e] mb-3">
+                  Don&apos;t use Email as ID (privacy risks). Generate a UUID on the server when rendering the form.
+                </p>
+                <code className="block bg-[#0d1117] p-2 rounded text-xs text-cyan-400 mb-2">
+                  &lt;input type=&quot;hidden&quot; value=&quot;{`{lead_uuid}`} &quot; /&gt;
+                </code>
+                <p className="text-xs text-[#8b949e]">
+                  Pixel reads this value on submit. Server uses the same value when processing the form.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Strategy: AddToCart */}
+          <div className="glass-strong rounded-xl p-6 border border-cyan-500/20">
+            <h3 className="text-lg font-bold text-[#e8f4f8] mb-4 flex items-center gap-2">
+              <span className="text-cyan-400">3.</span>
+              The &quot;Add/Remove/Add&quot; Dilemma
+            </h3>
+            <p className="text-sm text-[#8b949e] mb-4">
+              <em>&quot;If a user adds an item, removes it, then adds it again... is that one event?&quot;</em>
+            </p>
+            <div className="bg-[#0d1117]/50 rounded-lg p-4 border border-cyan-500/10">
+              <p className="text-sm text-[#e8f4f8] font-bold mb-2">
+                <span className="text-yellow-400">NO.</span> That is TWO events.
+              </p>
+              <p className="text-sm text-[#8b949e] mb-4">
+                Meta tracks <strong>User Intent</strong>. Repeatedly adding items shows high intent. Merging these events hides valuable data from the ad algorithm.
+              </p>
+              <div className="text-xs space-y-2 font-mono">
+                <div className="flex justify-between border-b border-[#8b949e]/10 pb-1">
+                  <span className="text-[#8b949e]">10:00 AM: Add Item</span>
+                  <span className="text-cyan-400">ID: A (Counted: 1)</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[#8b949e]">10:05 AM: Add Item Again</span>
+                  <span className="text-cyan-400">ID: B (Counted: 1)</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-[#8b949e]/20">
+                  <span className="text-[#e8f4f8] font-bold">Total in Ads Manager</span>
+                  <span className="text-[#00ff41] font-bold">2 AddToCarts (Correct)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Cheat Sheet */}
+          <div className="glass-strong rounded-xl p-6 border border-cyan-500/20">
+            <h3 className="text-lg font-bold text-[#e8f4f8] mb-4 flex items-center gap-2">
+              <span className="text-cyan-400">4.</span>
+              Strategy Cheat Sheet
+            </h3>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-[#8b949e] uppercase bg-[#0d1117]/50">
+                  <tr>
+                    <th className="px-4 py-3 rounded-l-lg">Event Type</th>
+                    <th className="px-4 py-3">Strategy</th>
+                    <th className="px-4 py-3 rounded-r-lg">ID Source</th>
+                  </tr>
+                </thead>
+                <tbody className="space-y-2">
+                  <tr className="border-b border-gray-700/50">
+                    <td className="px-4 py-3 font-mono text-[#00ff41]">Purchase</td>
+                    <td className="px-4 py-3 text-[#e8f4f8]">Server-First</td>
+                    <td className="px-4 py-3 text-[#8b949e]">Database Order ID (e.g., #1001)</td>
+                  </tr>
+                  <tr className="border-b border-gray-700/50">
+                    <td className="px-4 py-3 font-mono text-[#00ff41]">Lead</td>
+                    <td className="px-4 py-3 text-[#e8f4f8]">Server-First</td>
+                    <td className="px-4 py-3 text-[#8b949e]">Hidden Field (UUID generated on render)</td>
+                  </tr>
+                  <tr className="border-b border-gray-700/50">
+                    <td className="px-4 py-3 font-mono text-cyan-400">AddToCart</td>
+                    <td className="px-4 py-3 text-[#e8f4f8]">Client-First</td>
+                    <td className="px-4 py-3 text-[#8b949e]">crypto.randomUUID() on click</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3 font-mono text-cyan-400">PageView</td>
+                    <td className="px-4 py-3 text-[#e8f4f8]">Client-First</td>
+                    <td className="px-4 py-3 text-[#8b949e]">crypto.randomUUID() on load</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Best Practices */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[400ms]">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
