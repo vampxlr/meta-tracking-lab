@@ -21,6 +21,15 @@ export default function DuplicateEventsPage() {
     })
   }
 
+  // Get cookie helper
+  const getCookie = (name: string) => {
+    if (typeof document === 'undefined') return null
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop()?.split(';').shift()
+    return null
+  }
+
   // 8 comprehensive examples - each demonstrates ONE specific scenario
   const dedupExamples = [
     {
@@ -48,6 +57,10 @@ export default function DuplicateEventsPage() {
         event_name: "Purchase",
         event_id: "550e8400-e29b-41d4-a716-446655440000", // Static UUID - same on both!
         event_time: Math.floor(Date.now() / 1000),
+        user_data: {
+          fbp: getCookie('_fbp'), // Read real browser cookie
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined
+        },
         custom_data: {
           currency: "USD",
           value: 99.99,
@@ -82,6 +95,10 @@ export default function DuplicateEventsPage() {
         event_name: "Purchase",
         event_id: "550e8400-e29b-41d4-a716-446655440123", // Order UUID used as event_id!
         event_time: Math.floor(Date.now() / 1000),
+        user_data: {
+          fbp: getCookie('_fbp'),
+          client_user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined
+        },
         custom_data: {
           currency: "USD",
           value: 149.99,

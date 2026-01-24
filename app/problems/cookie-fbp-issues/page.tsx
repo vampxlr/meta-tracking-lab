@@ -469,6 +469,59 @@ export default function CookieFbpIssuesPage() {
         </div>
       </section>
 
+      {/* Deep Dive: _fbp Anatomy */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[50ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-cyan-400 border-l-4 border-cyan-400 pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Deep Dive: The Anatomy of _fbp
+        </h2>
+
+        <div className="space-y-6">
+          <div className="glass-strong rounded-xl p-6 border border-cyan-500/20">
+            <h3 className="text-lg font-bold text-[#e8f4f8] mb-4">What do the numbers mean?</h3>
+            <div className="bg-[#0d1117]/80 rounded-lg p-6 border border-cyan-500/10 font-mono text-sm">
+              <p className="text-[#8b949e] mb-4">Example Value: <span className="text-[#00ff41]">fb.1.1705334567890.1234567890</span></p>
+
+              <div className="grid gap-4 md:grid-cols-4 text-center">
+                <div className="p-3 rounded border border-cyan-500/20 bg-cyan-500/5">
+                  <p className="text-cyan-400 font-bold mb-1">fb</p>
+                  <p className="text-[10px] text-[#8b949e]">Prefix (Meta)</p>
+                </div>
+                <div className="p-3 rounded border border-cyan-500/20 bg-cyan-500/5">
+                  <p className="text-cyan-400 font-bold mb-1">1</p>
+                  <p className="text-[10px] text-[#8b949e]">Version</p>
+                </div>
+                <div className="p-3 rounded border border-[#00ff41]/20 bg-[#00ff41]/5">
+                  <p className="text-[#00ff41] font-bold mb-1">1705334...</p>
+                  <p className="text-[10px] text-[#8b949e]">Creation Timestamp (ms)</p>
+                </div>
+                <div className="p-3 rounded border border-[#00ff41]/20 bg-[#00ff41]/5">
+                  <p className="text-[#00ff41] font-bold mb-1">123456...</p>
+                  <p className="text-[10px] text-[#8b949e]">Random ID (The Identity)</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              <h4 className="text-[#e8f4f8] font-bold border-b border-cyan-500/20 pb-2">Under the Hood mechanics:</h4>
+              <ul className="space-y-3 text-sm text-[#8b949e]">
+                <li className="flex gap-3">
+                  <span className="text-cyan-400 font-bold">1. Creation:</span>
+                  <span>When a user visits your site, the Pixel JS (`fbevents.js`) checks for `_fbp`. If missing, it generates this value and saves it to `document.cookie`.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-cyan-400 font-bold">2. Transmission:</span>
+                  <span>Every time `fbq(&apos;track&apos;)` runs, it automatically reads this cookie and sends it to Meta servers.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-cyan-400 font-bold">3. CAPI Requirement:</span>
+                  <span><strong>Crucial Point:</strong> Your server does NOT automatically see this cookie unless you extract it. For CAPI deduplication to work, you must manually read this value (from request headers or client JS) and send it as `user_data.fbp`.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Cookie Configuration */}
       <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
         <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
