@@ -41,15 +41,30 @@ export async function POST(request: NextRequest) {
     const referer = request.headers.get('referer') || undefined
     const origin = request.headers.get('origin') || undefined
 
+    // Get client IP from headers
+    let clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] ||
+      request.headers.get('x-real-ip') ||
+      undefined
+
+    // CRITICAL FIX: In local development, the IP is often '::1' or '127.0.0.1'.
+    // If we send this to Meta, it won't match the Pixel's PUBLIC IP.
+    // By setting it to undefined here, we let the logic in capiClient decide (or omit it),
+    // allowing Meta to assume the connection's source IP (which matches Pixel).
+    if (clientIp === '::1' || clientIp === '127.0.0.1') {
+      clientIp = undefined
+    }
+
     console.log('[CAPI Debug] Incoming Request:', {
       referer,
       origin,
+      clientIp: clientIp || 'ignored (localhost)',
       bodyUrl: validatedRequest.event_source_url
     })
 
     // Send event to Meta's CAPI
     const result = await sendCapiEvent(validatedRequest, {
-      defaultEventSourceUrl: referer || origin
+      defaultEventSourceUrl: referer || origin,
+      clientIp: clientIp // Pass IP to client so it overrides "auto"
     })
 
     if (!result.success) {

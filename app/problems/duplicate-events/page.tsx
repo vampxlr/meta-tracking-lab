@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { PageContent } from "@/components/page-content"
 import { EnhancedEventPlayground } from "@/components/enhanced-event-playground"
 import { Layers, Copy, CheckCircle2, CheckCircle, XCircle, AlertTriangle, RefreshCw, Clock, Zap } from "lucide-react"
@@ -7,6 +8,17 @@ import { Layers, Copy, CheckCircle2, CheckCircle, XCircle, AlertTriangle, Refres
 export default function DuplicateEventsPage() {
   // Get site URL from environment
   const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app'
+
+  // Debug State
+  const [debugInfo, setDebugInfo] = React.useState<{ fbp: string; userAgent: string }>({ fbp: 'Loading...', userAgent: 'Loading...' })
+
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const fbp = getCookie('_fbp') || 'Not Found'
+      const userAgent = navigator.userAgent
+      setDebugInfo({ fbp, userAgent })
+    }
+  }, [])
 
   // UUID generator helper
   const generateUUID = () => {
@@ -1014,6 +1026,95 @@ await fetch(\`https://graph.facebook.com/v19.0/\${PIXEL_ID}/events\`, {
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Debug Panel */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[400ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-yellow-400 border-l-4 border-yellow-400 pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Live Debug Info
+        </h2>
+        <div className="glass-strong rounded-xl p-6 border border-yellow-400/20">
+          <div className="space-y-4">
+            <div>
+              <p className="font-mono text-xs text-[#8b949e] mb-1">Detected _fbp Cookie:</p>
+              <code className="block bg-[#0d1117] p-3 rounded border border-yellow-400/10 text-yellow-400 font-mono text-xs break-all">
+                {debugInfo.fbp}
+              </code>
+            </div>
+            <div>
+              <p className="font-mono text-xs text-[#8b949e] mb-1">Detected User Agent:</p>
+              <code className="block bg-[#0d1117] p-3 rounded border border-yellow-400/10 text-yellow-400 font-mono text-xs break-all">
+                {debugInfo.userAgent}
+              </code>
+            </div>
+            <p className="text-xs text-[#8b949e]">
+              * Verify these match exactly what you see in the &quot;Network Inspector&quot; CAPI payload.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Localhost Paradox Lesson */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[450ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-orange-400 border-l-4 border-orange-400 pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Lesson: The Localhost IP Paradox
+        </h2>
+        <div className="glass-strong rounded-xl p-6 border border-orange-400/20">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-3 rounded-full bg-orange-400/10 border border-orange-400/30 text-orange-400">
+              <AlertTriangle className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#e8f4f8] mb-2">Why Deduplication Fails Locally</h3>
+              <p className="text-sm text-[#8b949e] leading-relaxed">
+                We encountered a critical edge case during development: <strong>IP Address Mismatch</strong>.
+                Even if your Event IDs and Cookies match, sending the wrong IP causes Meta to see two different users.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="bg-[#0d1117] rounded-lg p-4 border border-red-500/20">
+              <p className="font-mono text-xs text-red-400 mb-2 font-bold">❌ The Problem (Localhost)</p>
+              <ul className="space-y-2 text-xs text-[#8b949e]">
+                <li className="flex justify-between">
+                  <span>Pixel IP:</span>
+                  <span className="text-[#e8f4f8]">Public IP (24.x.x.x)</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>CAPI IP:</span>
+                  <span className="text-red-400">::1 (Localhost)</span>
+                </li>
+                <li className="pt-2 border-t border-red-500/20 text-red-300 font-bold">
+                  Result: Different Users → No Dedup
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
+              <p className="font-mono text-xs text-[#00ff41] mb-2 font-bold">✓ The Fix (Ignore Internal)</p>
+              <ul className="space-y-2 text-xs text-[#8b949e]">
+                <li className="flex justify-between">
+                  <span>Pixel IP:</span>
+                  <span className="text-[#e8f4f8]">Public IP (24.x.x.x)</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>CAPI IP:</span>
+                  <span className="text-[#00ff41]">Undefined (Omitted)</span>
+                </li>
+                <li className="pt-2 border-t border-[#00ff41]/20 text-[#00ff41] font-bold">
+                  Result: Meta infers Public IP → Match!
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-6 bg-orange-400/5 rounded-lg p-4 border border-orange-400/20">
+            <p className="text-sm text-orange-200">
+              <strong>Key Takeaway:</strong> When running server-side code locally, don&apos;t send <code>127.0.0.1</code> or <code>::1</code> to Meta. If you omit the IP, Meta will correctly assume the request comes from your public IP, matching the Pixel.
+            </p>
           </div>
         </div>
       </section>

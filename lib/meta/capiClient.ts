@@ -13,7 +13,9 @@ interface SendCapiEventOptions {
   accessToken: string
   apiVersion: string
   testEventCode?: string
+  testEventCode?: string
   defaultEventSourceUrl?: string
+  clientIp?: string // Allow overriding client IP from request headers
 }
 
 interface SendCapiEventResult {
@@ -41,7 +43,7 @@ export async function sendCapiEvent(
     const eventId = request.event_id || crypto.randomUUID()
 
     // Build the payload based on mode
-    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode, options?.defaultEventSourceUrl)
+    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode, options?.defaultEventSourceUrl, options?.clientIp)
 
     // Send to Meta's Graph API
     const url = `https://graph.facebook.com/${apiVersion}/${pixelId}/events`
@@ -84,9 +86,13 @@ async function buildCapiPayload(
   eventId: string,
   accessToken: string,
   testEventCode?: string,
-  defaultEventSourceUrl?: string
+  defaultEventSourceUrl?: string,
+  overrideClientIp?: string
 ): Promise<any> {
   const { event_name, test_event_code, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
+
+  // Use override IP if available (from headers), otherwise use body IP
+  const finalClientIp = overrideClientIp || client_ip_address || user_data?.client_ip_address
 
   // Base event object
   const event: any = {
@@ -107,14 +113,20 @@ async function buildCapiPayload(
     // Hash PII
     event.user_data = {
       ...await hashUserData(user_data),
-      client_ip_address: client_ip_address || user_data.client_ip_address || '127.0.0.1',
       client_user_agent: client_user_agent || user_data.client_user_agent || 'Mozilla/5.0',
+    }
+
+    // Only add IP if valid (don't send 127.0.0.1 as it breaks dedup on localhost)
+    if (finalClientIp && finalClientIp !== '127.0.0.1') {
+      event.user_data.client_ip_address = finalClientIp
     }
   } else {
     // No user data provided
     event.user_data = {
-      client_ip_address: client_ip_address || '127.0.0.1',
       client_user_agent: client_user_agent || 'Mozilla/5.0',
+    }
+    if (finalClientIp && finalClientIp !== '127.0.0.1') {
+      event.user_data.client_ip_address = finalClientIp
     }
   }
 
