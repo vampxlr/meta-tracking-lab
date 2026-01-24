@@ -57,7 +57,8 @@ export default function DuplicateEventsPage() {
           order_id: "order_001",
           source_page: "/problems/duplicate-events",
           example_name: "No event_id - BROKEN",
-          note: "No event_id - counted twice (Pixel + CAPI)"
+          note: "No event_id - counted twice (Pixel + CAPI)",
+          _no_event_id: true // Force disabling event_id generation
         }
       }
     },

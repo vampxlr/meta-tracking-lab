@@ -28,6 +28,7 @@ import {
 } from "lucide-react"
 
 interface LogEntry {
+  internalId: string // Unique ID for React rendering
   id: string
   timestamp: string
   event: string
@@ -265,13 +266,18 @@ export function EnhancedEventPlayground({
 
     // Check for special flags
     const forceDifferentIds = payload?.custom_data?._force_different_ids
+    const noEventId = payload?.custom_data?._no_event_id
     const delayCapiMs = payload?.custom_data?._delay_capi
 
     // Generate event IDs
     let pixelEventId: string
     let capiEventId: string
 
-    if (forceDifferentIds) {
+    if (noEventId) {
+      // Explicitly send undefined to simulate broken setup
+      pixelEventId = undefined as any
+      capiEventId = undefined as any
+    } else if (forceDifferentIds) {
       // Generate different IDs for Pixel and CAPI to simulate the problem
       pixelEventId = crypto.randomUUID()
       capiEventId = crypto.randomUUID()
@@ -377,6 +383,7 @@ export function EnhancedEventPlayground({
 
       // Create log entry
       const newLog: LogEntry = {
+        internalId: crypto.randomUUID(), // Guaranteed unique
         id: pixelEventId,
         timestamp,
         event: selectedEventName,
@@ -951,7 +958,7 @@ export function EnhancedEventPlayground({
             <div className="space-y-3">
               {logs.map((log) => (
                 <div
-                  key={log.id}
+                  key={log.internalId}
                   className={`glass rounded-lg p-4 border ${log.success
                     ? 'border-[#00ff41]/20'
                     : 'border-red-500/20'
