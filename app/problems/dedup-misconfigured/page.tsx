@@ -658,7 +658,7 @@ export default function DedupMisconfiguredPage() {
                 </div>
                 <div>
                   <p className="font-mono text-sm font-bold text-[#e8f4f8]">Same event_name</p>
-                  <p className="text-xs text-[#8b949e]">The names must match exactly (e.g. "Purchase" vs "Purchase"). "High-Value Purchase" vs "Purchase" will <strong>fail</strong> dedup.</p>
+                  <p className="text-xs text-[#8b949e]">The names must match exactly (e.g. &quot;Purchase&quot; vs &quot;Purchase&quot;). &quot;High-Value Purchase&quot; vs &quot;Purchase&quot; will <strong>fail</strong> dedup.</p>
                 </div>
               </div>
 

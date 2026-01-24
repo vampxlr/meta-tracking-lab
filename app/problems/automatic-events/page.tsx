@@ -22,12 +22,12 @@ export default function AutomaticEventsPage() {
                         <Zap className="h-6 w-6 text-yellow-400 mt-1" />
                         <div>
                             <h3 className="font-mono text-lg font-semibold text-[#e8f4f8] mb-2">
-                                "SubscribedButtonClick" & "Microdata"
+                                &quot;SubscribedButtonClick&quot; &amp; &quot;Microdata&quot;
                             </h3>
                             <p className="text-sm text-[#8b949e] leading-relaxed">
                                 When you install the Meta Pixel, it enables a feature called <strong>Automatic Configuration (`autoConfig`)</strong> by default.
                                 This feature automatically detects valuable actions on your website—like clicking buttons, submitting forms,
-                                or navigating between pages—and logs them as events even if you didn't write code for them.
+                                or navigating between pages—and logs them as events even if you didn&apos;t write code for them.
                             </p>
                         </div>
                     </div>
@@ -52,8 +52,8 @@ export default function AutomaticEventsPage() {
                                 <span className="font-mono text-sm font-semibold text-yellow-400">Common Confusion</span>
                             </div>
                             <p className="text-xs text-[#8b949e]">
-                                These events often clutter debug logs and confuse developers. You might see a "Purchase" event followed by a
-                                "SubscribedButtonClick" and think you have a duplicate. <strong>You usually don&apos;t!</strong> They are separate events.
+                                These events often clutter debug logs and confuse developers. You might see a &quot;Purchase&quot; event followed by a
+                                &quot;SubscribedButtonClick&quot; and think you have a duplicate. <strong>You usually don&apos;t!</strong> They are separate events.
                             </p>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ fbq('track', 'PageView');`}
                     <div className="grid gap-6 md:grid-cols-2">
                         <div className="glass rounded-lg border border-[#00ff41]/20 p-4 flex flex-col items-center text-center">
                             <CheckCircle className="h-8 w-8 text-[#00ff41] mb-2" />
-                            <h4 className="font-mono text-[#00ff41] font-bold mb-2">No, They Don't</h4>
+                            <h4 className="font-mono text-[#00ff41] font-bold mb-2">No, They Don&apos;t</h4>
                             <p className="text-xs text-[#8b949e]">
                                 `SubscribedButtonClick` is a DIFFERENT event name than `Purchase`. Meta treats them as two separate actions.
                                 They do not conflict with your deduplication logic (which only compares events with the same name and ID).
@@ -146,7 +146,7 @@ fbq('track', 'PageView');`}
                             <AlertTriangle className="h-8 w-8 text-yellow-400 mb-2" />
                             <h4 className="font-mono text-yellow-400 font-bold mb-2">But They Can Be Noisy</h4>
                             <p className="text-xs text-[#8b949e]">
-                                If you have a "Purchase" button, clicking it might fire BOTH a manual `Purchase` event (from your code) AND
+                                If you have a &quot;Purchase&quot; button, clicking it might fire BOTH a manual `Purchase` event (from your code) AND
                                 an auto `SubscribedButtonClick` (from Meta). This is fine, but can look messy in reports.
                             </p>
                         </div>
