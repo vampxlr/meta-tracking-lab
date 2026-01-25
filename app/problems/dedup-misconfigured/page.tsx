@@ -431,48 +431,54 @@ export default function DedupMisconfiguredPage() {
           <div className="flex items-start gap-4">
             <AlertTriangle className="h-8 w-8 text-orange-400 shrink-0" />
             <div className="space-y-4">
-              <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">The Testing Environment Trap</h3>
+              <h3 className="font-mono text-lg font-semibold text-[#e8f4f8]">The Localhost IP Trap</h3>
               <p className="text-[#8b949e] text-sm leading-relaxed">
-                <strong>The Scenario:</strong> You implement matching <code className="text-orange-400">event_id</code> on both Pixel and CAPI. Timestamps are close. Yet, Meta lists them as separate events.
+                <strong>The Scenario:</strong> You are testing on <code className="text-orange-400">localhost</code>. Your Pixel sends your real public IP. Your server (also running locally) likely defaults to sending <code className="text-orange-400">127.0.0.1</code> or <code className="text-orange-400">&quot;auto&quot;</code> in the CAPI payload.
               </p>
 
               <div className="bg-orange-500/10 rounded-lg p-4 border border-orange-500/20">
-                <p className="font-mono text-sm font-bold text-orange-400 mb-2">The Hidden Culprit: &quot;Fake&quot; Test User Data</p>
+                <p className="font-mono text-sm font-bold text-orange-400 mb-2">Why Deduplication Fails</p>
                 <p className="text-sm text-[#e8f4f8] mb-2">
-                  Meta treats Pixel and CAPI events as the same user only if their User Data matches.
+                  Meta sees two events with the same <code>event_id</code> but different IPs:
                 </p>
                 <ul className="list-disc ml-5 space-y-1 text-sm text-[#8b949e]">
-                  <li><strong>Pixel:</strong> Automatically scrapes your <strong className="text-white">real</strong> IP, User Agent, and Cookies.</li>
-                  <li><strong>Testing Tools:</strong> Often generate <strong className="text-orange-400">fake</strong> data (e.g., IP: <code>192.168.1.1</code>, UA: <code>Mozilla/5.0...</code>).</li>
+                  <li><strong>Pixel IP:</strong> 203.0.113.5 (Your Public IP)</li>
+                  <li><strong>CAPI IP:</strong> 127.0.0.1 (Localhost / Loopback)</li>
                 </ul>
                 <p className="text-sm text-[#e8f4f8] mt-3">
-                  <strong>Result:</strong> Matching <code className="text-cyan-400">event_id</code> + Mismatched IP/UA = <strong>Two Different Users</strong> (No Deduplication).
+                  <strong>Result:</strong> Identity Mismatch. Meta thinks these are two different users => <strong>No Deduplication</strong>.
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="glass rounded-lg border border-red-500/20 p-4">
-                  <p className="font-mono text-xs font-bold text-red-400 mb-2">❌ BAD: Generating Fake Context</p>
+                  <p className="font-mono text-xs font-bold text-red-400 mb-2">❌ BAD: Sending Placeholder IP</p>
                   <code className="text-xs bg-[#0d1117] text-red-300 px-3 py-2 rounded block overflow-x-auto">
                     {`const userData = {
-  // Mismatch with real Pixel data
-  client_ip_address: '192.168.1.1',
-  client_user_agent: 'Generic/5.0...' 
+  // DON'T send "auto" or hardcoded 127.0.0.1
+  client_ip_address: 'auto', 
+  client_user_agent: '...' 
 }`}
                   </code>
                 </div>
 
                 <div className="glass rounded-lg border border-[#00ff41]/20 p-4">
-                  <p className="font-mono text-xs font-bold text-[#00ff41] mb-2">✅ GOOD: Synced Environment</p>
+                  <p className="font-mono text-xs font-bold text-[#00ff41] mb-2">✅ GOOD: Omit IP Locally</p>
                   <code className="text-xs bg-[#0d1117] text-[#00ff41] px-3 py-2 rounded block overflow-x-auto">
                     {`const userData = {
-  // Syncs with real Pixel data
-  client_ip_address: '', // Let Server fill it
-  client_user_agent: navigator.userAgent,
+  // FIX: Send undefined. Meta uses connection IP.
+  // On localhost, connection IP = Your Public IP
+  client_ip_address: undefined, 
   fbp: getCookie('_fbp')
 }`}
                   </code>
                 </div>
+              </div>
+
+              <div className="p-3 bg-cyan-500/10 rounded border-l-4 border-cyan-400">
+                <p className="text-xs text-cyan-300">
+                  <strong>Why this works:</strong> When <code>client_ip_address</code> is missing, Meta uses the IP address of the incoming network request. Since your localhost server is running on your machine, it makes the request from your IP—matching the Pixel!
+                </p>
               </div>
             </div>
           </div>

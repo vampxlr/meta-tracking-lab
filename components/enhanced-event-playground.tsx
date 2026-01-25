@@ -514,8 +514,9 @@ export function EnhancedEventPlayground({
       }
 
       // 4. Client IP (Placeholder - Server will fill this, but user wants to see it's accounted for)
-      if (!newPayload.user_data.client_ip_address) {
-        newPayload.user_data.client_ip_address = "auto"
+      // FIX: Do NOT set to "auto". Leave undefined so Meta uses connection IP.
+      if (newPayload.user_data.client_ip_address === "auto") {
+        delete newPayload.user_data.client_ip_address
       }
 
       // 5. Event Source URL (Must match Pixel URL)
