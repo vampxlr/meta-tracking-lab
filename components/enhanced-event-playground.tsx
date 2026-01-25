@@ -140,6 +140,18 @@ export function EnhancedEventPlayground({
     }
   }, [logs])
 
+  // Fetch Public IP on mount
+  const [publicIp, setPublicIp] = React.useState<string | null>(null)
+  React.useEffect(() => {
+    fetch('https://api.ipify.org?format=json')
+      .then(res => res.json())
+      .then(data => {
+        setPublicIp(data.ip)
+        toast.info('Loaded Public IP', { description: data.ip })
+      })
+      .catch(err => console.error('Failed to fetch IP:', err))
+  }, [])
+
   // Check for cookies on mount to reassure user (matches capi-test behavior)
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -522,9 +534,11 @@ export function EnhancedEventPlayground({
         newPayload.user_data.fbc = fbc
       }
 
-      // 4. Client IP (Placeholder - Server will fill this, but user wants to see it's accounted for)
-      // FIX: Do NOT set to "auto". Leave undefined so Meta uses connection IP.
-      if (newPayload.user_data.client_ip_address === "auto") {
+      // 4. Client IP
+      // Inject real public IP if available (critical for localhost deduplication)
+      if (publicIp && (!newPayload.user_data.client_ip_address || newPayload.user_data.client_ip_address === "auto")) {
+        newPayload.user_data.client_ip_address = publicIp
+      } else if (newPayload.user_data.client_ip_address === "auto") {
         delete newPayload.user_data.client_ip_address
       }
 
