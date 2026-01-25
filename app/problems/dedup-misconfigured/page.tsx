@@ -446,7 +446,7 @@ export default function DedupMisconfiguredPage() {
                   <li><strong>CAPI IP:</strong> 127.0.0.1 (Localhost / Loopback)</li>
                 </ul>
                 <p className="text-sm text-[#e8f4f8] mt-3">
-                  <strong>Result:</strong> Identity Mismatch. Meta thinks these are two different users => <strong>No Deduplication</strong>.
+                  <strong>Result:</strong> Identity Mismatch. Meta thinks these are two different users =&gt; <strong>No Deduplication</strong>.
                 </p>
               </div>
 

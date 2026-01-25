@@ -77,11 +77,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Return success response
+    // Return success response with DEBUG info
     return NextResponse.json({
       ok: true,
       data: result.response,
       sanitizedPayload: result.sanitizedPayload,
+      debug: {
+        ip: clientIp || 'detected_from_connection',
+        userAgent: request.headers.get('user-agent'),
+        fbp: request.cookies.get('_fbp')?.value,
+        fbc: request.cookies.get('_fbc')?.value,
+        eventId: validatedRequest.event_id
+      }
     })
   } catch (error) {
     return NextResponse.json(

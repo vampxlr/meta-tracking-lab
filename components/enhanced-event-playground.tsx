@@ -24,7 +24,8 @@ import {
   Globe,
   Edit,
   Send,
-  Shuffle
+  Shuffle,
+  Link2
 } from "lucide-react"
 
 interface LogEntry {
@@ -61,6 +62,13 @@ interface NetworkLog {
     body: any
     timestamp: number
     duration: number
+    debug?: {
+      ip: string
+      userAgent: string | null
+      fbp: string | null
+      fbc: string | null
+      eventId: string
+    }
   }
 }
 
@@ -366,7 +374,8 @@ export function EnhancedEventPlayground({
           status: capiResult.status,
           body: capiResult.body,
           timestamp: Date.now(),
-          duration: capiResult.duration
+          duration: capiResult.duration,
+          debug: capiResult.body?.debug  // Capture debug info from API response
         }
 
         // Show CAPI toast
@@ -736,7 +745,7 @@ export function EnhancedEventPlayground({
           </div>
 
           <Tabs defaultValue="pixel" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="pixel" className="font-mono text-xs">
                 <Globe className="h-3 w-3 mr-1" />
                 Pixel Request
@@ -747,7 +756,11 @@ export function EnhancedEventPlayground({
               </TabsTrigger>
               <TabsTrigger value="response" className="font-mono text-xs">
                 <CheckCircle2 className="h-3 w-3 mr-1" />
-                Meta Response
+                Response
+              </TabsTrigger>
+              <TabsTrigger value="dedup" className="font-mono text-xs">
+                <Link2 className="h-3 w-3 mr-1" />
+                Deduplication
               </TabsTrigger>
             </TabsList>
 
@@ -927,6 +940,109 @@ export function EnhancedEventPlayground({
                 </div>
               ) : (
                 <p className="text-sm text-[#8b949e]">No response received yet</p>
+              )}
+            </TabsContent>
+
+            <TabsContent value="dedup" className="mt-4">
+              {currentNetwork?.pixelRequest && currentNetwork?.capiRequest ? (
+                (() => {
+                  const pixelParams = currentNetwork.pixelRequest?.params as any || {}
+                  const pixelId = pixelParams.eventID || pixelParams.event_id
+                  const capiBody = currentNetwork.capiRequest?.body as any || {}
+                  const capiId = capiBody.event_id
+
+                  const isMatch = pixelId && capiId && pixelId === capiId
+                  const pixelName = pixelParams.eventName || pixelParams.event_name
+                  const capiName = capiBody.event_name
+
+                  return (
+                    <div className="space-y-4">
+                      {/* Status Banner */}
+                      <div className={`glass rounded-lg p-4 border ${isMatch ? 'border-[#00ff41]/20 bg-[#00ff41]/5' : 'border-red-500/20 bg-red-500/5'}`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`p-2 rounded-full ${isMatch ? 'bg-[#00ff41]/10 text-[#00ff41]' : 'bg-red-500/10 text-red-500'}`}>
+                            {isMatch ? <CheckCircle2 className="h-6 w-6" /> : <XCircle className="h-6 w-6" />}
+                          </div>
+                          <div>
+                            <h4 className={`font-mono font-bold ${isMatch ? 'text-[#00ff41]' : 'text-red-500'}`}>
+                              {isMatch ? 'Deduplication Active' : 'Deduplication Failed'}
+                            </h4>
+                            <p className="text-xs text-[#8b949e]">
+                              {isMatch
+                                ? 'Event IDs match between Pixel and CAPI.'
+                                : 'Pixel and CAPI Event IDs do not match.'}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ID Comparison */}
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div className="glass rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Globe className="h-4 w-4 text-[#00d9ff]" />
+                            <span className="text-xs font-mono font-bold text-[#00d9ff]">Pixel Event ID</span>
+                          </div>
+                          <code className="block text-xs font-mono bg-[#0d1117] p-2 rounded text-[#e8f4f8] break-all">
+                            {pixelId || 'Missing'}
+                          </code>
+                        </div>
+                        <div className="glass rounded-lg p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Server className="h-4 w-4 text-[#00ff41]" />
+                            <span className="text-xs font-mono font-bold text-[#00ff41]">CAPI Event ID</span>
+                          </div>
+                          <code className="block text-xs font-mono bg-[#0d1117] p-2 rounded text-[#e8f4f8] break-all">
+                            {capiId || 'Missing'}
+                          </code>
+                        </div>
+                      </div>
+
+                      {/* Dedup Keys */}
+                      <div className="glass rounded-lg p-4">
+                        <h5 className="font-mono text-xs font-bold text-[#8b949e] mb-3 uppercase tracking-wider">
+                          Deduplication Keys
+                        </h5>
+                        <div className="space-y-2">
+                          {[
+                            { label: 'Event Name', match: capiName === pixelName, value: pixelName },
+                            { label: 'FBP (Browser ID)', match: !!capiBody.user_data?.fbp, value: 'Advanced Match' },
+                            { label: 'FBC (Click ID)', match: !!capiBody.user_data?.fbc, value: 'Advanced Match' },
+                            { label: 'External ID', match: !!capiBody.user_data?.external_id, value: 'Advanced Match' }
+                          ].map((item, i) => (
+                            <div key={i} className="flex items-center justify-between py-1 border-b border-[#00ff41]/10 last:border-0">
+                              <span className="text-xs font-mono text-[#e8f4f8]">{item.label}</span>
+                              <div className="flex items-center gap-2">
+                                {item.match ? (
+                                  <Badge variant="outline" className="text-[10px] border-[#00ff41]/30 text-[#00ff41]">
+                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    Matched
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="outline" className="text-[10px] border-yellow-500/30 text-yellow-500">
+                                    {item.label === 'Event Name' ? 'Mismatch' : 'Missing'}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()
+              ) : (
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="p-3 rounded-full bg-[#00ff41]/5 mb-3">
+                    <Link2 className="h-6 w-6 text-[#00ff41]/50" />
+                  </div>
+                  <h4 className="font-mono text-sm font-bold text-[#e8f4f8] mb-1">
+                    Waiting for Event Data
+                  </h4>
+                  <p className="text-xs text-[#8b949e] max-w-[250px]">
+                    Send an event to both Pixel and CAPI to analyze deduplication status.
+                  </p>
+                </div>
               )}
             </TabsContent>
           </Tabs>
