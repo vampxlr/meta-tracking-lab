@@ -117,11 +117,11 @@ export default function PurchaseMismatchPage() {
       }
     },
 
-    // 4. Negative Value
+    // 4. Negative Value (Refund)
     {
-      name: "Negative Value (Broken)",
-      icon: <XCircle className="h-4 w-4 text-red-500" />,
-      description: "Negative number -50.00 • Invalid",
+      name: "Negative Value (Refund)",
+      icon: <CheckCircle2 className="h-4 w-4 text-blue-400" />,
+      description: "-50.00 • Accepted (Refund/Correction)",
       payload: {
         event_name: "Purchase",
         event_time: Math.floor(Date.now() / 1000),
@@ -129,25 +129,8 @@ export default function PurchaseMismatchPage() {
           currency: "USD",
           value: -50.00,
           source_page: "/problems/purchase-mismatch",
-          example_name: "Negative Value - INVALID",
-          note: "Negative value - Meta rejects",
-          test_mode: "broken"
-        }
-      }
-    },
-    {
-      name: "Negative Value (Fixed)",
-      icon: <CheckCircle2 className="h-4 w-4 text-[#00ff41]" />,
-      description: "Positive number 50.00 • Correct",
-      payload: {
-        event_name: "Purchase",
-        event_time: Math.floor(Date.now() / 1000),
-        custom_data: {
-          currency: "USD",
-          value: 50.00,
-          source_page: "/problems/purchase-mismatch",
-          example_name: "Negative Value - FIXED",
-          note: "Positive value - valid purchase",
+          example_name: "Negative Value - REFUND",
+          note: "Meta accepts negative values for refunds. Deduplication works perfectly.",
           test_mode: "fixed"
         }
       }
