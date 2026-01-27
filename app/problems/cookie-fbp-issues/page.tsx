@@ -20,11 +20,12 @@ export default function CookieFbpIssuesPage() {
   }
 
   const examples = [
+    // 1. Missing _fbp
     {
-      name: "Missing _fbp Cookie (POOR ATTRIBUTION)",
+      name: "Missing _fbp (PROBLEM)",
       icon: <AlertTriangle className="h-4 w-4 text-red-400" />,
-      description: "No _fbp cookie - Meta can&apos;t track user across sessions or attribute to campaigns",
-      brokenPayload: {
+      description: "No _fbp cookie - Meta can't track user across sessions",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -42,8 +43,13 @@ export default function CookieFbpIssuesPage() {
           test_mode: "broken",
           note: "No _fbp cookie - can't track user across sessions"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Fixed: Missing _fbp",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Solution: _fbp cookie properly set and included",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -64,11 +70,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 2. Missing _fbc
     {
-      name: "Missing _fbc Cookie (NO CLICK ATTRIBUTION)",
+      name: "Missing _fbc (PROBLEM)",
       icon: <Link2 className="h-4 w-4 text-yellow-400" />,
-      description: "No _fbc cookie - can&apos;t attribute conversion to specific ad click",
-      brokenPayload: {
+      description: "No _fbc cookie - can't attribute conversion to ad click",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -87,8 +95,13 @@ export default function CookieFbpIssuesPage() {
           test_mode: "broken",
           note: "No _fbc cookie - can't attribute to specific ad click"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Fixed: Missing _fbc",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Solution: _fbc cookie captured from URL parameters",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -110,11 +123,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 3. Wrong Cookie Domain
     {
-      name: "Wrong Cookie Domain (NOT ACCESSIBLE)",
+      name: "Wrong Domain (PROBLEM)",
       icon: <Globe className="h-4 w-4 text-red-400" />,
-      description: "Cookie set on wrong domain - server can&apos;t read it for CAPI",
-      brokenPayload: {
+      description: "Cookie on wrong domain - server/subdomains can't read it",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -123,7 +138,6 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0"
-          // _fbp was set on www.example.com, not accessible on shop.example.com
         },
         custom_data: {
           currency: "USD",
@@ -133,8 +147,13 @@ export default function CookieFbpIssuesPage() {
           test_mode: "broken",
           note: "Cookie on wrong domain - server can't read it"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Fixed: Cookie Domain",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Solution: Cookie set on root domain (.example.com)",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -143,7 +162,7 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890", // Cookie set with domain=.example.com
+          fbp: "fb.1.1705334567890.1234567890",
           fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
@@ -156,11 +175,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 4. HttpOnly Flag
     {
-      name: "HttpOnly Flag Blocking Access (CLIENT-SIDE ISSUE)",
+      name: "HttpOnly Flag (PROBLEM)",
       icon: <ShieldCheck className="h-4 w-4 text-yellow-400" />,
-      description: "Cookie set with httpOnly flag - JavaScript can&apos;t read it",
-      brokenPayload: {
+      description: "Cookie has HttpOnly flag - JavaScript can't access it",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -169,7 +190,6 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0"
-          // _fbp exists but JS can't access it due to httpOnly flag
         },
         custom_data: {
           currency: "USD",
@@ -179,8 +199,13 @@ export default function CookieFbpIssuesPage() {
           test_mode: "broken",
           note: "httpOnly flag blocks JavaScript access to cookie"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Fixed: HttpOnly Flag",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Solution: HttpOnly disabled for client-side access",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -189,7 +214,7 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890", // Cookie accessible (no httpOnly)
+          fbp: "fb.1.1705334567890.1234567890",
           fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
@@ -202,11 +227,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 5. Expired Cookie
     {
-      name: "Expired Cookie (TRACKING BREAKS)",
+      name: "Expired Cookie (PROBLEM)",
       icon: <Clock className="h-4 w-4 text-red-400" />,
-      description: "Cookie expired - user appears as new visitor, breaking attribution history",
-      brokenPayload: {
+      description: "Cookie expired - user appears as new visitor",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -215,7 +242,6 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0"
-          // Cookie expired, browser deleted it
         },
         custom_data: {
           currency: "USD",
@@ -225,8 +251,13 @@ export default function CookieFbpIssuesPage() {
           test_mode: "broken",
           note: "Cookie expired - user appears as new visitor"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Fixed: Expired Cookie",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Solution: Cookie lifetime extended (90 days)",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -235,7 +266,7 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890", // Cookie with 90-day expiration
+          fbp: "fb.1.1705334567890.1234567890",
           fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
@@ -248,11 +279,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 6. Timing Issue
     {
-      name: "Cookie Not Set Before Event (TIMING ISSUE)",
+      name: "Timing Issue (PROBLEM)",
       icon: <Clock className="h-4 w-4 text-yellow-400" />,
-      description: "Event fired before Pixel set cookie - race condition causes missing attribution",
-      brokenPayload: {
+      description: "Event fired before Pixel loaded/set cookie",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -261,7 +294,6 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0"
-          // Pixel hasn't loaded yet, no _fbp cookie exists
         },
         custom_data: {
           currency: "USD",
@@ -271,8 +303,13 @@ export default function CookieFbpIssuesPage() {
           test_mode: "broken",
           note: "Event fired before Pixel loaded - no cookie yet"
         }
-      },
-      fixedPayload: {
+      }
+    },
+    {
+      name: "Fixed: Timing Issue",
+      icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
+      description: "Solution: Pixel loaded early in <head>",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -281,7 +318,7 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890", // Pixel loaded first, cookie available
+          fbp: "fb.1.1705334567890.1234567890",
           fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
@@ -294,12 +331,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 7. Good Setup
     {
       name: "Proper _fbp Cookie (GOOD)",
       icon: <Cookie className="h-4 w-4 text-[#00ff41]" />,
-      description: "Valid _fbp cookie from Pixel - enables cross-session tracking and attribution",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Valid _fbp cookie - enables cross-session tracking",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),
@@ -323,12 +361,13 @@ export default function CookieFbpIssuesPage() {
         }
       }
     },
+
+    // 8. Perfect Setup
     {
       name: "Complete Cookie Setup (PERFECT)",
       icon: <CheckCircle className="h-4 w-4 text-[#00ff41]" />,
-      description: "Both _fbp and _fbc cookies with proper configuration - maximum attribution accuracy",
-      brokenPayload: null,
-      fixedPayload: {
+      description: "Both _fbp & _fbc cookies + complete user data",
+      payload: {
         event_name: "Purchase",
         event_id: `purchase_${Date.now()}`,
         event_time: Math.floor(Date.now() / 1000),

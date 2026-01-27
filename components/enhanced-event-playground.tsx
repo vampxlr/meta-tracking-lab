@@ -140,16 +140,35 @@ export function EnhancedEventPlayground({
     }
   }, [logs])
 
-  // Fetch Public IP on mount
-  const [publicIp, setPublicIp] = React.useState<string | null>(null)
+  // Fetch Live Debug Info on mount
+  const [debugInfo, setDebugInfo] = React.useState<{ fbp: string; userAgent: string; ip: string | null }>({
+    fbp: 'Loading...',
+    userAgent: 'Loading...',
+    ip: 'Loading...'
+  })
+
+  const refreshDebugInfo = () => {
+    if (typeof window !== 'undefined') {
+      const fbp = getCookie('_fbp') || 'Not Found (Browser)'
+      const userAgent = navigator.userAgent
+
+      setDebugInfo(prev => ({ ...prev, fbp, userAgent }))
+
+      // Fetch IP
+      fetch('https://api.ipify.org?format=json')
+        .then(res => res.json())
+        .then(data => {
+          setDebugInfo(prev => ({ ...prev, ip: data.ip }))
+        })
+        .catch(err => {
+          console.error('Failed to fetch IP:', err)
+          setDebugInfo(prev => ({ ...prev, ip: 'Failed to fetch' }))
+        })
+    }
+  }
+
   React.useEffect(() => {
-    fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => {
-        setPublicIp(data.ip)
-        toast.info('Loaded Public IP', { description: data.ip })
-      })
-      .catch(err => console.error('Failed to fetch IP:', err))
+    refreshDebugInfo()
   }, [])
 
   // Check for cookies on mount to reassure user (matches capi-test behavior)
@@ -459,8 +478,11 @@ export function EnhancedEventPlayground({
 
     const newPayload = { ...payload }
 
-    // 1. Randomize event_id if present
+    // 1. Randomize event_id if present, OR generate new one if missing
+    // FIX: Always ensure event_id is present so it shows up in JSON Builder
     if (newPayload.event_id) {
+      newPayload.event_id = crypto.randomUUID()
+    } else {
       newPayload.event_id = crypto.randomUUID()
     }
 
@@ -516,7 +538,8 @@ export function EnhancedEventPlayground({
     }
 
     // INJECT: Real Browser Data (Critical for Deduplication)
-    if (typeof window !== 'undefined') {
+    // SKIP if test_mode is 'broken' (we want to simulate missing data)
+    if (typeof window !== 'undefined' && newPayload.custom_data?.test_mode !== 'broken') {
       // 1. User Agent
       if (!newPayload.user_data.client_user_agent) {
         newPayload.user_data.client_user_agent = navigator.userAgent
@@ -536,8 +559,8 @@ export function EnhancedEventPlayground({
 
       // 4. Client IP
       // Inject real public IP if available (critical for localhost deduplication)
-      if (publicIp && (!newPayload.user_data.client_ip_address || newPayload.user_data.client_ip_address === "auto")) {
-        newPayload.user_data.client_ip_address = publicIp
+      if (debugInfo.ip && debugInfo.ip !== 'Loading...' && (!newPayload.user_data.client_ip_address || newPayload.user_data.client_ip_address === "auto")) {
+        newPayload.user_data.client_ip_address = debugInfo.ip
       } else if (newPayload.user_data.client_ip_address === "auto") {
         delete newPayload.user_data.client_ip_address
       }
@@ -575,6 +598,54 @@ export function EnhancedEventPlayground({
 
   return (
     <div className="space-y-6">
+
+      {/* Live Debug Info Panel */}
+      <div className="glass hover-glow rounded-xl border border-[#00d9ff]/20 p-4 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-2 opacity-50 group-hover:opacity-100 transition-opacity">
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={refreshDebugInfo}>
+            <RefreshCw className="h-3 w-3 text-[#00d9ff]" />
+          </Button>
+        </div>
+
+        <div className="flex items-center gap-2 mb-3">
+          <div className="p-1.5 rounded-lg bg-[#00d9ff]/10">
+            <Activity className="h-4 w-4 text-[#00d9ff]" />
+          </div>
+          <h4 className="font-mono text-sm font-bold text-[#e8f4f8]">Live Debug Info</h4>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* FBP */}
+          <div className="space-y-1">
+            <p className="text-[10px] uppercase tracking-wider text-[#8b949e] font-mono">Detected _fbp Cookie</p>
+            <code className="text-xs font-mono text-[#00ff41] block break-all whitespace-pre-wrap" title={debugInfo.fbp}>
+              {debugInfo.fbp}
+            </code>
+          </div>
+
+          {/* User Agent */}
+          <div className="space-y-1 md:col-span-2">
+            <p className="text-[10px] uppercase tracking-wider text-[#8b949e] font-mono">Detected User Agent</p>
+            <code className="text-xs font-mono text-[#00d9ff] block break-all whitespace-pre-wrap" title={debugInfo.userAgent}>
+              {debugInfo.userAgent}
+            </code>
+          </div>
+
+          {/* IP Address */}
+          <div className="space-y-1">
+            <p className="text-[10px] uppercase tracking-wider text-[#8b949e] font-mono">Public IP (Detected)</p>
+            <code className="text-xs font-mono text-yellow-400 block break-all" title={debugInfo.ip || ''}>
+              {debugInfo.ip}
+            </code>
+          </div>
+        </div>
+
+        <div className="mt-3 pt-2 border-t border-[#00d9ff]/10">
+          <p className="text-[10px] text-[#8b949e]">
+            * Verify these match exactly what you see in the "Network Inspector" CAPI payload.
+          </p>
+        </div>
+      </div>
 
       {/* Main Playground Card */}
       <div className="glass-strong hover-border-glow rounded-xl border border-[#00ff41]/20 p-6 space-y-6">
