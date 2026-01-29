@@ -1090,6 +1090,7 @@ export function EnhancedEventPlayground({
                         </h5>
                         <div className="space-y-2">
                           {[
+                            { label: 'Event ID', match: isMatch, value: pixelId },
                             { label: 'Event Name', match: capiName === pixelName, value: pixelName },
                             { label: 'FBP (Browser ID)', match: !!capiBody.user_data?.fbp, value: 'Advanced Match' },
                             { label: 'FBC (Click ID)', match: !!capiBody.user_data?.fbc, value: 'Advanced Match' },
