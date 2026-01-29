@@ -642,7 +642,7 @@ export function EnhancedEventPlayground({
 
         <div className="mt-3 pt-2 border-t border-[#00d9ff]/10">
           <p className="text-[10px] text-[#8b949e]">
-            * Verify these match exactly what you see in the "Network Inspector" CAPI payload.
+            * Verify these match exactly what you see in the &quot;Network Inspector&quot; CAPI payload.
           </p>
         </div>
       </div>
