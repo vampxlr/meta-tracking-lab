@@ -21,6 +21,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Meta Tracking Lab - Debug & Validate Events",
   description: "Interactive tracking documentation for Meta Pixel and Conversions API debugging",
+  verification: {
+    other: {
+      "facebook-domain-verification": "xcmf2wphzfi13atfjld5dyv2o6uzp6",
+    },
+  },
 }
 
 export default function RootLayout({
