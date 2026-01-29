@@ -581,7 +581,7 @@ await fetch('/api/events', {
           events={endpointExamples}
           showLogs={true}
           sendToMeta={true}
-          sendToBoth={false}
+          sendToBoth={true}
           showNetworkInspector={true}
           showMetaResponse={true}
           testEventCode="TEST_FIRST_PARTY"

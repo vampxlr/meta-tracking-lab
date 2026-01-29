@@ -54,17 +54,27 @@ export async function POST(request: NextRequest) {
       clientIp = undefined
     }
 
+    // Extract other server-side data for better matching
+    const userAgent = request.headers.get('user-agent') || undefined
+    const fbp = request.cookies.get('_fbp')?.value
+    const fbc = request.cookies.get('_fbc')?.value
+
     console.log('[CAPI Debug] Incoming Request:', {
       referer,
       origin,
       clientIp: clientIp || 'ignored (localhost)',
+      userAgent: userAgent ? 'found' : 'missing',
+      cookies: { fbp: !!fbp, fbc: !!fbc },
       bodyUrl: validatedRequest.event_source_url
     })
 
     // Send event to Meta's CAPI
     const result = await sendCapiEvent(validatedRequest, {
       defaultEventSourceUrl: referer || origin,
-      clientIp: clientIp // Pass IP to client so it overrides "auto"
+      clientIp,      // Pass IP to client so it overrides "auto"
+      clientUserAgent: userAgent, // Pass real server-side UA
+      fbp,           // Pass server-side _fbp
+      fbc            // Pass server-side _fbc
     })
 
     if (!result.success) {
@@ -84,9 +94,9 @@ export async function POST(request: NextRequest) {
       sanitizedPayload: result.sanitizedPayload,
       debug: {
         ip: clientIp || 'detected_from_connection',
-        userAgent: request.headers.get('user-agent'),
-        fbp: request.cookies.get('_fbp')?.value,
-        fbc: request.cookies.get('_fbc')?.value,
+        userAgent: userAgent || 'missing',
+        fbp: fbp || 'missing',
+        fbc: fbc || 'missing',
         eventId: validatedRequest.event_id
       }
     })

@@ -15,6 +15,9 @@ interface SendCapiEventOptions {
   testEventCode?: string
   defaultEventSourceUrl?: string
   clientIp?: string // Allow overriding client IP from request headers
+  clientUserAgent?: string // Allow overriding UA from request headers
+  fbp?: string // Allow overriding _fbp cookie from request
+  fbc?: string // Allow overriding _fbc cookie from request
 }
 
 interface SendCapiEventResult {
@@ -42,7 +45,7 @@ export async function sendCapiEvent(
     const eventId = request.event_id || crypto.randomUUID()
 
     // Build the payload based on mode
-    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode, options?.defaultEventSourceUrl, options?.clientIp)
+    const payload = await buildCapiPayload(request, eventId, accessToken, testEventCode, options)
 
     // Send to Meta's Graph API
     const url = `https://graph.facebook.com/${apiVersion}/${pixelId}/events`
@@ -85,19 +88,21 @@ async function buildCapiPayload(
   eventId: string,
   accessToken: string,
   testEventCode?: string,
-  defaultEventSourceUrl?: string,
-  overrideClientIp?: string
+  options?: Partial<SendCapiEventOptions>
 ): Promise<any> {
   const { event_name, test_event_code, user_data, custom_data, client_ip_address, client_user_agent, event_source_url } = request
 
-  // Use override IP if available (from headers), otherwise use body IP
-  const finalClientIp = overrideClientIp || client_ip_address || user_data?.client_ip_address
+  // Use override IP/UA/Cookies if available (from headers), otherwise use body data
+  const finalClientIp = options?.clientIp || client_ip_address || user_data?.client_ip_address
+  const finalUserAgent = options?.clientUserAgent || client_user_agent || user_data?.client_user_agent
+  const finalFbp = options?.fbp || user_data?.fbp
+  const finalFbc = options?.fbc || user_data?.fbc
 
   // Base event object
   const event: any = {
     event_name,
     event_time: Math.floor(Date.now() / 1000),
-    event_source_url: event_source_url || defaultEventSourceUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app',
+    event_source_url: event_source_url || options?.defaultEventSourceUrl || process.env.NEXT_PUBLIC_SITE_URL || 'https://meta-tracking-lab.vercel.app',
     action_source: 'website',
     event_id: eventId,
   }
@@ -108,25 +113,33 @@ async function buildCapiPayload(
   }
 
   // Build user_data
-  if (user_data) {
-    // Hash PII
-    event.user_data = {
-      ...await hashUserData(user_data),
-      client_user_agent: client_user_agent || user_data.client_user_agent || 'Mozilla/5.0',
-    }
+  event.user_data = {
+    // Hash PII first (if it exists in original request)
+    ...(user_data ? await hashUserData(user_data) : {}),
+  }
 
-    // Only add IP if valid (don't send 127.0.0.1 or ::1 as it breaks dedup on localhost)
-    if (finalClientIp && finalClientIp !== '127.0.0.1' && finalClientIp !== '::1') {
-      event.user_data.client_ip_address = finalClientIp
-    }
+  // Inject/Override Server-Side Data
+  // 1. User Agent
+  if (finalUserAgent) {
+    event.user_data.client_user_agent = finalUserAgent
   } else {
-    // No user data provided
-    event.user_data = {
-      client_user_agent: client_user_agent || 'Mozilla/5.0',
-    }
-    if (finalClientIp && finalClientIp !== '127.0.0.1' && finalClientIp !== '::1') {
-      event.user_data.client_ip_address = finalClientIp
-    }
+    event.user_data.client_user_agent = 'Mozilla/5.0' // Fallback
+  }
+
+  // 2. IP Address
+  // Only add IP if valid (don't send 127.0.0.1 or ::1 as it breaks dedup on localhost)
+  if (finalClientIp && finalClientIp !== '127.0.0.1' && finalClientIp !== '::1') {
+    event.user_data.client_ip_address = finalClientIp
+  }
+
+  // 3. FBP (Browser ID)
+  if (finalFbp) {
+    event.user_data.fbp = finalFbp
+  }
+
+  // 4. FBC (Click ID)
+  if (finalFbc) {
+    event.user_data.fbc = finalFbc
   }
 
   return {
