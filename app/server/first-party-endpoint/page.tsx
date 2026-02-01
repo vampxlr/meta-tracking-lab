@@ -20,6 +20,15 @@ export default function FirstPartyEndpointPage() {
     })
   }
 
+  // Get cookie helper
+  const getCookie = (name: string) => {
+    if (typeof document === 'undefined') return null
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop()?.split(';').shift()
+    return null
+  }
+
   const endpointExamples = [
     {
       name: "Direct to Meta (BLOCKED BY AD BLOCKERS)",
@@ -55,7 +64,9 @@ export default function FirstPartyEndpointPage() {
         action_source: "website",
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514",
-          client_ip_address: "192.168.1.1"
+          client_ip_address: "192.168.1.1",
+          fbp: (typeof document !== 'undefined' ? getCookie('_fbp') : undefined) || undefined, // USE REAL COOKIE
+          fbc: (typeof document !== 'undefined' ? getCookie('_fbc') : undefined) || undefined  // USE REAL COOKIE
         },
         custom_data: {
           currency: "USD",
@@ -99,7 +110,8 @@ export default function FirstPartyEndpointPage() {
         action_source: "website",
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514",
-          client_ip_address: "192.168.1.1"
+          client_ip_address: "192.168.1.1",
+          fbp: (typeof document !== 'undefined' ? getCookie('_fbp') : undefined) || undefined // USE REAL COOKIE
         },
         custom_data: {
           content_ids: ["prod_123"],
@@ -144,8 +156,8 @@ export default function FirstPartyEndpointPage() {
         action_source: "website",
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j",
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890", // REAL or FALLBACK
+          fbc: typeof document !== 'undefined' ? getCookie('_fbc') : "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j",
           client_ip_address: "192.168.1.1"
         },
         custom_data: {
@@ -191,7 +203,8 @@ export default function FirstPartyEndpointPage() {
         user_data: {
           em: "b4c9a289323b21a01c3e940f150eb9b8c542587f1abfd8f0e1cc1ffc5e475514",
           client_ip_address: "203.0.113.45",  // Real client IP from X-Forwarded-For
-          client_user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+          client_user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+          fbp: (typeof document !== 'undefined' ? getCookie('_fbp') : undefined) || undefined // REAL COOKIE
         },
         custom_data: {
           source_page: "/server/first-party-endpoint",
@@ -587,6 +600,132 @@ await fetch('/api/events', {
           testEventCode="TEST_FIRST_PARTY"
           pixelId={process.env.NEXT_PUBLIC_FB_PIXEL_ID}
         />
+      </section>
+
+      {/* FAQ & Architecture Deep Dive */}
+      <section className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-[350ms]">
+        <h2 className="mb-6 font-mono text-xl md:text-2xl font-bold text-[#00ff41] border-l-4 border-[#00ff41] pl-4 text-glow-hover">
+          <span className="inline-block animate-pulse">▸</span> Architecture Deep Dive & FAQ
+        </h2>
+
+        <div className="grid gap-6">
+          {/* Question 1: How it works */}
+          <div className="glass-strong rounded-xl p-6 border border-[#00ff41]/20">
+            <h3 className="font-mono text-lg font-bold text-[#e8f4f8] mb-3 flex items-center gap-2">
+              <Network className="h-5 w-5 text-[#00ff41]" />
+              How does the data flow work?
+            </h3>
+            <div className="space-y-4 text-[#8b949e] text-sm leading-relaxed">
+              <p>
+                When you use a First-Party Endpoint, the browser does <strong>not</strong> send data directly to Meta. Instead, it sends the event to your own server (e.g., <code className="text-[#00ff41]">yourdomain.com/api/events</code>).
+              </p>
+              <p>
+                Your server then acts as a "proxy" or middleman. It receives the request, processes it (adds IP, cookies, validation), and then makes a <strong>server-to-server</strong> API call (CAPI) to Meta's servers.
+              </p>
+              <div className="bg-[#0d1117] p-3 rounded border border-[#00ff41]/10 font-mono text-xs">
+                Browser ➔ Your Server (First-Party) ➔ Meta (CAPI)
+              </div>
+              <p>
+                <strong>Does Meta see browser requests?</strong> In this specific flow, Meta <em>only</em> receives the CAPI request from your server. They do not see the original browser request directly, because it was sent to <em>your</em> domain, not theirs.
+              </p>
+            </div>
+          </div>
+
+          {/* Question 2: Ad Blockers & Deduplication */}
+          <div className="glass-strong rounded-xl p-6 border border-[#00ff41]/20">
+            <h3 className="font-mono text-lg font-bold text-[#e8f4f8] mb-3 flex items-center gap-2">
+              <Zap className="h-5 w-5 text-[#00ff41]" />
+              Ad Blockers & Deduplication
+            </h3>
+            <div className="space-y-4 text-[#8b949e] text-sm leading-relaxed">
+              <div>
+                <strong>Scenario: No Ad Blocker</strong><br />
+                If you have the details set up to send via <em>both</em> Pixel and First-Party Endpoint:
+                <ul className="list-disc pl-5 mt-2 space-y-1">
+                  <li>The Browser sends a standard Pixel request directly to Meta (if not blocked).</li>
+                  <li>The Browser <em>also</em> sends a request to your First-Party Endpoint, which forwards it to Meta as a CAPI event.</li>
+                </ul>
+              </div>
+              <p>
+                <strong>This results in 2 events reaching Meta.</strong> To fix this, you send the same <code className="text-[#00ff41]">event_id</code> in both. Meta will verify they are the same event and "deduplicate" them, keeping the one with more data (usually the CAPI one).
+              </p>
+              <p>
+                <strong>Scenario: Server-Side Independent Logic</strong><br />
+                If your backend <em>also</em> fires an event independently (e.g., on a webhook) for the same action, that would be a 3rd event. You should avoid this or ensure it shares the exact same <code className="text-[#00ff41]">event_id</code> if it represents the exact same user action.
+              </p>
+            </div>
+          </div>
+
+          {/* Question 3: Cookie Access */}
+          <div className="glass-strong rounded-xl p-6 border border-[#00ff41]/20">
+            <h3 className="font-mono text-lg font-bold text-[#e8f4f8] mb-3 flex items-center gap-2">
+              <Lock className="h-5 w-5 text-[#00ff41]" />
+              Cookie Access (_fbp / _fbc)
+            </h3>
+            <div className="space-y-4 text-[#8b949e] text-sm leading-relaxed">
+              <p>
+                <strong>Can the server access cookies without the client sending them?</strong>
+                <br />
+                <span className="text-[#00ff41]">YES</span>, but only if the server and client are on the <strong>same domain</strong> (First-Party).
+              </p>
+              <p>
+                When a browser makes <em>any</em> request to <code className="text-[#00ff41]">yourdomain.com</code>, it automatically includes all cookies set for that domain in the request headers. This means your First-Party Endpoint API route can simply read <code className="text-orange-300">request.cookies.get('_fbp')</code> directly—the client-side code doesn't strictly need to manually extract and send them in the body (though it's often safer to do so to be explicit).
+              </p>
+            </div>
+          </div>
+
+          {/* Question 4: Only First Party Example */}
+          <div className="glass-strong rounded-xl p-6 border border-[#00ff41]/20">
+            <h3 className="font-mono text-lg font-bold text-[#e8f4f8] mb-3 flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-[#00ff41]" />
+              Example: Sending ONLY to First-Party Endpoint
+            </h3>
+            <div className="space-y-4 text-[#8b949e] text-sm leading-relaxed">
+              <p>
+                If you want to stop using the Facebook SDK/Pixel entirely in the browser and <em>only</em> use your First-Party Endpoint (100% server-side tracking from the client's perspective), you can use a function like this:
+              </p>
+
+              <div className="bg-[#0d1117] rounded-lg p-4 border border-[#00ff41]/20">
+                <pre className="text-xs font-mono text-[#8b949e] overflow-x-auto">
+                  {`// 1. Define a helper that replaces 'fbq()'
+const trackFirstParty = async (eventName, params = {}) => {
+  // Generate a unique ID for this event
+  const eventId = crypto.randomUUID();
+
+  // 2. Send ONLY to your server
+  await fetch('/api/events', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event_name: eventName,
+      event_id: eventId,
+      event_time: Math.floor(Date.now() / 1000),
+      action_source: 'website',
+      user_data: {
+        // Essential for matching since we don't have the Pixel
+        em: params.hashed_email,
+        ph: params.hashed_phone,
+        // Optional: Client could parse cookies, 
+        // OR let the server read them automatically from headers
+      },
+      custom_data: params.custom_data
+    })
+  });
+};
+
+// 3. Usage
+trackFirstParty('Purchase', { 
+  hashed_email: '...', 
+  custom_data: { value: 50.00, currency: 'USD' } 
+});`}
+                </pre>
+              </div>
+              <p className="text-xs text-yellow-500/80 mt-2">
+                Note: When removing the browser Pixel completely, you lose some of Meta's auto-collected data (button clicks, automatic advanced matching). You must be more diligent about sending high-quality user parameters manually.
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Best Practices */}

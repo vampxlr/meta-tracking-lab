@@ -19,6 +19,15 @@ export default function CookieFbpIssuesPage() {
     })
   }
 
+  // Get cookie helper
+  const getCookie = (name: string) => {
+    if (typeof document === 'undefined') return null
+    const value = `; ${document.cookie}`
+    const parts = value.split(`; ${name}=`)
+    if (parts.length === 2) return parts.pop()?.split(';').shift()
+    return null
+  }
+
   const examples = [
     // 1. Missing _fbp
     {
@@ -58,7 +67,7 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890" // REAL or FALLBACK
         },
         custom_data: {
           currency: "USD",
@@ -85,7 +94,7 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : undefined // REAL
         },
         custom_data: {
           currency: "USD",
@@ -110,8 +119,8 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
+          fbp: (typeof document !== 'undefined' ? getCookie('_fbp') : undefined) || undefined, // REAL
+          fbc: (typeof document !== 'undefined' ? getCookie('_fbc') : undefined) || undefined  // REAL
         },
         custom_data: {
           currency: "USD",
@@ -162,8 +171,8 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890", // REAL or FALLBACK
+          fbc: typeof document !== 'undefined' ? getCookie('_fbc') : "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
           currency: "USD",
@@ -214,8 +223,8 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890", // REAL or FALLBACK
+          fbc: typeof document !== 'undefined' ? getCookie('_fbc') : undefined
         },
         custom_data: {
           currency: "USD",
@@ -266,8 +275,8 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890", // REAL or FALLBACK
+          fbc: typeof document !== 'undefined' ? getCookie('_fbc') : "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
           currency: "USD",
@@ -318,8 +327,8 @@ export default function CookieFbpIssuesPage() {
           em: "7d3d1b3d5c4e3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c5e3d3c",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890", // REAL or FALLBACK
+          fbc: typeof document !== 'undefined' ? getCookie('_fbc') : "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
           currency: "USD",
@@ -349,7 +358,7 @@ export default function CookieFbpIssuesPage() {
           ln: "6b23c0d5f35d1b11f9b683f0b0a617355deb11277d91ae091d399c655b87940d",
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0",
-          fbp: "fb.1.1705334567890.1234567890"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890" // REAL or FALLBACK
         },
         custom_data: {
           currency: "USD",
@@ -384,8 +393,8 @@ export default function CookieFbpIssuesPage() {
           external_id: `user_${Math.floor(Math.random() * 100000)}`,
           client_ip_address: "192.168.1.1",
           client_user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-          fbp: "fb.1.1705334567890.1234567890",
-          fbc: "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
+          fbp: typeof document !== 'undefined' ? getCookie('_fbp') : "fb.1.1705334567890.1234567890", // REAL or FALLBACK
+          fbc: typeof document !== 'undefined' ? getCookie('_fbc') : "fb.1.1705334567890.IwAR1a2b3c4d5e6f7g8h9i0j"
         },
         custom_data: {
           currency: "USD",
